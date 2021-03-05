@@ -36,5 +36,5 @@ IF (APPLE)
 ENDIF (APPLE)
 
 # ASSN1
-add_executable(ASSN1 ASSN/ASSN1/main.cpp)
+add_executable(ASSN1 ASSN/ASSN1/main.cpp ASSN/ASSN1/Shape.cpp ASSN/ASSN1/Shape.h)
 target_link_libraries(ASSN1 ${EXTRA_LIBS})
