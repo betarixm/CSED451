@@ -4,6 +4,8 @@
 
 #include "Game.h"
 
+extern char mode;
+
 Game::Game() {
     this->spawnPlayer();
     this->spawnEnemy();
@@ -57,11 +59,10 @@ void Game::tick() {
 }
 
 void Game::displayInfo() {
-    std::string strNumEnemy;
-    std::string strNumPlayer;
+    std::string strNumEnemy, strNumPlayer;
+    std::string strLifeEnemy, strLifePlayer;
 
-    std::string strLifeEnemy;
-    std::string strLifePlayer;
+    std::string strMode;
 
     for(int i = 0; i < numEnemy; i++){ strNumEnemy += "O"; }
     for(int i = 0; i < NUM_ENEMY - numEnemy; i++){ strNumEnemy += "X"; }
@@ -75,16 +76,27 @@ void Game::displayInfo() {
     for(int i = 0; i < this->_player->numLife(); i++){ strLifePlayer += "O"; }
     for(int i = 0; i < numLifePlayer - this->player()->numLife(); i++){strLifePlayer += "X";}
 
-    std::string info =
-            " ENEMY: " + strNumEnemy + " / "
+
+    if(mode == 'f') {
+        strMode = "ALL FALE MODE";
+        glColor3f(1, 0, 0);
+    } else if (mode == 'c') {
+        strMode = "ALL PASS MODE";
+        glColor3f(0, 1, 0);
+    } else {
+        strMode = "NORMAL MODE";
+        glColor3f(0, 0, 1);
+    }
+
+    std::string strInfo = strMode + " / "
+            + "ENEMY: " + strNumEnemy + " / "
             + "PLAYER: " + strNumPlayer + " / "
-            + " ENEMY LIFE: " + strLifeEnemy + " / "
+            + "ENEMY LIFE: " + strLifeEnemy + " / "
             + "PLAYER LIFE: " + strLifePlayer;
 
-    glColor3f(0, 1, 0);
     glRasterPos2f(-0.93, 0.9);
 
-    for(char i : info){
+    for(char i : strInfo){
         glutBitmapCharacter(GLUT_BITMAP_HELVETICA_18, i);
     }
 }
