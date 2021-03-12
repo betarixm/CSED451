@@ -1,7 +1,3 @@
-//
-// Created by 민재 on 2021/03/12.
-//
-
 #include "Game.h"
 
 extern char mode;
@@ -78,26 +74,36 @@ void Game::displayInfo() {
 
 
     if(mode == 'f') {
-        strMode = "ALL FALE MODE";
+        strMode = "[ALL FALE MODE]";
         glColor3f(1, 0, 0);
     } else if (mode == 'c') {
-        strMode = "ALL PASS MODE";
+        strMode = "[ALL PASS MODE]";
         glColor3f(0, 1, 0);
     } else {
-        strMode = "NORMAL MODE";
+        strMode = "[NORMAL MODE]";
         glColor3f(0, 1, 1);
     }
 
-    std::string strInfo = strMode + " / "
-                          + "ENEMY: " + strNumEnemy + " / "
-                          + "PLAYER: " + strNumPlayer + " / "
-                          + "ENEMY LIFE: " + strLifeEnemy + " / "
-                          + "PLAYER LIFE: " + strLifePlayer;
+    strNumEnemy =     "      ENEMY: " + strNumEnemy;
+    strNumPlayer =    "     PLAYER: " + strNumPlayer;
+    strLifeEnemy =    " ENEMY LIFE: " + strLifeEnemy;
+    strLifePlayer = + "PLAYER LIFE: " + strLifePlayer;
 
-    glRasterPos2f(-0.93, 0.9);
+    std::vector<std::string> strVec = {
+            strMode, strLifePlayer, strLifeEnemy, strNumPlayer, strNumEnemy
+    };
 
-    for(char i : strInfo){
-        glutBitmapCharacter(GLUT_BITMAP_HELVETICA_18, i);
+    float strPosY = 0.95;
+
+    for(auto & str : strVec){
+        glPushMatrix();
+        glLoadIdentity();
+        glTranslatef(-0.95, strPosY -= 0.05, 0);
+        glScalef(1/3500.0, 1/3500.0, 1/3500.0);
+        for(char character : str){
+            glutStrokeCharacter(GLUT_STROKE_MONO_ROMAN, character);
+        }
+        glPopMatrix();
     }
 }
 
