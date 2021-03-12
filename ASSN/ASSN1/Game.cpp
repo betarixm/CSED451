@@ -85,7 +85,7 @@ void Game::displayInfo() {
         glColor3f(0, 1, 0);
     } else {
         strMode = "NORMAL MODE";
-        glColor3f(0, 0, 1);
+        glColor3f(0, 1, 1);
     }
 
     std::string strInfo = strMode + " / "

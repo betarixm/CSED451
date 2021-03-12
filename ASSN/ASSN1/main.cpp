@@ -17,7 +17,7 @@ Game* game;
 /**
  * @brief 우주선/총알 display by Double buffer
  */
-void renderScene(void) {
+void renderScene() {
     list<Bullet*>::iterator itr;
 
     glClear(GL_COLOR_BUFFER_BIT);
