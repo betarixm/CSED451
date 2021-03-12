@@ -180,40 +180,32 @@ void Player::checkHit(list<Bullet*>* bullet_list)
  * @brief 키보드 입력 되었을 때 handler
  * @parmas char(key) 눌린 키 종류 (space_bar, direction)
  */
-Bullet* Player::keyHandler(char key)
+Bullet * Player::keyHandler()
 {
-    Bullet* bullet = NULL;
+    Bullet* bullet = nullptr;
     float dx = 0, dy = 0;
 
     vector<vector<float>> pos = getPosition();
-    switch(key)
-    {
-        case 'S': /*space bar*/
-        {
-            if (mode != 'f')
-                bullet = shot();
-            return bullet;
-        }
-        case 'U':
-        {
-            dy = dist;
-            break;
-        }
-        case 'D':
-        {
-            dy = -1*dist;
-            break;
-        }
-        case 'L':
-        {
-            dx = -1*dist;
-            break;
-        }
-        case 'R':
-        {
-            dx = dist;
-            break;
-        }
+
+    if(this->inputKey['S']){
+        if (mode != 'f')
+            bullet = shot();
+    }
+
+    if(this->inputKey['U']){
+        dy = dist;
+    }
+
+    if(this->inputKey['D']){
+        dy = -1*dist;
+    }
+
+    if(this->inputKey['L']){
+        dx = -1*dist;
+    }
+
+    if(this->inputKey['R']){
+        dx = dist;
     }
 
     /** window 밖으로 넘어가는지 체크 */
@@ -223,9 +215,10 @@ Bullet* Player::keyHandler(char key)
 
         if(x+dx > 1.0 || x+dx < -1.0 || y+dy > 1.0 || y+dy < -1.0)
         {
-            return NULL;
+            return nullptr;
         }
     }
+
     glObject.move(dx, dy);
     return bullet;
 }

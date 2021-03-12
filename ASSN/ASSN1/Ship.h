@@ -11,6 +11,7 @@
 #include "Shape.h"
 #include <random>
 #include <cmath>
+#include <array>
 
 using namespace std;
 
@@ -51,10 +52,29 @@ public:
 };
 
 class Player : public Ship {
+private:
+    std::array<bool, 0xff> inputKey = {false, };
 public:
     Player(int _numLife, float x, float y, float length, GLclampf r, GLclampf g, GLclampf b, float degree): Ship(_numLife, x, y, length, r, g, b, degree){};
     void checkHit(list<Bullet*>*);
-    Bullet* keyHandler(char key);
+    Bullet *keyHandler();
+
+    Bullet* keyDown(unsigned char key){
+        if(!(0 <= key && key < 0xff)){
+            return nullptr;
+        }
+
+        this->inputKey[key] = true;
+        return this->keyHandler();
+    }
+
+    void keyUp(unsigned char key){
+        if(!(0 <= key && key < 0xff)){
+            return;
+        }
+        this->inputKey[key] = false;
+        this->keyHandler();
+    }
 };
 
 

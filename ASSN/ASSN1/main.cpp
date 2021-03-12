@@ -37,7 +37,7 @@ void renderScene(void) {
   * @breif 방향키 입력 핸들러
   * @params key 입력키 종류
   */
-void specialKeyboard(int key, int x, int y)
+void onSpecialKeyDown(int key, int x, int y)
 {
     if(!game->player()){
         return;
@@ -46,16 +46,39 @@ void specialKeyboard(int key, int x, int y)
     switch(key)
     {
         case GLUT_KEY_UP:
-            game->player()->keyHandler('U');
+            game->player()->keyDown('U');
             break;
         case GLUT_KEY_DOWN:
-            game->player()->keyHandler('D');
+            game->player()->keyDown('D');
             break;
         case GLUT_KEY_LEFT:
-            game->player()->keyHandler('L');
+            game->player()->keyDown('L');
             break;
         case GLUT_KEY_RIGHT:
-            game->player()->keyHandler('R');
+            game->player()->keyDown('R');
+            break;
+    }
+    glutPostRedisplay();
+}
+
+void onSpecialKeyUp(int key, int x, int y) {
+    if(!game->player()){
+        return;
+    }
+
+    switch(key)
+    {
+        case GLUT_KEY_UP:
+            game->player()->keyUp('U');
+            break;
+        case GLUT_KEY_DOWN:
+            game->player()->keyUp('D');
+            break;
+        case GLUT_KEY_LEFT:
+            game->player()->keyUp('L');
+            break;
+        case GLUT_KEY_RIGHT:
+            game->player()->keyUp('R');
             break;
     }
     glutPostRedisplay();
@@ -64,15 +87,15 @@ void specialKeyboard(int key, int x, int y)
  * @brief 스페이스바/f/c 입력 핸들
  * @param key 입력키 종
  */
-void keyboard(unsigned char key, int x, int y)
+void onKeyDown(unsigned char key, int x, int y)
 {
     Bullet* bullet;
 
     switch(key){
         case 32: /* space bar */
             if(!game->player()){ break; }
-            bullet = game->player()->keyHandler('S');
-            if(bullet != NULL)
+            bullet = game->player()->keyDown('S');
+            if(bullet != nullptr)
                 player_bullets.push_back(bullet);
             break;
         case 'f':
@@ -90,6 +113,10 @@ void keyboard(unsigned char key, int x, int y)
             break;
     }
     glutPostRedisplay();
+}
+
+void onKeyUp(unsigned char key, int x, int y){
+    game->player()->keyUp(key);
 }
 /**
  * @brief 일정초마다 총알 이동 및 충돌 체크
@@ -180,10 +207,12 @@ int main(int argc, char **argv) {
     glutDisplayFunc(renderScene);
 
     /** eunsue modified start*/
-    glutSpecialFunc(specialKeyboard);
+    glutSpecialFunc(onSpecialKeyDown);
+    glutSpecialUpFunc(onSpecialKeyUp);
     glutTimerFunc(1, timerDefault, -1);
     glutTimerFunc(100, timerBulletEnemyShot, -1);
-    glutKeyboardFunc(keyboard);
+    glutKeyboardFunc(onKeyDown);
+    glutKeyboardUpFunc(onKeyUp);
     /** eunsue modified end */
 
     glClearColor(0.3f, 0.3f, 0.3f, 1.0f);
