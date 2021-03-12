@@ -74,7 +74,7 @@ void Game::displayInfo() {
 
 
     if(mode == 'f') {
-        strMode = "[ALL FALE MODE]";
+        strMode = "[ALL FAIL MODE]";
         glColor3f(1, 0, 0);
     } else if (mode == 'c') {
         strMode = "[ALL PASS MODE]";
