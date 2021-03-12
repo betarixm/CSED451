@@ -67,21 +67,7 @@ public:
         }
     }
 
-    void display() {
-        if(_isGameOver || _isGameWin){
-            std::string msg = _isGameWin ? "WIN!" : "GAME OVER!";
-
-            glLoadIdentity();
-
-            glColor3f(1, 0, 0);
-            glRasterPos2f(0, 0);
-
-            for(char i : msg) {
-                glutBitmapCharacter(GLUT_BITMAP_HELVETICA_18, i);
-            }
-            return;
-        }
-
+    void displayInfo() {
         std::string strNumEnemy;
         std::string strNumPlayer;
 
@@ -99,6 +85,7 @@ public:
 
         for(int i = 0; i < this->_player->numLife(); i++){ strLifePlayer += "O"; }
         for(int i = 0; i < numLifePlayer - this->player()->numLife(); i++){strLifePlayer += "X";}
+
         std::string info =
                 " ENEMY: " + strNumEnemy + " / "
                 + "PLAYER: " + strNumPlayer + " / "
@@ -111,6 +98,24 @@ public:
         for(char i : info){
             glutBitmapCharacter(GLUT_BITMAP_HELVETICA_18, i);
         }
+    }
+
+    void display() {
+        if(_isGameOver || _isGameWin){
+            std::string msg = _isGameWin ? "WIN!" : "GAME OVER!";
+
+            glLoadIdentity();
+
+            glColor3f(1, 0, 0);
+            glRasterPos2f(0, 0);
+
+            for(char i : msg) {
+                glutBitmapCharacter(GLUT_BITMAP_HELVETICA_18, i);
+            }
+            return;
+        }
+
+        this->displayInfo();
 
         if(!isPlayerDead && this->_player){
             _player->display();
