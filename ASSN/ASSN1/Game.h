@@ -25,6 +25,10 @@ public:
         this->spawnEnemy();
     }
 
+    ~Game(){
+        delete this->_enemy;
+        delete this->_player;
+    }
     void spawnPlayer(){
         if(isPlayerDead && this->numPlayer--){
             delete this->_player;
