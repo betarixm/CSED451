@@ -80,7 +80,6 @@ void keyboard(unsigned char key, int x, int y)
                 mode = 'c';
             break;
     }
-    return;
     glutPostRedisplay();
 }
 /**
