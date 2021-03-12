@@ -10,6 +10,8 @@ char mode = 'n'; /* n : normal,  f: fail, c: king-god */
 static list<Bullet*> enemy_bullets;
 static list<Bullet*> player_bullets;
 
+#define DEBUG
+
 Game* game;
 
 /**
@@ -22,11 +24,12 @@ void renderScene(void) {
 
     game->display();
 
-    for(itr = enemy_bullets.begin(); itr != enemy_bullets.end(); itr++)
-        (*itr)->display();
-    for(itr = player_bullets.begin(); itr != player_bullets.end(); itr++)
-        (*itr)->display();
-
+    if(!(game->isGameOver() || game->isGameWin()) ) {
+        for (itr = enemy_bullets.begin(); itr != enemy_bullets.end(); itr++)
+            (*itr)->display();
+        for (itr = player_bullets.begin(); itr != player_bullets.end(); itr++)
+            (*itr)->display();
+    }
 
     glutSwapBuffers();
 }
@@ -36,6 +39,10 @@ void renderScene(void) {
   */
 void specialKeyboard(int key, int x, int y)
 {
+    if(!game->player()){
+        return;
+    }
+
     switch(key)
     {
         case GLUT_KEY_UP:
@@ -63,6 +70,7 @@ void keyboard(unsigned char key, int x, int y)
 
     switch(key){
         case 32: /* space bar */
+            if(!game->player()){ break; }
             bullet = game->player()->keyHandler('S');
             if(bullet != NULL)
                 player_bullets.push_back(bullet);
@@ -86,7 +94,7 @@ void keyboard(unsigned char key, int x, int y)
 /**
  * @brief 일정초마다 총알 이동 및 충돌 체크
  */
-void timerFunc2(int value)
+void timerBulletMoveHit(int value)
 {
     list<Bullet*>::iterator itr;
     Bullet* bullet;
@@ -119,32 +127,45 @@ void timerFunc2(int value)
             ++itr;
     }
 
-    game->player()->checkHit(&enemy_bullets);
-    game->enemy()->checkHit(&player_bullets);
+    if(game->player()){
+        game->player()->checkHit(&enemy_bullets);
+    }
+
+    if(game->enemy()){
+        game->enemy()->checkHit(&player_bullets);
+    }
 
     glutPostRedisplay();
-    glutTimerFunc(30, timerFunc2, 1);
+    glutTimerFunc(30, timerBulletMoveHit, 1);
 }
 /**
  * @brief 일정초마다 _enemy moving & 총알 발
  * @param value 7번에 1번씩 총알 발사를 위한 counter
  */
-void timerFunc(int value)
+void timerBulletEnemyShot(int value)
 {
-    Bullet* new_bullet;
+    if(game->enemy()){
+        Bullet* new_bullet;
 
-    game->enemy()->randomMoveHandler();
+        game->enemy()->randomMoveHandler();
 
-    if(value == 0) {    /* 총알 발사 */
-        new_bullet = game->enemy()->shot();
-        enemy_bullets.push_back(new_bullet);
+        if(value == 0) {    /* 총알 발사 */
+            new_bullet = game->enemy()->shot();
+            enemy_bullets.push_back(new_bullet);
+        }
+
+        glutPostRedisplay();
     }
 
-    glutPostRedisplay();
-    glutTimerFunc(300, timerFunc, (value+1)%7);
+    glutTimerFunc(300, timerBulletEnemyShot, (value + 1) % 7);
     if(value==-1)
-        glutTimerFunc(30, timerFunc2, 1);
+        glutTimerFunc(30, timerBulletMoveHit, 1);
 
+}
+
+void timerDefault(int value){
+    game->tick();
+    glutTimerFunc(1, timerDefault, -1);
 }
 
 int main(int argc, char **argv) {
@@ -160,7 +181,8 @@ int main(int argc, char **argv) {
 
     /** eunsue modified start*/
     glutSpecialFunc(specialKeyboard);
-    glutTimerFunc(100, timerFunc, -1);
+    glutTimerFunc(1, timerDefault, -1);
+    glutTimerFunc(100, timerBulletEnemyShot, -1);
     glutKeyboardFunc(keyboard);
     /** eunsue modified end */
 
