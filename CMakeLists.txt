@@ -6,18 +6,15 @@ set(CMAKE_CXX_STANDARD 11)
 # macOS Load
 IF (APPLE)
     # FreeGLUT
-    # brew install freeglut
-    set(FREEGLUT_H /usr/local/Cellar/freeglut/3.2.1_1/include)
-    set(FREEGLUT_LINK /usr/local/Cellar/freeglut/3.2.1_1/lib/libglut.dylib)
+    set(FREEGLUT_H ${CMAKE_SOURCE_DIR}/extensions/darwin/freeglut/3.2.1_1/include)
+    set(FREEGLUT_LINK ${CMAKE_SOURCE_DIR}/extensions/darwin/freeglut/3.2.1_1/lib/libglut.dylib)
 
     # GLEW
-    # brew install glew
-    set(GLEW_H /usr/local/Cellar/glew/2.2.0/include)
-    set(GLEW_LINK /usr/local/Cellar/glew/2.2.0/lib/libGLEW.dylib)
+    set(GLEW_H ${CMAKE_SOURCE_DIR}/extensions/darwin/glew/2.2.0/include)
+    set(GLEW_LINK ${CMAKE_SOURCE_DIR}/extensions/darwin/glew/2.2.0/lib/libGLEW.dylib)
 
     # GLM
-    # brew install glm
-    set(GLM_H /usr/local/Cellar/glm/0.9.9.8/include)
+    set(GLM_H ${CMAKE_SOURCE_DIR}/extensions/darwin/glm/0.9.9.8/include)
 
     include_directories(${GLEW_H} ${FREEGLUT_H} ${GLM_H})
     link_libraries(${GLEW_LINK} ${FREEGLUT_LINK})
@@ -36,5 +33,5 @@ IF (APPLE)
 ENDIF (APPLE)
 
 # ASSN1
-add_executable(ASSN1 ASSN/ASSN1/main.cpp ASSN/ASSN1/Shape.cpp ASSN/ASSN1/Shape.h)
+add_executable(ASSN1 ASSN/ASSN1/main.cpp ASSN/ASSN1/Shape.cpp ASSN/ASSN1/Shape.h ASSN/ASSN1/Ship.cpp ASSN/ASSN1/Ship.h ASSN/ASSN1/Game.cpp ASSN/ASSN1/Game.h)
 target_link_libraries(ASSN1 ${EXTRA_LIBS})
