@@ -27,13 +27,13 @@ typedef Square Bullet;
 
 class Ship {
 protected:
-    int numLife;
+    int _numLife;
     Triangle glObject;
 
 public:
-    Ship(int numLife, float x, float y, float length, GLclampf r, GLclampf g, GLclampf b, float degree):glObject(x, y, length, r, g, b)
+    Ship(int _numLife, float x, float y, float length, GLclampf r, GLclampf g, GLclampf b, float degree): glObject(x, y, length, r, g, b)
     {
-        this->numLife = numLife;
+        this->_numLife = _numLife;
         this->glObject.setDegree(degree);
     }
     ~Ship(){};
@@ -44,11 +44,15 @@ public:
     void display();
     void display(float rotateDeg);
 
+    int numLife() const{
+        return this->_numLife;
+    }
+
 };
 
 class Player : public Ship {
 public:
-    Player(int numLife, float x, float y, float length, GLclampf r, GLclampf g, GLclampf b, float degree):Ship(numLife, x, y, length, r, g, b, degree){};
+    Player(int _numLife, float x, float y, float length, GLclampf r, GLclampf g, GLclampf b, float degree): Ship(_numLife, x, y, length, r, g, b, degree){};
     void checkHit(list<Bullet*>*);
     Bullet* keyHandler(char key);
 };
@@ -56,7 +60,7 @@ public:
 
 class Enemy : public Ship {
 public:
-    Enemy(int numLife, float x, float y, float length, GLclampf r, GLclampf g, GLclampf b, float degree):Ship(numLife, x, y, length, r, g, b, degree){};
+    Enemy(int _numLife, float x, float y, float length, GLclampf r, GLclampf g, GLclampf b, float degree): Ship(_numLife, x, y, length, r, g, b, degree){};
     void randomMoveHandler();
     void checkHit(list<Bullet*>*);
 

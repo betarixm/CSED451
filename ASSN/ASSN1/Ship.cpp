@@ -153,14 +153,14 @@ void Player::checkHit(list<Bullet*>* bullet_list)
         case 'c':   /* if "c mode" player don't die */
             return;
         case 'f':
-            damage = numLife;
+            damage = _numLife;
         case 'n':
             itr = bullet_list->begin();
             while(itr != bullet_list->end())
             {
                 isHit = hit(*itr);
                 if (isHit) {
-                    numLife -= damage;
+                    _numLife -= damage;
                     glObject.mutateColor(0, 0, -0.1 * damage);
                     bullet = *itr;
                     bullet_list->erase(itr++);
@@ -170,7 +170,7 @@ void Player::checkHit(list<Bullet*>* bullet_list)
                     ++itr;
 
                 /* 여러대 맞아도 목숨 다 깎이면 게임 종료 */
-                if (numLife == 0)
+                if (_numLife == 0)
                     return;
             }
     }
@@ -267,14 +267,14 @@ void Enemy::checkHit(list<Bullet*>* bullet_list)
 
     switch(mode) {
         case 'c': /** c mode일 때 적은 1대만 맞아도 죽음 */
-            damage = numLife;
+            damage = _numLife;
         default:
             itr = bullet_list->begin();
             while(itr != bullet_list->end())
             {
                 isHit = hit(*itr);
                 if (isHit) {
-                    numLife -= damage;
+                    _numLife -= damage;
                     bullet = *itr;
                     bullet_list->erase(itr++);
                     delete (bullet);
@@ -283,7 +283,7 @@ void Enemy::checkHit(list<Bullet*>* bullet_list)
                     ++itr;;
 
                 /** 여러대 맞아도 목숨 다 깎이면 게임 종료 */
-                if (numLife == 0)
+                if (_numLife == 0)
                     return;
             }
     }
