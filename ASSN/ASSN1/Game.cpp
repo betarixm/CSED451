@@ -89,10 +89,10 @@ void Game::displayInfo() {
     }
 
     std::string strInfo = strMode + " / "
-            + "ENEMY: " + strNumEnemy + " / "
-            + "PLAYER: " + strNumPlayer + " / "
-            + "ENEMY LIFE: " + strLifeEnemy + " / "
-            + "PLAYER LIFE: " + strLifePlayer;
+                          + "ENEMY: " + strNumEnemy + " / "
+                          + "PLAYER: " + strNumPlayer + " / "
+                          + "ENEMY LIFE: " + strLifeEnemy + " / "
+                          + "PLAYER LIFE: " + strLifePlayer;
 
     glRasterPos2f(-0.93, 0.9);
 
