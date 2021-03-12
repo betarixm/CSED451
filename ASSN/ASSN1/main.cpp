@@ -3,13 +3,14 @@
 #include <GL/freeglut.h>
 #include <vector>
 #include <glm/vec3.hpp>
-#include "Ship.h"
+
+#include "Game.h"
 
 char mode = 'n'; /* n : normal,  f: fail, c: king-god */
 static list<Bullet*> enemy_bullets;
 static list<Bullet*> player_bullets;
-static Player* player;
-Enemy* enemy;
+
+Game* game;
 
 /**
  * @brief 우주선/총알 display by Double buffer
@@ -18,8 +19,8 @@ void renderScene(void) {
     list<Bullet*>::iterator itr;
 
     glClear(GL_COLOR_BUFFER_BIT);
-    player->display();
-    enemy->display();
+
+    game->display();
 
     for(itr = enemy_bullets.begin(); itr != enemy_bullets.end(); itr++)
         (*itr)->display();
@@ -38,16 +39,16 @@ void specialKeyboard(int key, int x, int y)
     switch(key)
     {
         case GLUT_KEY_UP:
-            player->keyHandler('U');
+            game->player()->keyHandler('U');
             break;
         case GLUT_KEY_DOWN:
-            player->keyHandler('D');
+            game->player()->keyHandler('D');
             break;
         case GLUT_KEY_LEFT:
-            player->keyHandler('L');
+            game->player()->keyHandler('L');
             break;
         case GLUT_KEY_RIGHT:
-            player->keyHandler('R');
+            game->player()->keyHandler('R');
             break;
     }
     glutPostRedisplay();
@@ -62,7 +63,7 @@ void keyboard(unsigned char key, int x, int y)
 
     switch(key){
         case 32: /* space bar */
-            bullet = player->keyHandler('S');
+            bullet = game->player()->keyHandler('S');
             if(bullet != NULL)
                 player_bullets.push_back(bullet);
             break;
@@ -118,24 +119,24 @@ void timerFunc2(int value)
             ++itr;
     }
 
-    player->checkHit(&enemy_bullets);
-    enemy->checkHit(&player_bullets);
+    game->player()->checkHit(&enemy_bullets);
+    game->enemy()->checkHit(&player_bullets);
 
     glutPostRedisplay();
     glutTimerFunc(30, timerFunc2, 1);
 }
 /**
- * @brief 일정초마다 enemy moving & 총알 발
+ * @brief 일정초마다 _enemy moving & 총알 발
  * @param value 7번에 1번씩 총알 발사를 위한 counter
  */
 void timerFunc(int value)
 {
     Bullet* new_bullet;
 
-    enemy->randomMoveHandler();
+    game->enemy()->randomMoveHandler();
 
     if(value == 0) {    /* 총알 발사 */
-        new_bullet = enemy->shot();
+        new_bullet = game->enemy()->shot();
         enemy_bullets.push_back(new_bullet);
     }
 
@@ -148,10 +149,7 @@ void timerFunc(int value)
 
 int main(int argc, char **argv) {
 
-
-    player = new Player(3, 0.75,-0.75, 0.3, 0, 0, 1, 180.0);
-    enemy = new Enemy(1, -0.75, 0.75, 0.3, 1, 1, 1, 0);
-
+    game = new Game();
 
     glutInit(&argc, argv);
     glutInitDisplayMode(GLUT_DOUBLE | GLUT_RGB);

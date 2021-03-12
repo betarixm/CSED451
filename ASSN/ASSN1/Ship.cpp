@@ -138,7 +138,7 @@ Bullet* Ship::shot()
 
 }
 /**
- * @brief player 가 bullet에 맞았는지 체크 및 목숨/컬러 변
+ * @brief _player 가 bullet에 맞았는지 체크 및 목숨/컬러 변
  * @brief game mode에 따라 나눠짐.
  * @parmas bullet_list - Bullet*를 담고 있는 list의 주소
  */
@@ -150,7 +150,7 @@ void Player::checkHit(list<Bullet*>* bullet_list)
     Bullet* bullet;
 
     switch(mode) {
-        case 'c':   /* if "c mode" player don't die */
+        case 'c':   /* if "c mode" _player don't die */
             return;
         case 'f':
             damage = _numLife;
@@ -230,7 +230,7 @@ Bullet* Player::keyHandler(char key)
     return bullet;
 }
 
-/** 좌/우/멈춤 중 enemy 움직임 랜덤 선
+/** 좌/우/멈춤 중 _enemy 움직임 랜덤 선
  */
 void Enemy::randomMoveHandler()
 {
@@ -254,7 +254,7 @@ void Enemy::randomMoveHandler()
 
 }
 /**
- * @brief enemy 가 bullet에 맞았는지 체크 및 목숨/컬러 변
+ * @brief _enemy 가 bullet에 맞았는지 체크 및 목숨/컬러 변
  * @brief game mode에 따라 나눠짐.
  * @parmas bullet_list - Bullet*를 담고 있는 list의 주소
  */
