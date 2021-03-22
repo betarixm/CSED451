@@ -1,4 +1,5 @@
 #include "Shape.h"
+#define PI 3.141592
 
 /// @class Shape
 
@@ -173,4 +174,21 @@ void Square::display(float rotateDeg) {
     };
 
     this->_display(rotateDeg, squareMat, GL_QUADS);
+}
+
+void Circle::display() {
+    this->display(this->degree());
+}
+
+void Circle::display(float rotateDeg) {
+    std::vector<std::vector<float>> circleMat = {};
+
+    for(int i = 0; i < 360; i++){
+        std::vector<float> ele = {
+                this->length() * (float)cos((float)i * PI / 180),
+                this->length() * (float)sin((float)i * PI / 180)
+        };
+        circleMat.push_back(ele);
+    }
+    this->_display(rotateDeg, circleMat, GL_POLYGON);
 }

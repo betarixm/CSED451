@@ -72,4 +72,14 @@ public:
     void display(float rotateDeg);
 };
 
+class Circle : public Shape {
+public:
+    Circle(float x, float y, float length, GLclampf r, GLclampf g, GLclampf b) : Shape(x, y, length, r, g, b) {};
+
+    Circle(float x, float y, float length, const GLclampf colorfv[]) : Shape(x, y, length, colorfv) {};
+
+    void display();
+
+    void display(float rotateDeg);
+};
 #endif // CSED451_ASSN1_SHAPE_H
