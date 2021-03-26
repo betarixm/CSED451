@@ -23,6 +23,11 @@ public:
     Node* addChild(Node* target);
 
     Node* addSibling(Node* target);
+
+    virtual ~Node() {
+        delete this->_child;
+        delete this->_sibling;
+    }
 };
 
 class GroupNode: public Node {
