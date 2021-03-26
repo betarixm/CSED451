@@ -25,6 +25,13 @@ public:
     Node* addSibling(Node* target);
 };
 
+class GroupNode: public Node {
+private:
+    void _display() override {}
+public:
+    GroupNode() = default;
+};
+
 class RotationNode: public Node {
 private:
     float _degree = 0;
