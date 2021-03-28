@@ -67,6 +67,8 @@ public:
     void set(float x, float y, float z);
 
     void move(float dx, float dy, float dz);
+
+    std::vector<float> delta();
 };
 
 class VertexNode: public Node {
@@ -83,6 +85,8 @@ public:
     VertexNode(std::vector<std::vector<float>>* _vertices, GLenum _mode, Node* _child, Node* _sibling);
 
     void set(std::vector<std::vector<float>>* vertices);
+
+    std::vector<std::vector<float>>* vertices();
 };
 
 #endif //CSED451_NODE_H

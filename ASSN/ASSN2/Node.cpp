@@ -87,6 +87,10 @@ void TranslateNode::move(float dx, float dy, float dz) {
     this->_dz += dz;
 }
 
+std::vector<float> TranslateNode::delta() {
+    return std::vector<float>{_dx, _dy, _dz};
+}
+
 void VertexNode::_display() {
     if(this->_vertices == nullptr) {
         return;
@@ -109,4 +113,8 @@ VertexNode::VertexNode(std::vector<std::vector<float>> *_vertices, GLenum _mode,
 
 void VertexNode::set(std::vector<std::vector<float>> *vertices) {
     this->_vertices = vertices;
+}
+
+std::vector<std::vector<float>> *VertexNode::vertices() {
+    return _vertices;
 }
