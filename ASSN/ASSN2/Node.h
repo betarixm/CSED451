@@ -7,12 +7,13 @@
 class Node {
 private:
     Node* _child = nullptr, *_sibling = nullptr;
-    virtual void _display() = 0;
 protected:
 public:
     Node() = default;
 
-    Node(Node* _child, Node* _sibling);;
+    Node(Node* _child, Node* _sibling);
+
+    virtual void _display() = 0;
 
     void display();
 
@@ -32,20 +33,22 @@ public:
 
 class GroupNode: public Node {
 private:
-    void _display() override {}
 public:
     GroupNode() = default;
+
+    void _display() override {}
 };
 
 class RotationNode: public Node {
 private:
     float _degree = 0;
-    void _display() override;
 protected:
 public:
     RotationNode() = default;
     explicit RotationNode(float _degree);
     RotationNode(float _degree, Node* _child, Node* _sibling);
+
+    void _display() override;
 
     float degree() const;
 
@@ -57,12 +60,13 @@ public:
 class TranslateNode: public Node {
 private:
     float _dx = 0, _dy = 0, _dz = 0;
-    void _display() override;
 protected:
 public:
     TranslateNode() = default;
     TranslateNode(float _dx, float _dy, float _dz);
     TranslateNode(float _dx, float _dy, float _dz, Node* _child, Node* _sibling);
+
+    void _display() override;
 
     void set(float x, float y, float z);
 
@@ -76,13 +80,13 @@ private:
     std::vector<std::vector<float>>* _vertices = nullptr;
     GLenum _mode = GL_POLYGON;
 
-    void _display() override;
-
 protected:
 public:
     VertexNode() = default;
     explicit VertexNode(std::vector<std::vector<float>>* _vertices, GLenum _mode);
     VertexNode(std::vector<std::vector<float>>* _vertices, GLenum _mode, Node* _child, Node* _sibling);
+
+    void _display() override;
 
     void set(std::vector<std::vector<float>>* vertices);
 
