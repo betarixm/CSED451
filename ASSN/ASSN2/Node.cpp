@@ -11,11 +11,11 @@ void Node::display() {
         this->_child->display();
     }
 
-    glPopMatrix();
-
     if(this->_sibling != nullptr) {
         this->_sibling->display();
     }
+
+    glPopMatrix();
 }
 
 Node *Node::child() const {
