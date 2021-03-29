@@ -9,7 +9,7 @@ void Node::display() {
     glPushMatrix();
 
     this->_display();
-    cout << this->_child << endl;
+
     if(this->_child != nullptr) {
         this->_child->display();
     }
@@ -52,14 +52,11 @@ Node *Node::addSibling(Node *target) {
 
 void GroupNode::display()
 {
-    cout << "Group " << endl;
     glPushMatrix();
 
     if(this->_child != nullptr) {
         this->_child->display();
     }
-
-    glGetFloatv(GL_MODELVIEW_MATRIX, modelview);
 
     glPopMatrix();
 
@@ -82,8 +79,8 @@ void GroupNode::addToLast(Node *target)
     }
 }
 
+
 void RotationNode::_display() {
-    cout << "rotation" << endl;
     glRotatef(this->_degree, _x, _y, _z);
 }
 
@@ -109,7 +106,6 @@ float RotationNode::rotate(float delta) {
 }
 
 void TranslateNode::_display() {
-    cout << "translate" << endl;
     glTranslatef(this->_dx, this->_dy, this->_dz);
 }
 
@@ -134,16 +130,13 @@ std::vector<float> TranslateNode::delta() {
 }
 
 void VertexNode::_display() {
-    cout << "vertex" << endl;
     if(this->_vertices == nullptr) {
         return;
     }
 
-    cout << _vertices << endl;
-
     glPushMatrix();
     glColor3fv(this->color());
-    cout << "vertex problem X" << endl;
+
     glBegin(this->_mode);
     for(auto & _vertex : *this->_vertices) {
         if(_vertex.size() == 2){
@@ -155,6 +148,7 @@ void VertexNode::_display() {
     glEnd();
     glPopMatrix();
 
+    glGetFloatv(GL_MODELVIEW_MATRIX, modelview);
 }
 
 VertexNode::VertexNode(std::vector<std::vector<float>> *_vertices, GLenum _mode, GLclampf colorfv[])
@@ -180,4 +174,9 @@ std::vector<std::vector<float>> *VertexNode::vertices() {
 
 GLclampf *VertexNode::color() {
     return this->_colorfv;
+}
+
+float * VertexNode::modelView()
+{
+    return modelview;
 }

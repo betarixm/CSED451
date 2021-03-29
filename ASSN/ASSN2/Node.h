@@ -38,16 +38,13 @@ public:
 
 class GroupNode: public Node {
 private:
-    float modelview[16]; /* 4x4 model view matrix */
 
 public:
     GroupNode() = default;
 
     void _display() override {}
 
-    virtual void display();
-
-    float *modeView();
+    virtual void display() override;
 
     void addToLast(Node *target);
 
@@ -96,6 +93,7 @@ private:
     std::vector<std::vector<float>>* _vertices = nullptr;
     GLclampf _colorfv[3]{};
     GLenum _mode = GL_POLYGON;
+    float modelview[16]; /* 4x4 model view matrix */
 
 protected:
 public:
@@ -115,6 +113,8 @@ public:
         this->_colorfv[B] += db;
     }
     GLclampf *color();
+
+    float *modelView();
 };
 
 #endif //CSED451_NODE_H
