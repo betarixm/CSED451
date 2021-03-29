@@ -23,15 +23,21 @@ using namespace std;
 #define MAX_WINDOW 1.0
 
 typedef Square Bullet;
+typedef Square Item;
 
- list<Bullet*> Enemy_bullets, Player_bullets
+#define MAX_ROTATION 45
+
 
 class Ship {
 protected:
     int _numLife;
+    int _numBullet;
+    float _size_torso;
     GroupNode *_baseScene; /* Group Node */
     Triangle _head;
     Square _torso, _lwing, _rwing, _lcanon, _rcanon;
+
+    float _rotateDir;
 
 public:
     Ship(int _numLife, float x, float y, float size_torso, GLclampf r, GLclampf g, GLclampf b, float degree);
@@ -40,10 +46,11 @@ public:
 
     void display();
 
+
     bool hit(Bullet*);
 /* check whether ship hits bullet */
 
-    Bullet* shot();
+    list<Bullet*> shot();
 /* make bullet instance */
 
     float dotOverline(vector<float> dot, vector<float> A1, vector<float>A2);
@@ -53,19 +60,28 @@ public:
         return this->_numLife;
     }
 
+    void mutateColor(GLclampf r, GLclampf g, GLclampf b);
+
+    void wingMove();
+
 };
 
 class Player : public Ship {
 private:
     std::array<bool, 0xff> inputKey = {false, };
 public:
-    Player(int _numLife, float x, float y, float length, GLclampf r, GLclampf g, GLclampf b, float degree): Ship(_numLife, x, y, length, r, g, b, degree){};
-    void checkHit(list<Bullet*>*);
-    Bullet *keyHandler();
+    Player(int _numLife, float x, float y, float size_torso, GLclampf r, GLclampf g, GLclampf b, float degree)
+    : Ship(_numLife, x, y, size_torso, r, g, b, degree){};
 
-    Bullet* keyDown(unsigned char key){
+    void HitBullet(list<Bullet*>*);
+    void HitItem(list<Item*>*);
+
+
+    list<Bullet *>keyHandler();
+
+    list<Bullet *> keyDown(unsigned char key){
         if(!(0 <= key && key < 0xff)){
-            return nullptr;
+            return {nullptr};
         }
 
         this->inputKey[key] = true;

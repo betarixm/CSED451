@@ -11,6 +11,7 @@
 extern char mode;
 #define dist 0.05  /** ship 움직일때 거단위 */
 #define PIE 3.1415926
+#define MAX_BULLET 5
 
 Ship::Ship(int _numLife, float x, float y, float size_torso, GLclampf r, GLclampf g, GLclampf b, float degree)
 : _head(0, size_torso + sqrt(3)*size_torso/6 , size_torso, 180, r, g, b),
@@ -22,6 +23,9 @@ _rcanon(0, -size_torso*2, size_torso, 2*size_torso, 135, r, g, b)
 {
     this->_numLife = _numLife;
     this->_baseScene = new GroupNode;
+    this->_size_torso = size_torso;
+    this->_numBullet = 1;
+    this->_rotateDir = 1;
 
     this->_baseScene->addChild(this->_torso.groupNode());
     this->_torso.groupNode()->addToLast(this->_head.groupNode());
@@ -43,141 +47,136 @@ void Ship::display()
     this->_baseScene->display();
 }
 
-/**
- * 한 점 P가 두 점 AB 직선 내부에 있는지 확
- * @param dot 대상 점 P
- * @param A1  점 A
- * @param A2  점 B
- * @return 음수 or 양수값
- */
-/*
-float Ship::dotOverline(vector<float> dot, vector<float> A1, vector<float>A2)
-{
-    float x = dot[0];
-    float y = dot[1];
-    float x1 = A1[0];
-    float y1 = A1[1];
-    float x2 = A2[0];
-    float y2 = A2[1];
-
-    float result;
-
-    result = (x-x1)*(y1-y2)  - (y-y1)*(x1-x2);
-    return result;
-}
-
-*/
-/**
- * x,y 내분점을 기준으로 나머지 3개의 vertex 좌표 계
- * @return 3점의 x,y 좌표 vector Matrix
- *//*
-
-vector<vector<float>> Ship::getPosition()
-{
-    float x = glObject.x(), y = glObject.y(), length = glObject.length();
-    float degree = glObject.degree() * PIE / 180;
-    */
-/**
-     * rotate the point (a, b) -> (a', b') 기준 - (x, y)점
-     * d := 회전각 theta
-     * a' = x+ (a-x)cos(d) - (b-y)sin(d)
-     * b' = y+ (a-x)sin(d) + (b-y)cos(d)
-     *//*
-
-    vector<vector<float>> pos = {
-            {              0,     -1*length /      SQRT_3},
-            {     length / 2,     length / (2 * SQRT_3)},
-            {-1 * length / 2,     length / (2 * SQRT_3)}
-    };
-
-    vector<vector<float>> rotate = {
-            {cos(degree), -1*sin(degree)},
-            {sin(degree), cos(degree)}
-    };
-
-    vector<vector<float>> result = {{x,y}, {x,y}, {x,y}};
-
-    for(int i=0; i<3; i++)
-    {
-        for(int j=0; j<2; j++)
-        {
-            float sum = 0.0;
-            for(int k=0; k<2; k++)
-            {
-                sum += pos[i][k]*rotate[k][j];
-            }
-            result[i][j] += sum;
-        }
-    }
-    return result;
-}
 
 
-*/
-/* check whether ship hits bullet
- * if hit, return True else return False
- * check the vertex of bullet over the surface of ship *//*
 
-*/
+
 /**
  * @brief bullet 과 Ship이 충돌했는지 체크
- * @brief bullet의 네 점중 하나라도 삼각형 내부에 존재하는지 여부로 체크.
+ * @brief bullet의 네 점중 하나라도 detection box 내부에 존재하는지 여부로 체크.
  * @param bullet
  * @return 충돌여부 (true/false)
- *//*
+ */
 
 bool Ship::hit(Bullet* bullet)
 {
-    float x_b = bullet->x(), y_b = bullet->y(), unit = (bullet->length())/2;
-    bool result = false;
+    float x = _torso.x();
+    float y = _torso.y();
+    float len = _size_torso;
+    bool isHit = false;
 
-    vector<vector<float>> bullet_pos = {
-            {x_b - unit, y_b + unit},
-            {x_b + unit, y_b + unit},
-            {x_b + unit, y_b - unit},
-            {x_b - unit, y_b - unit}
+    vector<vector<float>> detection_box = {
+            {x + 2.5f*len, y + len},
+            {x + 2.5f*len, y + len},
+            {x + 2.5f*len, y - len},
+            {x - 2.5f*len, y - len}
     };
 
-    vector<vector<float>> pos = getPosition();
+    vector<vector<float>> bullet_pos = bullet->getPosition();
 
-    for(int i=0; i<4; i++)
+    for (int i=0; i < 4; i++)
     {
-        if(dotOverline(pos[0], pos[1], pos[2]) * dotOverline(bullet_pos[i], pos[1], pos[2]) < 0)
+        float x_b = bullet_pos[i][0];
+        float y_b = bullet_pos[i][1];
+
+        if (detection_box[0][0] > x_b || detection_box[0][1] < y_b)
             continue;
-        if(dotOverline(pos[1], pos[0], pos[2]) * dotOverline(bullet_pos[i], pos[0], pos[2]) < 0)
+        if (detection_box[1][0] < x_b || detection_box[1][1] < y_b)
             continue;
-        if(dotOverline(pos[2], pos[0], pos[1]) * dotOverline(bullet_pos[i], pos[0], pos[1]) < 0)
+        if (detection_box[2][0] < x_b || detection_box[2][1] > y_b)
             continue;
-        result = true;
+        if (detection_box[3][0] > x_b || detection_box[3][1] > y_b)
+            continue;
+
+        isHit = true;
         break;
     }
+    return isHit;
+}
+
+
+/**
+ * @brief 총알이 발사될 때 bullet 인스턴스 생성
+ * @return Bullet*
+ */
+
+list<Bullet*> Ship::shot()
+{
+    GLclampf *color = _torso.color();
+    vector<vector<float>> pos = _head.getPosition();
+    float x = pos[0][0]/pos[0][3];
+    float y = pos[0][1]/pos[0][3];
+    int numBullet = _numBullet;
+    float degree;
+
+    list<Bullet*> result;
+
+    if (numBullet % 2 != 0)
+    {
+        Bullet* b = new Bullet(x, y, 0.02, 0.02, 0, color);
+        numBullet -= 1;
+        result.push_back(b);
+    }
+    if (numBullet == 0)
+        return result;
+
+    degree = 180.0/(numBullet/2 + 1);
+
+    for (int i = 0; i < numBullet/2; i++){
+        Bullet* b = new Bullet(x, y, 0.02, 0.02, 0, color);
+        RotationNode *r = new RotationNode(degree*i);
+        r->addSibling(b->groupNode()->child());
+        b->groupNode()->addChild(r);
+        /** Rotate model frame coordinate to direction of bullet */
+        Bullet* b2 = new Bullet(x, y, 0.02, 0.02, 0, color);
+        RotationNode *r2 = new RotationNode(-degree*i);
+        r2->addSibling(b2->groupNode()->child());
+        b2->groupNode()->addChild(r2);
+
+        result.push_back(b);
+        result.push_back(b2);
+    }
+
     return result;
 
 }
 
-*/
-/**
- * @brief 총알이 발사될 때 bullet 인스턴스 생성
- * @return Bullet*
- *//*
-
-Bullet* Ship::shot()
+void Ship::mutateColor(GLclampf r, GLclampf g, GLclampf b)
 {
-    GLclampf* color = glObject.color();
-    float y = getPosition()[0][1];
-    Bullet* bullet = new Bullet(glObject.x(), y, 0.01, 1, 1, 1);
+    _head.mutateColor(r, g, b);
+    _torso.mutateColor(r, g, b);
+    _lwing.mutateColor(r, g, b);
+    _lcanon.mutateColor(r, g, b);
+    _rwing.mutateColor(r, g, b);
+    _rcanon.mutateColor(r, g, b);
+}
 
-    return bullet;
+void Ship::wingMove()
+{
+    if (_rwing.degree() - 45 + 1 > MAX_ROTATION)
+    {
+        _rotateDir = -1.0;
+    }
+    if (_rcanon.degree() - 45 - 1 < 0)
+    {
+        _rotateDir = +1.0;
+    }
+
+    _rwing.rotate(_rotateDir);
+    _rcanon.rotate(_rotateDir);
+    _lwing.rotate(-_rotateDir);
+    _lcanon.rotate(-_rotateDir);
+
 
 }
-*/
+
 /**
  * @brief _player 가 bullet에 맞았는지 체크 및 목숨/컬러 변
  * @brief game mode에 따라 나눠짐.
  * @parmas bullet_list - Bullet*를 담고 있는 list의 주소
- *//*
+ */
 
-void Player::checkHit(list<Bullet*>* bullet_list)
+void Player::HitBullet(list<Bullet*>* bullet_list)
 {
     list<Bullet*>::iterator itr;
     bool isHit;
@@ -185,9 +184,8 @@ void Player::checkHit(list<Bullet*>* bullet_list)
     Bullet* bullet;
 
     switch(mode) {
-        case 'c':   */
-/* if "c mode" _player don't die *//*
-
+        case 'c':
+/* if "c mode" _player don't die */
             return;
         case 'f':
             damage = _numLife;
@@ -198,7 +196,7 @@ void Player::checkHit(list<Bullet*>* bullet_list)
                 isHit = hit(*itr);
                 if (isHit) {
                     _numLife -= damage;
-                    glObject.mutateColor(0, 0, -0.1 * damage);
+                    mutateColor(0, 0, -0.1 * damage);
                     bullet = *itr;
                     bullet_list->erase(itr++);
                     delete (bullet);
@@ -206,8 +204,8 @@ void Player::checkHit(list<Bullet*>* bullet_list)
                 else
                     ++itr;
 
-                */
-/* 여러대 맞아도 목숨 다 깎이면 게임 종료 *//*
+
+/* 여러대 맞아도 목숨 다 깎이면 게임 종료 */
 
                 if (_numLife == 0)
                     return;
@@ -215,22 +213,72 @@ void Player::checkHit(list<Bullet*>* bullet_list)
     }
 }
 
-*/
+void Player::HitItem(list<Item*>* items)
+{
+    bool isHit;
+    list<Item*>::iterator itr;
+    Item * item;
+
+    random_device rd;
+    mt19937 gen(rd());
+    uniform_int_distribution<int> dis(0, 10);
+
+    int item_type;
+
+    itr = items->begin();
+    while(itr != items->end()) {
+        isHit = hit(*itr);
+        if (isHit) {
+            item_type = dist * dis(gen);
+
+            /** Bomb : Game Over  10% */
+            if (item_type == 0)
+                _numLife = 0;
+                /** addition Bullet  60% */
+            else if (item_type >= 1 && item_type < 7) {
+                if (_numBullet < MAX_BULLET )
+                    _numBullet += 1;
+            }
+                /** delete one Bullet 40% */
+            else if (item_type >= 7 && item_type <= 10) {
+                if (_numBullet > 1)
+                    _numBullet -= 1;
+            }
+
+            item = *itr;
+            items->erase(itr++);
+            delete (item);
+        }
+        else
+            ++itr;
+    }
+
+}
+
 /**
  * @brief 키보드 입력 되었을 때 handler
  * @parmas char(key) 눌린 키 종류 (space_bar, direction)
- *//*
+ */
 
-Bullet * Player::keyHandler()
+list<Bullet *> Player::keyHandler()
 {
-    Bullet* bullet = nullptr;
+    list<Bullet*> bullets;
     float dx = 0, dy = 0;
 
-    vector<vector<float>> pos = getPosition();
+    float x, y;
+    x = this->_torso.x();
+    y = this->_torso.y();
+
+    std::vector<std::vector<float>> pos = {
+            {x, y+2*_size_torso},
+            {x, y-2*_size_torso},
+            {x-4*_size_torso, y},
+            {x+4*_size_torso, y}
+    };
 
     if(this->inputKey['S']){
         if (mode != 'f')
-            bullet = shot();
+            bullets = shot();
     }
 
     if(this->inputKey['U']){
@@ -249,26 +297,26 @@ Bullet * Player::keyHandler()
         dx = dist;
     }
 
-    */
-/** window 밖으로 넘어가는지 체크 *//*
 
-    for(int i=0; i < 3; i++)
+/** window 밖으로 넘어가는지 체크 */
+
+    for(int i=0; i < 4; i++)
     {
         float x = pos[i][0], y = pos[i][1];
+        cout <<"i : " << i << " x : " << x << " y :  " << y << endl;
 
-        if(x+dx > 1.0 || x+dx < -1.0 || y+dy > 1.0 || y+dy < -1.0)
-        {
-            return nullptr;
-        }
+        if ((dx != 0) && ((x+dx > 1.0) || (x+dx < -1.0)))
+            return {};
+        if ((dy != 0) && ((y+dy > 1.0) || (y+dy < -1.0)))
+            return {};
     }
-
-    glObject.move(dx, dy);
-    return bullet;
+    _torso.move(dx, dy); /** move base object */
+    return bullets;
 }
 
-*/
+
 /** 좌/우/멈춤 중 _enemy 움직임 랜덤 선
- *//*
+ */
 
 void Enemy::randomMoveHandler()
 {
@@ -278,7 +326,18 @@ void Enemy::randomMoveHandler()
     uniform_int_distribution<int> dis(-1, 1);
     dx = dist*dis(gen);
 
-    vector<vector<float>> pos = getPosition();
+    float x, y;
+    /** it rotated 180 */
+    x = -1 * this->_torso.x();
+    y = -1 * this->_torso.y();
+
+    std::vector<std::vector<float>> pos = {
+            {x, y+2*_size_torso},
+            {x, y-_size_torso},
+            {x-4*_size_torso, y},
+            {x+4*_size_torso, y}
+    };
+
     for(int i=0; i < 3; i++)
     {
         float x = pos[i][0];
@@ -288,15 +347,15 @@ void Enemy::randomMoveHandler()
         }
     }
 
-    glObject.move(dx, 0);
+    _torso.move(dx, 0);
 
 }
-*/
+
 /**
  * @brief _enemy 가 bullet에 맞았는지 체크 및 목숨/컬러 변
  * @brief game mode에 따라 나눠짐.
  * @parmas bullet_list - Bullet*를 담고 있는 list의 주소
- *//*
+ */
 
 void Enemy::checkHit(list<Bullet*>* bullet_list)
 {
@@ -306,8 +365,8 @@ void Enemy::checkHit(list<Bullet*>* bullet_list)
     Bullet* bullet;
 
     switch(mode) {
-        case 'c': */
-/** c mode일 때 적은 1대만 맞아도 죽음 *//*
+        case 'c':
+/** c mode일 때 적은 1대만 맞아도 죽음 */
 
             damage = _numLife;
         default:
@@ -324,12 +383,12 @@ void Enemy::checkHit(list<Bullet*>* bullet_list)
                 else
                     ++itr;;
 
-                */
-/** 여러대 맞아도 목숨 다 깎이면 게임 종료 *//*
+
+/** 여러대 맞아도 목숨 다 깎이면 게임 종료 */
 
                 if (_numLife == 0)
                     return;
             }
     }
 }
-*/
+
