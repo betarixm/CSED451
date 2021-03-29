@@ -1,4 +1,6 @@
 #include "Node.h"
+#include <iostream>
+using namespace std;
 
 Node::Node() : _child(nullptr), _sibling(nullptr){}
 Node::Node(Node *_child, Node *_sibling) : _child(_child), _sibling(_sibling) {}
@@ -7,7 +9,7 @@ void Node::display() {
     glPushMatrix();
 
     this->_display();
-
+    cout << this->_child << endl;
     if(this->_child != nullptr) {
         this->_child->display();
     }
@@ -37,23 +39,27 @@ Node *Node::addChild(Node *target) {
 }
 
 Node *Node::addSibling(Node *target) {
+    if (target == nullptr)
+        return target;
+
     Node* prevSibling = this->_sibling;
+
     this->_sibling = target;
-    if(!target)
-        target->addSibling(prevSibling);
+    target->addSibling(prevSibling);
 
     return prevSibling;
 }
 
 void GroupNode::display()
 {
+    cout << "Group " << endl;
     glPushMatrix();
 
     if(this->_child != nullptr) {
         this->_child->display();
     }
 
-    glGetfloatv(GL_MODELVIEW_MATRIX, modelview);
+    glGetFloatv(GL_MODELVIEW_MATRIX, modelview);
 
     glPopMatrix();
 
@@ -62,11 +68,27 @@ void GroupNode::display()
     }
 }
 
-void RotationNode::_display() {
-    glRotatef(this->_degree, 0.0f, 0.0f, 1.0f);
+void GroupNode::addToLast(Node *target)
+{
+    Node *cur = this->_child;
+    if (!cur)
+    {
+        this->_child = target;
+    }
+    else
+    {
+    for(; cur->sibling() != nullptr; cur=cur->sibling());
+    cur->addChild(target);
+    }
 }
 
-RotationNode::RotationNode(float _degree) : _degree(_degree) {}
+void RotationNode::_display() {
+    cout << "rotation" << endl;
+    glRotatef(this->_degree, _x, _y, _z);
+}
+
+RotationNode::RotationNode(float _degree) : _x(0), _y(0), _z(1.0), _degree(_degree) {}
+RotationNode::RotationNode(float _degree, float _x, float _y, float _z) : _x(_x), _y(_y), _z(_z), _degree(_degree) {}
 
 RotationNode::RotationNode(float _degree, Node *_child, Node *_sibling) : _degree(_degree), Node(_child, _sibling) {}
 
@@ -87,6 +109,7 @@ float RotationNode::rotate(float delta) {
 }
 
 void TranslateNode::_display() {
+    cout << "translate" << endl;
     glTranslatef(this->_dx, this->_dy, this->_dz);
 }
 
@@ -111,13 +134,16 @@ std::vector<float> TranslateNode::delta() {
 }
 
 void VertexNode::_display() {
+    cout << "vertex" << endl;
     if(this->_vertices == nullptr) {
         return;
     }
 
+    cout << _vertices << endl;
+
     glPushMatrix();
     glColor3fv(this->color());
-
+    cout << "vertex problem X" << endl;
     glBegin(this->_mode);
     for(auto & _vertex : *this->_vertices) {
         if(_vertex.size() == 2){
@@ -128,6 +154,7 @@ void VertexNode::_display() {
     }
     glEnd();
     glPopMatrix();
+
 }
 
 VertexNode::VertexNode(std::vector<std::vector<float>> *_vertices, GLenum _mode, GLclampf colorfv[])
@@ -137,7 +164,7 @@ VertexNode::VertexNode(std::vector<std::vector<float>> *_vertices, GLenum _mode,
             }
 
 VertexNode::VertexNode(std::vector<std::vector<float>> *_vertices, GLenum _mode, GLclampf colorfv[], Node *_child, Node *_sibling)
-            : _vertices(_vertices), _mode(_mode), _colorfv(colorfv), Node(_child, _sibling)
+            : _vertices(_vertices), _mode(_mode), Node(_child, _sibling)
             {
                 std::memcpy(this->_colorfv, colorfv, NUM_COLOR * sizeof(GLclampf));
             }

@@ -20,7 +20,7 @@ public:
 
     virtual void _display() = 0;
 
-    void display();
+    virtual void display();
 
     Node* child() const;
 
@@ -45,19 +45,23 @@ public:
 
     void _display() override {}
 
-    void display();
+    virtual void display();
 
     float *modeView();
+
+    void addToLast(Node *target);
 
 };
 
 class RotationNode: public Node {
 private:
     float _degree = 0;
+    float _x, _y, _z;
 protected:
 public:
     RotationNode() = default;
     explicit RotationNode(float _degree);
+    RotationNode(float _degree, float _x, float _y, float _z);
     RotationNode(float _degree, Node* _child, Node* _sibling);
 
     void _display() override;
