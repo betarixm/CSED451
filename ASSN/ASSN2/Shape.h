@@ -58,6 +58,8 @@ public:
     void pivot_rotate(float dx, float dy, float dz);
 
     GroupNode* groupNode();
+
+    std::vector<std::vector<float>> getPosition();
 };
 
 class Triangle : public Shape {

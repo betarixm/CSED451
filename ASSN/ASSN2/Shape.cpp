@@ -148,6 +148,48 @@ void Shape::pivot_rotate(float dx, float dy, float dz)
     this->_rotation->addSibling(T_1);
 }
 
+std::vector<std::vector<float>> Shape::getPosition()
+{
+    std::vector<std::vector<float>> model_frame = *_vertex->vertices();
+    float *modelView = _vertex->modelView();
+    std::vector<std::vector<float>> view;
+    int num_pos = model_frame.size();
+
+    std::vector<std::vector<float>> result(num_pos, std::vector<float>(4, 0));
+
+
+    for (int i=0; i<4; i++)
+    {
+        std::vector<float> temp;
+        for (int j = 0; j <4; j++)
+            temp.push_back(modelView[i+4*j]);
+        view.push_back(temp);
+    }
+
+    for (int i=0; i<num_pos; i++)
+    {
+        /** change to Homogeneous coordinate */
+        model_frame[i].push_back(0); //z
+        model_frame[i].push_back(1); //w
+    }
+
+
+    for(int i=0; i<4; i++)
+    {
+        for(int j=0; j<num_pos; j++)
+        {
+            float sum = 0.0;
+            for(int k=0; k<4; k++)
+            {
+                sum += view[i][k]*model_frame[j][k];
+            }
+            result[j][i] += sum;
+        }
+    }
+
+    return result;
+}
+
 
 
 /// @class Triangle @extends Shape
