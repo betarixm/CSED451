@@ -1,5 +1,6 @@
 #include "Node.h"
 
+Node::Node() : _child(nullptr), _sibling(nullptr){}
 Node::Node(Node *_child, Node *_sibling) : _child(_child), _sibling(_sibling) {}
 
 void Node::display() {
@@ -27,20 +28,38 @@ Node *Node::sibling() const {
 }
 
 Node *Node::addChild(Node *target) {
-    Node* curSibling = this->_sibling;
-    for(; curSibling != nullptr; curSibling = curSibling->_sibling) {
-        if(curSibling->_sibling == nullptr){
-            curSibling->_sibling = target;
-            break;
-        }
-    }
-    return curSibling;
+    Node *curChild = this->_child;
+    this->_child = target;
+    if (!target)
+        target->addChild(curChild);
+
+    return curChild;
 }
 
 Node *Node::addSibling(Node *target) {
     Node* prevSibling = this->_sibling;
     this->_sibling = target;
+    if(!target)
+        target->addSibling(prevSibling);
+
     return prevSibling;
+}
+
+void GroupNode::display()
+{
+    glPushMatrix();
+
+    if(this->_child != nullptr) {
+        this->_child->display();
+    }
+
+    glGetfloatv(GL_MODELVIEW_MATRIX, modelview);
+
+    glPopMatrix();
+
+    if(this->_sibling != nullptr) {
+        this->_sibling->display();
+    }
 }
 
 void RotationNode::_display() {
@@ -96,6 +115,9 @@ void VertexNode::_display() {
         return;
     }
 
+    glPushMatrix();
+    glColor3fv(this->color());
+
     glBegin(this->_mode);
     for(auto & _vertex : *this->_vertices) {
         if(_vertex.size() == 2){
@@ -105,11 +127,21 @@ void VertexNode::_display() {
         }
     }
     glEnd();
+    glPopMatrix();
 }
 
-VertexNode::VertexNode(std::vector<std::vector<float>> *_vertices, GLenum _mode) : _vertices(_vertices), _mode(_mode) {}
+VertexNode::VertexNode(std::vector<std::vector<float>> *_vertices, GLenum _mode, GLclampf colorfv[])
+            : _vertices(_vertices), _mode(_mode)
+            {
+                std::memcpy(this->_colorfv, colorfv, NUM_COLOR * sizeof(GLclampf));
+            }
 
-VertexNode::VertexNode(std::vector<std::vector<float>> *_vertices, GLenum _mode, Node *_child, Node *_sibling) : _vertices(_vertices), _mode(_mode), Node(_child, _sibling) {}
+VertexNode::VertexNode(std::vector<std::vector<float>> *_vertices, GLenum _mode, GLclampf colorfv[], Node *_child, Node *_sibling)
+            : _vertices(_vertices), _mode(_mode), _colorfv(colorfv), Node(_child, _sibling)
+            {
+                std::memcpy(this->_colorfv, colorfv, NUM_COLOR * sizeof(GLclampf));
+            }
+
 
 void VertexNode::set(std::vector<std::vector<float>> *vertices) {
     this->_vertices = vertices;
@@ -117,4 +149,8 @@ void VertexNode::set(std::vector<std::vector<float>> *vertices) {
 
 std::vector<std::vector<float>> *VertexNode::vertices() {
     return _vertices;
+}
+
+GLclampf *VertexNode::color() {
+    return this->_colorfv;
 }

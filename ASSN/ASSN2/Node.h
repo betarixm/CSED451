@@ -3,13 +3,18 @@
 
 #include <GL/glew.h>
 #include <vector>
+#define NUM_COLOR 3
+
+#define R 0
+#define G 1
+#define B 2
 
 class Node {
 private:
-    Node* _child = nullptr, *_sibling = nullptr;
 protected:
+    Node* _child = nullptr, *_sibling = nullptr;
 public:
-    Node() = default;
+    Node();
 
     Node(Node* _child, Node* _sibling);
 
@@ -33,10 +38,17 @@ public:
 
 class GroupNode: public Node {
 private:
+    float modelview[16]; /* 4x4 model view matrix */
+
 public:
     GroupNode() = default;
 
     void _display() override {}
+
+    void display();
+
+    float *modeView();
+
 };
 
 class RotationNode: public Node {
@@ -78,19 +90,27 @@ public:
 class VertexNode: public Node {
 private:
     std::vector<std::vector<float>>* _vertices = nullptr;
+    GLclampf _colorfv[3]{};
     GLenum _mode = GL_POLYGON;
 
 protected:
 public:
     VertexNode() = default;
-    explicit VertexNode(std::vector<std::vector<float>>* _vertices, GLenum _mode);
-    VertexNode(std::vector<std::vector<float>>* _vertices, GLenum _mode, Node* _child, Node* _sibling);
+    explicit VertexNode(std::vector<std::vector<float>>* _vertices, GLenum _mode, GLclampf colorfv[]);
+    VertexNode(std::vector<std::vector<float>>* _vertices, GLenum _mode, GLclampf colorfv[], Node* _child, Node* _sibling);
 
     void _display() override;
 
     void set(std::vector<std::vector<float>>* vertices);
 
     std::vector<std::vector<float>>* vertices();
+
+    void mutateColor(GLclampf dr, GLclampf dg, GLclampf db) {
+        this->_colorfv[R] += dr;
+        this->_colorfv[G] += dg;
+        this->_colorfv[B] += db;
+    }
+    GLclampf *color();
 };
 
 #endif //CSED451_NODE_H
