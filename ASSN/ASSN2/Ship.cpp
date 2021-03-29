@@ -12,15 +12,37 @@ extern char mode;
 #define dist 0.05  /** ship 움직일때 거단위 */
 #define PIE 3.1415926
 
-void Ship::display()
+Ship::Ship(int _numLife, float x, float y, float size_torso, GLclampf r, GLclampf g, GLclampf b, float degree)
+: _head(0, size_torso + sqrt(3)*size_torso/6 , size_torso, 180, r, g, b),
+_torso(x, y, size_torso, 2*size_torso, degree, r, g, b),
+_lwing(0, -size_torso, size_torso, 2*size_torso, -45, r, g, b),
+_rwing(0, -size_torso, size_torso, 2*size_torso, 45, r, g, b),
+_lcanon(0, -size_torso*2, size_torso, 2*size_torso, -135, r, g, b),
+_rcanon(0, -size_torso*2, size_torso, 2*size_torso, 135, r, g, b)
 {
-    glObject.display();
+    this->_numLife = _numLife;
+    this->_baseScene = new GroupNode;
+
+    this->_baseScene->addChild(this->_torso.groupNode());
+    this->_torso.groupNode()->addToLast(this->_head.groupNode());
+    this->_head.groupNode()->addSibling(this->_lwing.groupNode());
+    this->_lwing.groupNode()->addToLast(this->_lcanon.groupNode());
+    this->_lwing.groupNode()->addSibling(this->_rwing.groupNode());
+    this->_rwing.groupNode()->addToLast(this->_rcanon.groupNode());
+
+    /** TRT-1 */
+    this->_lwing.pivot_rotate(0.0, size_torso, 0.0);
+    this->_lcanon.pivot_rotate(0.0, size_torso, 0.0);
+    this->_rwing.pivot_rotate(0.0, size_torso, 0.0);
+    this->_rcanon.pivot_rotate(0.0, size_torso, 0.0);
+
 }
 
-void Ship::display(float rotateDeg)
+void Ship::display()
 {
-    glObject.display(rotateDeg);
+    this->_baseScene->display();
 }
+
 /**
  * 한 점 P가 두 점 AB 직선 내부에 있는지 확
  * @param dot 대상 점 P
@@ -28,6 +50,7 @@ void Ship::display(float rotateDeg)
  * @param A2  점 B
  * @return 음수 or 양수값
  */
+/*
 float Ship::dotOverline(vector<float> dot, vector<float> A1, vector<float>A2)
 {
     float x = dot[0];
@@ -43,20 +66,24 @@ float Ship::dotOverline(vector<float> dot, vector<float> A1, vector<float>A2)
     return result;
 }
 
+*/
 /**
  * x,y 내분점을 기준으로 나머지 3개의 vertex 좌표 계
  * @return 3점의 x,y 좌표 vector Matrix
- */
+ *//*
+
 vector<vector<float>> Ship::getPosition()
 {
     float x = glObject.x(), y = glObject.y(), length = glObject.length();
     float degree = glObject.degree() * PIE / 180;
-    /**
+    */
+/**
      * rotate the point (a, b) -> (a', b') 기준 - (x, y)점
      * d := 회전각 theta
      * a' = x+ (a-x)cos(d) - (b-y)sin(d)
      * b' = y+ (a-x)sin(d) + (b-y)cos(d)
-     */
+     *//*
+
     vector<vector<float>> pos = {
             {              0,     -1*length /      SQRT_3},
             {     length / 2,     length / (2 * SQRT_3)},
@@ -86,15 +113,19 @@ vector<vector<float>> Ship::getPosition()
 }
 
 
+*/
 /* check whether ship hits bullet
  * if hit, return True else return False
- * check the vertex of bullet over the surface of ship */
+ * check the vertex of bullet over the surface of ship *//*
+
+*/
 /**
  * @brief bullet 과 Ship이 충돌했는지 체크
  * @brief bullet의 네 점중 하나라도 삼각형 내부에 존재하는지 여부로 체크.
  * @param bullet
  * @return 충돌여부 (true/false)
- */
+ *//*
+
 bool Ship::hit(Bullet* bullet)
 {
     float x_b = bullet->x(), y_b = bullet->y(), unit = (bullet->length())/2;
@@ -124,10 +155,12 @@ bool Ship::hit(Bullet* bullet)
 
 }
 
+*/
 /**
  * @brief 총알이 발사될 때 bullet 인스턴스 생성
  * @return Bullet*
- */
+ *//*
+
 Bullet* Ship::shot()
 {
     GLclampf* color = glObject.color();
@@ -137,11 +170,13 @@ Bullet* Ship::shot()
     return bullet;
 
 }
+*/
 /**
  * @brief _player 가 bullet에 맞았는지 체크 및 목숨/컬러 변
  * @brief game mode에 따라 나눠짐.
  * @parmas bullet_list - Bullet*를 담고 있는 list의 주소
- */
+ *//*
+
 void Player::checkHit(list<Bullet*>* bullet_list)
 {
     list<Bullet*>::iterator itr;
@@ -150,7 +185,9 @@ void Player::checkHit(list<Bullet*>* bullet_list)
     Bullet* bullet;
 
     switch(mode) {
-        case 'c':   /* if "c mode" _player don't die */
+        case 'c':   */
+/* if "c mode" _player don't die *//*
+
             return;
         case 'f':
             damage = _numLife;
@@ -169,17 +206,21 @@ void Player::checkHit(list<Bullet*>* bullet_list)
                 else
                     ++itr;
 
-                /* 여러대 맞아도 목숨 다 깎이면 게임 종료 */
+                */
+/* 여러대 맞아도 목숨 다 깎이면 게임 종료 *//*
+
                 if (_numLife == 0)
                     return;
             }
     }
 }
 
+*/
 /**
  * @brief 키보드 입력 되었을 때 handler
  * @parmas char(key) 눌린 키 종류 (space_bar, direction)
- */
+ *//*
+
 Bullet * Player::keyHandler()
 {
     Bullet* bullet = nullptr;
@@ -208,7 +249,9 @@ Bullet * Player::keyHandler()
         dx = dist;
     }
 
-    /** window 밖으로 넘어가는지 체크 */
+    */
+/** window 밖으로 넘어가는지 체크 *//*
+
     for(int i=0; i < 3; i++)
     {
         float x = pos[i][0], y = pos[i][1];
@@ -223,8 +266,10 @@ Bullet * Player::keyHandler()
     return bullet;
 }
 
+*/
 /** 좌/우/멈춤 중 _enemy 움직임 랜덤 선
- */
+ *//*
+
 void Enemy::randomMoveHandler()
 {
     float dx =0;
@@ -246,11 +291,13 @@ void Enemy::randomMoveHandler()
     glObject.move(dx, 0);
 
 }
+*/
 /**
  * @brief _enemy 가 bullet에 맞았는지 체크 및 목숨/컬러 변
  * @brief game mode에 따라 나눠짐.
  * @parmas bullet_list - Bullet*를 담고 있는 list의 주소
- */
+ *//*
+
 void Enemy::checkHit(list<Bullet*>* bullet_list)
 {
     list<Bullet*>::iterator itr;
@@ -259,7 +306,9 @@ void Enemy::checkHit(list<Bullet*>* bullet_list)
     Bullet* bullet;
 
     switch(mode) {
-        case 'c': /** c mode일 때 적은 1대만 맞아도 죽음 */
+        case 'c': */
+/** c mode일 때 적은 1대만 맞아도 죽음 *//*
+
             damage = _numLife;
         default:
             itr = bullet_list->begin();
@@ -275,9 +324,12 @@ void Enemy::checkHit(list<Bullet*>* bullet_list)
                 else
                     ++itr;;
 
-                /** 여러대 맞아도 목숨 다 깎이면 게임 종료 */
+                */
+/** 여러대 맞아도 목숨 다 깎이면 게임 종료 *//*
+
                 if (_numLife == 0)
                     return;
             }
     }
 }
+*/

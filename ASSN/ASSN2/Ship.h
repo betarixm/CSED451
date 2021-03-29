@@ -24,26 +24,30 @@ using namespace std;
 
 typedef Square Bullet;
 
-/* list<Bullet*> Enemy_bullets, Player_bullets */
+ list<Bullet*> Enemy_bullets, Player_bullets
 
 class Ship {
 protected:
     int _numLife;
-    Triangle glObject;
+    GroupNode *_baseScene; /* Group Node */
+    Triangle _head;
+    Square _torso, _lwing, _rwing, _lcanon, _rcanon;
 
 public:
-    Ship(int _numLife, float x, float y, float length, GLclampf r, GLclampf g, GLclampf b, float degree): glObject(x, y, length, r, g, b)
-    {
-        this->_numLife = _numLife;
-        this->glObject.setDegree(degree);
-    }
-    ~Ship(){};
-    bool hit(Bullet*); /* check whether ship hits bullet */
-    Bullet* shot(); /* make bullet instance */
+    Ship(int _numLife, float x, float y, float size_torso, GLclampf r, GLclampf g, GLclampf b, float degree);
+
+    ~Ship() {};
+
+    void display();
+
+    bool hit(Bullet*);
+/* check whether ship hits bullet */
+
+    Bullet* shot();
+/* make bullet instance */
+
     float dotOverline(vector<float> dot, vector<float> A1, vector<float>A2);
     vector<vector<float>> getPosition();
-    void display();
-    void display(float rotateDeg);
 
     int numLife() const{
         return this->_numLife;
@@ -85,6 +89,7 @@ public:
     void checkHit(list<Bullet*>*);
 
 };
+
 
 
 
