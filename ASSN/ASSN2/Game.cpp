@@ -15,7 +15,7 @@ Game::~Game() {
 void Game::spawnPlayer() {
     if(isPlayerDead && this->numPlayer--){
         delete this->_player;
-        this->_player = new Player(this->numLifePlayer, 0.75, -0.75, 0.3, 0, 0, 1, PLAYER_DEGREE);
+        this->_player = new Player(this->numLifePlayer, 0.60, -0.75, 0.1, 0, 0, 1, PLAYER_DEGREE);
         this->isPlayerDead = false;
     }
 }
@@ -28,17 +28,23 @@ void Game::spawnEnemy() {
         mt19937 gen(rd());
         uniform_real_distribution<> dis(0, 0.75);
 
-        this->_enemy = new Enemy(this->numLifeEnemy, 0, 0.75, 0.3, dis(gen), dis(gen), 1, ENEMY_DEGREE);
+        this->_enemy = new Enemy(this->numLifeEnemy, 0, 0.75, 0.1, dis(gen), dis(gen), 1, ENEMY_DEGREE);
         this->numLifeEnemy++;
         this->isEnemyDead = false;
     }
 }
 
-void Game::tick() {
+Item * Game::tick() {
+    Item *item = nullptr;
+    srand(time(NULL));
+
     if(_enemy->numLife() == 0){
         this->isEnemyDead = true;
         if(this->numEnemy){
             this->spawnEnemy();
+
+            item = new Square(rand()/(float)RAND_MAX*2.0f - 1.0f,rand()/(float)RAND_MAX*1.0f, 0.2, 0.2, 0, 0.3, 0.7, 0.6);
+
         } else {
             this->_isGameWin = true;
         }
@@ -52,6 +58,7 @@ void Game::tick() {
             this->_isGameOver = true;
         }
     }
+    return item;
 }
 
 void Game::displayInfo() {

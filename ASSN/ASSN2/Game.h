@@ -3,8 +3,8 @@
 
 #include "Ship.h"
 
-#define PLAYER_DEGREE 180.0
-#define ENEMY_DEGREE 0.0
+#define PLAYER_DEGREE 0.0
+#define ENEMY_DEGREE 180.0
 
 #define NUM_PLAYER 1
 #define NUM_ENEMY 5
@@ -28,7 +28,7 @@ public:
 
     void spawnEnemy();
 
-    void tick();
+    Item* tick();
 
     void displayInfo();
 
