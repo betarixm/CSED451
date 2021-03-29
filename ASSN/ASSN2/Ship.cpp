@@ -120,21 +120,27 @@ list<Bullet*> Ship::shot()
     if (numBullet == 0)
         return result;
 
-    degree = 180.0/(numBullet/2 + 1);
+    degree = 90.0/(numBullet/2 + 1);
 
-    for (int i = 0; i < numBullet/2; i++){
-        Bullet* b = new Bullet(x, y, 0.02, 0.02, 0, color);
+    for (int i = 1; i <= numBullet/2; i++){
+        Bullet* b = new Bullet(0, 0, 0.02, 0.02, 0, color);
         RotationNode *r = new RotationNode(degree*i);
+        TranslateNode *t = new TranslateNode(x, y, 0);
         r->addSibling(b->groupNode()->child());
-        b->groupNode()->addChild(r);
-        /** Rotate model frame coordinate to direction of bullet */
-        Bullet* b2 = new Bullet(x, y, 0.02, 0.02, 0, color);
-        RotationNode *r2 = new RotationNode(-degree*i);
-        r2->addSibling(b2->groupNode()->child());
-        b2->groupNode()->addChild(r2);
-
+        t->addSibling(r);
+        b->groupNode()->addChild(t);
         result.push_back(b);
-        result.push_back(b2);
+        /** Head 로 이동 T -> 발사각도로 좌표계 회전 R -> bullet 이동 y 움직임 T - */
+
+        /** Rotate model frame coordinate to direction of bullet */
+        b = new Bullet(0, 0, 0.02, 0.02, 0, color);
+        r = new RotationNode(-degree*i);
+        t = new TranslateNode(x, y, 0);
+        r->addSibling(b->groupNode()->child());
+        t->addSibling(r);
+        b->groupNode()->addChild(t);
+        result.push_back(b);
+
     }
 
     return result;
@@ -219,9 +225,7 @@ void Player::HitItem(list<Item*>* items)
     list<Item*>::iterator itr;
     Item * item;
 
-    random_device rd;
-    mt19937 gen(rd());
-    uniform_int_distribution<int> dis(0, 10);
+    srand(time(NULL));
 
     int item_type;
 
@@ -229,7 +233,7 @@ void Player::HitItem(list<Item*>* items)
     while(itr != items->end()) {
         isHit = hit(*itr);
         if (isHit) {
-            item_type = dist * dis(gen);
+            item_type = rand()%11;
 
             /** Bomb : Game Over  10% */
             if (item_type == 0)
@@ -303,7 +307,6 @@ list<Bullet *> Player::keyHandler()
     for(int i=0; i < 4; i++)
     {
         float x = pos[i][0], y = pos[i][1];
-        cout <<"i : " << i << " x : " << x << " y :  " << y << endl;
 
         if ((dx != 0) && ((x+dx > 1.0) || (x+dx < -1.0)))
             return {};

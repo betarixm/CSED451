@@ -9,6 +9,7 @@
 char mode = 'n'; /* n : normal,  f: fail, c: king-god */
 static list<Bullet*> enemy_bullets;
 static list<Bullet*> player_bullets;
+static list<Item*> item_list;
 
 #define DEBUG
 
@@ -28,6 +29,8 @@ void renderScene() {
         for (itr = enemy_bullets.begin(); itr != enemy_bullets.end(); itr++)
             (*itr)->display();
         for (itr = player_bullets.begin(); itr != player_bullets.end(); itr++)
+            (*itr)->display();
+        for (itr = item_list.begin(); itr != item_list.end(); itr++)
             (*itr)->display();
     }
 
@@ -89,14 +92,18 @@ void onSpecialKeyUp(int key, int x, int y) {
  */
 void onKeyDown(unsigned char key, int x, int y)
 {
-    Bullet* bullet;
+    list<Bullet*> bullets;
+
 
     switch(key){
         case 32: /* space bar */
             if(!game->player()){ break; }
-            bullet = game->player()->keyDown('S');
-            if(bullet != nullptr)
-                player_bullets.push_back(bullet);
+            bullets = game->player()->keyDown('S');
+            if(bullets.size() != 0)
+            {
+                for(Bullet* ptr : bullets)
+                    player_bullets.push_back(ptr);
+            }
             break;
         case 'f':
             if(mode == 'f')
@@ -154,12 +161,16 @@ void timerBulletMoveHit(int value)
             ++itr;
     }
 
+
     if(game->player()){
-        game->player()->checkHit(&enemy_bullets);
+        game->player()->HitBullet(&enemy_bullets);
+        game->player()->HitItem(&item_list);
+        game->player()->wingMove();
     }
 
     if(game->enemy()){
         game->enemy()->checkHit(&player_bullets);
+        game->enemy()->wingMove();
     }
 
     glutPostRedisplay();
@@ -171,18 +182,36 @@ void timerBulletMoveHit(int value)
  */
 void timerBulletEnemyShot(int value)
 {
+    list<Bullet*>::iterator itr;
+
     if(game->enemy()){
-        Bullet* new_bullet;
+        list<Bullet*> new_bullet;
 
         game->enemy()->randomMoveHandler();
 
         if(value == 0) {    /* 총알 발사 */
             new_bullet = game->enemy()->shot();
-            enemy_bullets.push_back(new_bullet);
+            for(Bullet* ptr : new_bullet)
+                enemy_bullets.push_back(ptr);
         }
 
-        glutPostRedisplay();
     }
+
+    Item *item;
+    itr = item_list.begin();
+    while(itr != item_list.end())
+    {
+        item = *itr;
+        item->move(0, -0.1);
+        if((*itr)->y() < -1.0)           /** window 밖으로 나가는 것 방지 */
+        {
+            item_list.erase(itr++);
+            delete(item);
+        }
+        else
+            ++itr;
+    }
+    glutPostRedisplay();
 
     glutTimerFunc(300, timerBulletEnemyShot, (value + 1) % 7);
     if(value==-1)
@@ -191,7 +220,10 @@ void timerBulletEnemyShot(int value)
 }
 
 void timerDefault(int value){
-    game->tick();
+    Item *new_item = game->tick();
+    if (new_item != nullptr)
+        item_list.push_back(new_item);
+
     glutTimerFunc(1, timerDefault, -1);
 }
 

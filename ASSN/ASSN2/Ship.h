@@ -7,6 +7,8 @@
 #include <glm/vec3.hpp>
 #include <GL/glut.h>
 #include <list>
+#include <cstdlib>
+#include <ctime>
 
 #include "Shape.h"
 #include <random>
