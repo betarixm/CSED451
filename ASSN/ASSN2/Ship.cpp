@@ -66,7 +66,7 @@ bool Ship::hit(Bullet* bullet)
     bool isHit = false;
 
     vector<vector<float>> detection_box = {
-            {x + 2.5f*len, y + len},
+            {x - 2.5f*len, y + len},
             {x + 2.5f*len, y + len},
             {x + 2.5f*len, y - len},
             {x - 2.5f*len, y - len}
