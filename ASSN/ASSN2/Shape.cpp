@@ -1,17 +1,60 @@
 #include "Shape.h"
 #define PI 3.141592
+#include <iostream>
+using namespace std;
 
 /// @class Shape
 
-Shape::Shape(float x, float y, float length, GLclampf r, GLclampf g, GLclampf b)
-        : _x(x), _y(y), _length(length) {
-    this->_colorfv[R] = r;
-    this->_colorfv[G] = g;
-    this->_colorfv[B] = b;
+Shape::Shape(float x, float y, float deg, GLenum mode, GLclampf r, GLclampf g, GLclampf b)
+{
+
+    GLclampf colorfv[3];
+    colorfv[R] = r;
+    colorfv[G] = g;
+    colorfv[B] = b;
+
+    this->_translation = new TranslateNode(x, y, 0);
+    this->_rotation = new RotationNode(deg);
+    this->_vertex = new VertexNode(nullptr, mode, colorfv);
+
+    this->_group = new GroupNode;
+
+    /** Group < T R V > */
+    this->_group->addChild(this->_translation);
+    this->_translation->addSibling(this->_rotation);
+    this->_rotation->addSibling(this->_vertex);
+
 }
 
-Shape::Shape(float x, float y, float length, const GLclampf *colorfv) : _x(x), _y(y), _length(length) {
-    std::memcpy(this->_colorfv, colorfv, NUM_COLOR * sizeof(GLclampf));
+Shape::Shape(float x, float y, float deg, GLenum mode, GLclampf *colorfv)
+{
+    this->_translation = new TranslateNode(x, y, 0);
+    this->_rotation = new RotationNode(deg);
+    this->_vertex = new VertexNode(nullptr, mode, colorfv);
+
+    this->_group = new GroupNode;
+    /** Group < T R V > */
+    this->_group->addChild(this->_translation);
+    this->_translation->addSibling(this->_rotation);
+    this->_rotation->addSibling(this->_vertex);
+}
+
+Shape::Shape(float x, float y, float deg, float x_r, float y_r, float z_r, GLenum mode, GLclampf r, GLclampf g, GLclampf b)
+{
+    GLclampf colorfv[3];
+    colorfv[R] = r;
+    colorfv[G] = g;
+    colorfv[B] = b;
+
+    this->_translation = new TranslateNode(x, y, 0);
+    this->_rotation = new RotationNode(deg, x_r, y_r, z_r);
+    this->_vertex = new VertexNode(nullptr, mode, colorfv);
+
+    this->_group = new GroupNode;
+    /** Group < T R V > */
+    this->_group->addChild(this->_translation);
+    this->_translation->addSibling(this->_rotation);
+    this->_rotation->addSibling(this->_vertex);
 }
 
 /**
@@ -20,25 +63,8 @@ Shape::Shape(float x, float y, float length, const GLclampf *colorfv) : _x(x), _
  * @param mat 기본 정점 벡터 행렬 ((x,y), (x,y), ...)
  * @param mode OpenGL 출력 모드
  */
-void Shape::_display(float rotateDeg, std::vector<std::vector<float>> &mat, GLenum mode) {
-    float x = this->_x, y = this->_y;
-
-    glPushMatrix();
-    glLoadIdentity();
-
-    glColor3fv(this->color());
-    glTranslatef(x, y, 0.0f);
-    glRotatef(rotateDeg, 0.0f, 0.0f, 1.0f);
-
-    glBegin(mode);
-    for(auto & i : mat){
-        glVertex2f(i[0], i[1]);
-    }
-    glEnd();
-
-    glFlush();
-
-    glPopMatrix();
+void Shape::display() {
+    this->_group->display();
 }
 
 /**
@@ -47,8 +73,7 @@ void Shape::_display(float rotateDeg, std::vector<std::vector<float>> &mat, GLen
  * @param dy 더할 y 좌표의 크기
  */
 void Shape::move(float dx, float dy) {
-    this->_x += dx;
-    this->_y += dy;
+    this->_translation->move(dx, dy, 0);
 }
 
 /**
@@ -56,7 +81,7 @@ void Shape::move(float dx, float dy) {
  * @param ddeg 더할 각도 (not radian)
  */
 void Shape::rotate(float ddeg) {
-    this->_degree += ddeg;
+    this->_rotation->rotate(ddeg);
 }
 
 /**
@@ -64,7 +89,7 @@ void Shape::rotate(float ddeg) {
  * @param deg 도형의 degree로 설정 할 값
  */
 void Shape::setDegree(float deg) {
-    this->_degree = deg;
+    this->_rotation->set(deg);
 }
 
 /**
@@ -72,123 +97,187 @@ void Shape::setDegree(float deg) {
  * @param dColorfv 색깔 변동량을 담고 있는 배열
  */
 void Shape::mutateColor(const GLclampf *dColorfv) {
-    for (int i = 0; i < 3; i++) {
-        this->_colorfv[i] = dColorfv[i];
-    }
+    this->_vertex->mutateColor(dColorfv[R], dColorfv[G], dColorfv[B]);
 }
 
 /**
  * @brief 중심 x 좌표
  */
 float Shape::x() const {
-    return this->_x;
+    return this->_translation->delta()[0];
 }
 
 /**
  * @brief 중심 y 좌표
  */
 float Shape::y() const {
-    return this->_y;
+    return this->_translation->delta()[1];
 }
 
-/**
- * @brief 한 변의 길이
- */
-float Shape::length() const {
-    return this->_length;
-}
 
 /**
  * @brief 도형 색상
  * @return 색상 배열 주소 반환
  */
 GLclampf *Shape::color() {
-    return this->_colorfv;
+    return this->_vertex->color();
 }
 
 /**
  * @brief 도형 회전 각도
  */
 float Shape::degree() const {
-    return this->_degree;
+    return this->_rotation->degree();
 }
+
+void Shape::setVertex(std::vector<std::vector<float>> *mat)
+{
+    this->_vertex->set(mat);
+}
+
+GroupNode* Shape::groupNode()
+{
+    return this->_group;
+}
+
+void Shape::pivot_rotate(float dx, float dy, float dz)
+{
+    TranslateNode * T = new TranslateNode(dx, dy, dz);
+    TranslateNode * T_1 = new TranslateNode(-dx, -dy, -dz);
+    this->_translation->addSibling(T);
+    this->_rotation->addSibling(T_1);
+}
+
 
 
 /// @class Triangle @extends Shape
 
-Triangle::Triangle(float x, float y, float length, GLclampf r, GLclampf g, GLclampf b) : Shape(x, y, length, r, g, b) {}
+Triangle::Triangle(float x, float y, float length, float deg, GLclampf r, GLclampf g, GLclampf b)
+:Shape(x, y, deg, GL_TRIANGLES, r, g, b)
+{
 
-Triangle::Triangle(float x, float y, float length, const GLclampf *colorfv) : Shape(x, y, length, colorfv) {}
-
-/**
- * @brief 도형 기본 회전 값으로 display
- */
-void Triangle::display() {
-    this->display(this->degree());
-}
-
-/**
- * @brief 회전 각도 임의 지정하여 display
- * @param rotateDeg 회전 각도 (not radian)
- */
-void Triangle::display(float rotateDeg) {
-    float x = this->x(), y = this->y(), length = this->length();
-
-    std::vector<std::vector<float>> triangleMat = {
-        {              0, -1 * length /      SQRT_3 },
-        {     length / 2,      length / (2 * SQRT_3)},
-        {-1 * length / 2,      length / (2 * SQRT_3)}
+    this->_modelFrame = {
+            {              0, -1 * length /      SQRT_3 },
+            {     length / 2,      length / (2 * SQRT_3)},
+            {-1 * length / 2,      length / (2 * SQRT_3)}
     };
 
-    this->_display(rotateDeg, triangleMat, GL_TRIANGLES);
+    this->setVertex(&(this->_modelFrame));
 }
 
+
+Triangle::Triangle(float x, float y, float length, float deg, GLclampf *colorfv)
+:Shape(x, y, deg, GL_TRIANGLES, colorfv)
+{
+    this->_modelFrame = {
+            {              0, -1 * length /      SQRT_3 },
+            {     length / 2,      length / (2 * SQRT_3)},
+            {-1 * length / 2,      length / (2 * SQRT_3)}
+    };
+
+    this->setVertex(&(this->_modelFrame));
+}
+
+Triangle::Triangle(float x, float y, float length, float x_r, float y_r, float z_r, float deg, GLclampf r, GLclampf g, GLclampf b)
+        :Shape(x, y, deg, x_r, y_r, z_r, GL_TRIANGLES, r, g, b)
+{
+    this->_modelFrame = {
+            {              0, -1 * length /      SQRT_3 },
+            {     length / 2,      length / (2 * SQRT_3)},
+            {-1 * length / 2,      length / (2 * SQRT_3)}
+    };
+
+    this->setVertex(&(this->_modelFrame));
+}
 
 /// @class Square @extends Shape
 
-Square::Square(float x, float y, float length, GLclampf r, GLclampf g, GLclampf b) : Shape(x, y, length, r, g, b) {}
-
-Square::Square(float x, float y, float length, const GLclampf *colorfv) : Shape(x, y, length, colorfv) {}
-
-/**
- * @brief 도형 기본 회전 값으로 display
- */
-void Square::display() {
-    this->display(this->degree());
-}
-
-
-/**
- * @brief 회전 각도 임의 지정하여 display
- * @param rotateDeg 회전 각도 (not radian)
- */
-void Square::display(float rotateDeg) {
-    float length = this->length();
-    float unit = length / 2;
-
-    std::vector<std::vector<float>> squareMat = {
-            {-unit, unit},
-            {unit,  unit},
-            {unit,  -unit},
-            {-unit, -unit}
+Square::Square(float x, float y, float width, float height, float deg, GLclampf r, GLclampf g, GLclampf b)
+:Shape(x, y, deg, GL_QUADS, r, g, b)
+{
+    float w_unit = width/2;
+    float h_unit = height/2;
+    this->_modelFrame = {
+            {-w_unit, h_unit},
+            {w_unit,  h_unit},
+            {w_unit,  -h_unit},
+            {-w_unit, -h_unit}
     };
-
-    this->_display(rotateDeg, squareMat, GL_QUADS);
+    this->setVertex(&(this->_modelFrame));
 }
 
-void Circle::display() {
-    this->display(this->degree());
+Square::Square(float x, float y, float width, float height, float deg, GLclampf colorfv[])
+:Shape(x, y, deg, GL_QUADS, colorfv)
+{
+    float w_unit = width/2;
+    float h_unit = height/2;
+    this->_modelFrame = {
+            {-w_unit, h_unit},
+            {w_unit,  h_unit},
+            {w_unit,  -h_unit},
+            {-w_unit, -h_unit}
+    };
+    this->setVertex(&(this->_modelFrame));
 }
 
-void Circle::display(float rotateDeg) {
-    std::vector<std::vector<float>> circleMat = {};
+Square::Square(float x, float y, float width, float height, float x_r, float y_r, float z_r, float deg, GLclampf r, GLclampf g, GLclampf b)
+        :Shape(x, y, deg, x_r, y_r, z_r, GL_QUADS, r, g, b)
+{
+    cout << "ok shape" << endl;
+    float w_unit = width/2;
+    float h_unit = height/2;
+    this->_modelFrame = {
+            {-w_unit, h_unit},
+            {w_unit,  h_unit},
+            {w_unit,  -h_unit},
+            {-w_unit, -h_unit}
+    };
+    this->setVertex(&(this->_modelFrame));
+}
+
+
+Circle::Circle(float x, float y, float length, float deg,  GLclampf r, GLclampf g, GLclampf b)
+:Shape(x, y, deg, GL_POLYGON, r, g, b)
+{
+    this->_modelFrame = {};
 
     for(int i = 0; i < 360; i++){
         std::vector<float> ele = {
-                this->length() * (float)cos((float)i * PI / 180),
-                this->length() * (float)sin((float)i * PI / 180)
+                length * (float)cos((float)i * PI / 180),
+                length * (float)sin((float)i * PI / 180)
         };
-        circleMat.push_back(ele);
+        this->_modelFrame.push_back(ele);
     }
-    this->_display(rotateDeg, circleMat, GL_POLYGON);
+    this->setVertex(&(this->_modelFrame));
 }
+
+Circle::Circle(float x, float y, float length, float deg, GLclampf colorfv[])
+:Shape(x, y, deg, GL_POLYGON, colorfv)
+{
+    this->_modelFrame = {};
+
+    for(int i = 0; i < 360; i++){
+        std::vector<float> ele = {
+                length * (float)cos((float)i * PI / 180),
+                length * (float)sin((float)i * PI / 180)
+        };
+        this->_modelFrame.push_back(ele);
+    }
+    this->setVertex(&(this->_modelFrame));
+}
+
+Circle::Circle(float x, float y, float length, float x_r, float y_r, float z_r, float deg,  GLclampf r, GLclampf g, GLclampf b)
+        :Shape(x, y, deg, x_r, y_r, z_r, GL_POLYGON, r, g, b)
+{
+    this->_modelFrame = {};
+
+    for(int i = 0; i < 360; i++){
+        std::vector<float> ele = {
+                length * (float)cos((float)i * PI / 180),
+                length * (float)sin((float)i * PI / 180)
+        };
+        this->_modelFrame.push_back(ele);
+    }
+    this->setVertex(&(this->_modelFrame));
+}
+
