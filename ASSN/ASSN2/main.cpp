@@ -135,7 +135,7 @@ void timerBulletMoveHit(int value)
     {
         bullet = *itr;
         bullet->move(0, -0.1);  /** window 밖으로 나가는 것 방지 */
-        if((*itr)->y() < -1.0)
+        if((*itr)->getPosition()[0][1] < -1.0)
         {
             enemy_bullets.erase(itr++);
             delete(bullet);
@@ -149,7 +149,7 @@ void timerBulletMoveHit(int value)
     {
         bullet = *itr;
         bullet->move(0, +0.1);
-        if((*itr)->y() > 1.0)           /** window 밖으로 나가는 것 방지 */
+        if((*itr)->getPosition()[0][1] > 1.0)           /** window 밖으로 나가는 것 방지 */
         {
             player_bullets.erase(itr++);
             delete(bullet);
