@@ -61,7 +61,6 @@ void onSpecialKeyDown(int key, int x, int y)
             game->player()->keyDown('R');
             break;
     }
-    glutPostRedisplay();
 }
 
 void onSpecialKeyUp(int key, int x, int y) {
@@ -84,7 +83,6 @@ void onSpecialKeyUp(int key, int x, int y) {
             game->player()->keyUp('R');
             break;
     }
-    glutPostRedisplay();
 }
 /**
  * @brief 스페이스바/f/c 입력 핸들
@@ -119,7 +117,6 @@ void onKeyDown(unsigned char key, int x, int y)
                 mode = 'c';
             break;
     }
-    glutPostRedisplay();
 }
 
 void onKeyUp(unsigned char key, int x, int y){
@@ -173,7 +170,6 @@ void timerBulletMoveHit(int value)
         game->enemy()->wingMove();
     }
 
-    glutPostRedisplay();
     glutTimerFunc(30, timerBulletMoveHit, 1);
 }
 /**
@@ -211,7 +207,6 @@ void timerBulletEnemyShot(int value)
         else
             ++itr;
     }
-    glutPostRedisplay();
 
     glutTimerFunc(300, timerBulletEnemyShot, (value + 1) % 7);
     if(value==-1)
@@ -227,6 +222,11 @@ void timerDefault(int value){
     glutTimerFunc(1, timerDefault, -1);
 }
 
+void timerRedisplay(int value) {
+    glutPostRedisplay();
+    glutTimerFunc(1, timerRedisplay, -1);
+}
+
 int main(int argc, char **argv) {
 
     game = new Game();
@@ -238,14 +238,13 @@ int main(int argc, char **argv) {
     glutCreateWindow("beta&ches");
     glutDisplayFunc(renderScene);
 
-    /** eunsue modified start*/
     glutSpecialFunc(onSpecialKeyDown);
     glutSpecialUpFunc(onSpecialKeyUp);
     glutTimerFunc(1, timerDefault, -1);
     glutTimerFunc(100, timerBulletEnemyShot, -1);
+    glutTimerFunc(1, timerRedisplay, -1);
     glutKeyboardFunc(onKeyDown);
     glutKeyboardUpFunc(onKeyUp);
-    /** eunsue modified end */
 
     glClearColor(0.3f, 0.3f, 0.3f, 1.0f);
     glewInit();
