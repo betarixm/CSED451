@@ -331,7 +331,7 @@ void Enemy::randomMoveHandler()
 
     float x, y;
     /** it rotated 180 */
-    x = -1 * this->_torso.x();
+    x = this->_torso.x();
     y = -1 * this->_torso.y();
 
     std::vector<std::vector<float>> pos = {
