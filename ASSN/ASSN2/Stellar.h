@@ -12,21 +12,24 @@
 
 using namespace std;
 
+vector<GLclampf*> circleGradient(array<GLclampf, 3>& start, array<GLclampf, 3>& end);
+void initStellar();
+
 class Orb {
 private:
-    Circle* _planet;
+    GradientCircle* _planet;
     Orb* _satellite = nullptr;
 protected:
 public:
-    Orb(float x, float y, float length, array<GLclampf, 3>& colorfv);
+    Orb(float x, float y, float length, vector<GLclampf*>& colorfv);
 
-    Orb(float x, float y, float length, array<GLclampf, 3>& colorfv, Orb* satellite, float distance);
+    Orb(float x, float y, float length, vector<GLclampf*>& colorfv, Orb* satellite, float distance);
 
     void addSatellite(Orb* satellite, float distance);
 
     GroupNode* groupNode() const;
 
-    Circle* planet() const;
+    GradientCircle* planet() const;
 };
 
 class Stellar {
@@ -36,7 +39,7 @@ private:
     array<Orb*, 3> orbs = {nullptr, };
 
 public:
-    Stellar (float x, float y, array<float, 3>& length, array<float, 2>& distance, array<array<GLclampf, 3>, 3>& colorfv);
+    Stellar (float x, float y, array<float, 3>& length, array<float, 2>& distance, array<vector<GLclampf*>, 3>& colorfv);
 
     void tick();
 

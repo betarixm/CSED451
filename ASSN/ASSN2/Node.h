@@ -3,11 +3,15 @@
 
 #include <GL/glew.h>
 #include <vector>
+#include <utility>
+
 #define NUM_COLOR 3
 
 #define R 0
 #define G 1
 #define B 2
+
+using namespace std;
 
 class Node {
 private:
@@ -90,12 +94,12 @@ public:
 
 class VertexNode: public Node {
 private:
+protected:
     std::vector<std::vector<float>>* _vertices = nullptr;
     GLclampf _colorfv[3]{};
     GLenum _mode = GL_POLYGON;
     float modelview[16]; /* 4x4 model view matrix */
 
-protected:
 public:
     VertexNode() = default;
     explicit VertexNode(std::vector<std::vector<float>>* _vertices, GLenum _mode, GLclampf colorfv[]);
@@ -103,7 +107,7 @@ public:
 
     void _display() override;
 
-    void set(std::vector<std::vector<float>>* vertices);
+    virtual void set(std::vector<std::vector<float>>* vertices);
 
     std::vector<std::vector<float>>* vertices();
 
@@ -115,6 +119,19 @@ public:
     GLclampf *color();
 
     float *modelView();
+};
+
+class GradientVertexNode: public VertexNode {
+private:
+    vector<GLclampf*> _colorfv;
+public:
+    GradientVertexNode() = default;
+    GradientVertexNode(std::vector<std::vector<float>>* _vertices, GLenum _mode, vector<GLclampf*>& colorfv);;
+
+    void _display() override;
+
+    void set(std::vector<std::vector<float>> *vertices) override;
+
 };
 
 #endif //CSED451_NODE_H

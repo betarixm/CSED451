@@ -323,3 +323,31 @@ Circle::Circle(float x, float y, float length, float x_r, float y_r, float z_r, 
     this->setVertex(&(this->_modelFrame));
 }
 
+GradientShape::GradientShape(float x, float y, float deg, GLenum mode, vector<GLclampf *> &colorfv) {
+    this->_translation = new TranslateNode(x, y, 0);
+    this->_rotation = new RotationNode(deg);
+    this->_vertex = new GradientVertexNode(nullptr, mode, colorfv);
+
+    this->_group = new GroupNode;
+    /** Group < T R V > */
+    this->_group->addChild(this->_translation);
+    this->_translation->addSibling(this->_rotation);
+    this->_rotation->addSibling(this->_vertex);
+}
+
+void GradientShape::setVertex(std::vector<std::vector<float>> *mat) {
+    this->_vertex->set(mat);
+}
+
+GradientCircle::GradientCircle(float x, float y, float length, float deg, vector<GLclampf *> &colorfv)
+        :GradientShape(x, y, deg, GL_POLYGON, colorfv) {
+    this->_modelFrame = {};
+    for(int i = 0; i < 360; i++){
+        std::vector<float> ele = {
+                length * (float)cos((float)i * PI / 180),
+                length * (float)sin((float)i * PI / 180)
+        };
+        this->_modelFrame.push_back(ele);
+    }
+    this->setVertex(&(this->_modelFrame));
+}

@@ -12,19 +12,22 @@
 #define B 2
 
 #define SQRT_3 1.732f
-
+#define PI 3.141592
 
 class Shape {
 private:
+
+protected:
     TranslateNode * _translation;
     RotationNode * _rotation;
     VertexNode * _vertex;
     GroupNode * _group; /* Shape Group Node */
 
-protected:
     std::vector<std::vector<float>> _modelFrame;
 
 public:
+    Shape() = default;
+
     Shape(float x, float y, float deg, GLenum mode, GLclampf r, GLclampf g, GLclampf b);
 
     Shape(float x, float y, float deg, GLenum mode, GLclampf colorfv[]);
@@ -47,7 +50,7 @@ public:
 
     float y() const;
 
-    void setVertex(std::vector<std::vector<float>> *mat);
+    virtual void setVertex(std::vector<std::vector<float>> *mat);
 
     GLclampf *color();
 
@@ -60,6 +63,15 @@ public:
     GroupNode* groupNode();
 
     std::vector<std::vector<float>> getPosition();
+};
+
+class GradientShape: public Shape {
+private:
+    GradientVertexNode * _vertex;
+public:
+    GradientShape(float x, float y, float deg, GLenum mode, vector<GLclampf*>& colorfv);;
+
+    void setVertex(std::vector<std::vector<float>> *mat) override;
 };
 
 class Triangle : public Shape {
@@ -89,5 +101,10 @@ public:
 
     Circle(float x, float y, float length, float x_r, float y_r, float z_r, float deg, GLclampf r, GLclampf g, GLclampf b);
 
+};
+
+class GradientCircle: public GradientShape {
+public:
+    GradientCircle(float x, float y, float length, float deg, vector<GLclampf*>& colorfv);
 };
 #endif // CSED451_ASSN1_SHAPE_H

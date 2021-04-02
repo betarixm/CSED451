@@ -154,7 +154,9 @@ void VertexNode::_display() {
 VertexNode::VertexNode(std::vector<std::vector<float>> *_vertices, GLenum _mode, GLclampf colorfv[])
             : _vertices(_vertices), _mode(_mode)
             {
-                std::memcpy(this->_colorfv, colorfv, NUM_COLOR * sizeof(GLclampf));
+                if(colorfv) {
+                    std::memcpy(this->_colorfv, colorfv, NUM_COLOR * sizeof(GLclampf));
+                }
             }
 
 VertexNode::VertexNode(std::vector<std::vector<float>> *_vertices, GLenum _mode, GLclampf colorfv[], Node *_child, Node *_sibling)
@@ -179,4 +181,46 @@ GLclampf *VertexNode::color() {
 float * VertexNode::modelView()
 {
     return modelview;
+}
+
+GradientVertexNode::GradientVertexNode(std::vector<std::vector<float>> *_vertices, GLenum _mode,
+                                       vector<GLclampf *> &colorfv)
+        : VertexNode(_vertices, _mode, nullptr){
+    this->_colorfv = colorfv;
+}
+
+void GradientVertexNode::_display() {
+    if(this->_vertices == nullptr) {
+        return;
+    }
+
+    unsigned long num_vertices = this->_vertices->size();
+    unsigned long num_colors = num_vertices < this->_colorfv.size() ? num_vertices : this->_colorfv.size();
+    num_vertices = num_vertices - num_vertices % num_colors;
+    unsigned long interval = num_vertices / num_colors;
+
+    glPushMatrix();
+
+    glBegin(this->_mode);
+
+    int counter = 0, idx = 0;
+    for(auto & _vertex : *this->_vertices) {
+        if(counter < num_vertices && counter % interval == 0) {
+            glColor3fv(this->_colorfv[idx++]);
+        }
+        if(_vertex.size() == 2){
+            glVertex2f(_vertex[0], _vertex[1]);
+        } else if (_vertex.size() == 3) {
+            glVertex3f(_vertex[0], _vertex[1], _vertex[2]);
+        }
+        counter++;
+    }
+    glEnd();
+    glPopMatrix();
+
+    glGetFloatv(GL_MODELVIEW_MATRIX, modelview);
+}
+
+void GradientVertexNode::set(std::vector<std::vector<float>> *vertices) {
+    this->_vertices = vertices;
 }

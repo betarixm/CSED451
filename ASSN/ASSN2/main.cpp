@@ -238,18 +238,11 @@ void timerStellar(int value) {
     glutTimerFunc(1, timerStellar, -1);
 }
 
+
+
 int main(int argc, char **argv) {
-
-    array<float, 3> length = {0.15, 0.10, 0.05};
-    array<float, 2> distance = {0.5, 0.21};
-    array<array<GLclampf, 3>, 3> colorfv = {
-            array<GLclampf, 3>{1, 0, 0},
-            array<GLclampf, 3>{0,1,0},
-            array<GLclampf, 3>{0,0,1}
-    };
-
-    stellar_vec.push_back(new Stellar(-0.25, -0.25, length, distance,colorfv));
     game = new Game();
+    initStellar();
 
     glutInit(&argc, argv);
     glutInitDisplayMode(GLUT_DOUBLE | GLUT_RGB | GLUT_DEPTH);
