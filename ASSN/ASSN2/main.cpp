@@ -246,7 +246,7 @@ int main(int argc, char **argv) {
     glutKeyboardFunc(onKeyDown);
     glutKeyboardUpFunc(onKeyUp);
 
-    glClearColor(0.3f, 0.3f, 0.3f, 1.0f);
+    glClearColor(0.0f, 0.0f, 0.0f, 1.0f);
     glewInit();
     glutMainLoop();
 
