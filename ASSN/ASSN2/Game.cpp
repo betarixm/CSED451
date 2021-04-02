@@ -105,7 +105,7 @@ void Game::displayInfo() {
     for(auto & str : strVec){
         glPushMatrix();
         glLoadIdentity();
-        glTranslatef(-0.95, strPosY -= 0.05, 0);
+        glTranslatef(-0.95, strPosY -= 0.05, 1);
         glScalef(1/3500.0, 1/3500.0, 1/3500.0);
         for(char character : str){
             glutStrokeCharacter(GLUT_STROKE_MONO_ROMAN, character);
