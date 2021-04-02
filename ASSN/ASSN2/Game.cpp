@@ -88,14 +88,14 @@ void Game::displayInfo() {
         glColor3f(0, 1, 1);
     }
 
-    strNumEnemy =     "      ENEMY: " + strNumEnemy;
-    strNumPlayer =    "     PLAYER: " + strNumPlayer;
-    strLifeEnemy =    " ENEMY LIFE: " + strLifeEnemy;
-    strLifePlayer = + "PLAYER LIFE: " + strLifePlayer;
+    std::vector<std::string> strVec = {};
 
-    std::vector<std::string> strVec = {
-            strMode, strLifePlayer, strLifeEnemy, strNumPlayer, strNumEnemy
-    };
+    strVec.push_back(strMode);
+
+    strVec.emplace_back("      ENEMY: " + strNumEnemy);
+    strVec.emplace_back("     PLAYER: " + strNumPlayer);
+    strVec.emplace_back(" ENEMY LIFE: " + strLifeEnemy);
+    strVec.emplace_back("PLAYER LIFE: " + strLifePlayer);
 
     float strPosY = 0.95;
 
