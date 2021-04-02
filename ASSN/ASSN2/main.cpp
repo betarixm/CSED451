@@ -261,8 +261,13 @@ int main(int argc, char **argv) {
     glutKeyboardUpFunc(onKeyUp);
 
     glEnable(GL_DEPTH_TEST);
+    glEnable(GL_BLEND);
+    glEnable(GL_LINE_SMOOTH);
+
     glDepthFunc(GL_LEQUAL);
     glShadeModel(GL_SMOOTH);
+    glBlendFunc(GL_SRC_ALPHA, GL_ONE_MINUS_SRC_ALPHA); // https://flex.phys.tohoku.ac.jp/texi/glut/glutStrokeCharacter.3xglut.html
+    glLineWidth(2.0);
 
     glClearColor(0.0f, 0.0f, 0.0f, 1.0f);
     glewInit();
