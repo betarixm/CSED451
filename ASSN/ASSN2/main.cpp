@@ -22,7 +22,7 @@ Game* game;
 void renderScene() {
     list<Bullet*>::iterator itr;
 
-    glClear(GL_COLOR_BUFFER_BIT);
+    glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT);
 
     game->display();
 
@@ -243,7 +243,7 @@ int main(int argc, char **argv) {
     game = new Game();
 
     glutInit(&argc, argv);
-    glutInitDisplayMode(GLUT_DOUBLE | GLUT_RGB);
+    glutInitDisplayMode(GLUT_DOUBLE | GLUT_RGB | GLUT_DEPTH);
     glutInitWindowPosition(0, 0);
     glutInitWindowSize(800, 800);
     glutCreateWindow("beta&ches");
@@ -257,6 +257,10 @@ int main(int argc, char **argv) {
     glutTimerFunc(1, timerStellar, -1);
     glutKeyboardFunc(onKeyDown);
     glutKeyboardUpFunc(onKeyUp);
+
+    glEnable(GL_DEPTH_TEST);
+    glDepthFunc(GL_LEQUAL);
+    glShadeModel(GL_SMOOTH);
 
     glClearColor(0.0f, 0.0f, 0.0f, 1.0f);
     glewInit();
