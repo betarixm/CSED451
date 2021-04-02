@@ -6,6 +6,7 @@
 
 #include "Game.h"
 #include "Stellar.h"
+#include "Ship.h"
 
 char mode = 'n'; /* n : normal,  f: fail, c: king-god */
 static list<Bullet*> enemy_bullets;

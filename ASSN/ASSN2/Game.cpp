@@ -1,4 +1,5 @@
 #include "Game.h"
+#include "Ship.h"
 
 extern char mode;
 
@@ -97,12 +98,32 @@ void Game::displayInfo() {
     strVec.emplace_back(" ENEMY LIFE: " + strLifeEnemy);
     strVec.emplace_back("PLAYER LIFE: " + strLifePlayer);
 
+    strVec.emplace_back("");
+    strVec.emplace_back("[ITEM LOG]");
+
+    int counter = 0;
+    for(auto & i : this->_itemLog) {
+        string strItemType;
+
+        if(i == ITEM_INCR) {
+            strItemType = "Bullet INCR <MAX 5> :)";
+        } else if (i == ITEM_DESC) {
+            strItemType = "Bullet DESC <MIN 1> :(";
+        } else if (i == ITEM_BOMB) {
+            strItemType = "BOMB! X(";
+        } else {
+            strItemType = "UNKNOWN... Don't pwn-ing!";
+        }
+
+        strVec.emplace_back(to_string(counter++) + ": " + strItemType);
+    }
+
     float strPosY = 0.95;
 
     for(auto & str : strVec){
         glPushMatrix();
         glLoadIdentity();
-        glTranslatef(-0.95, strPosY -= 0.05, 0.1);
+        glTranslatef(-0.95, strPosY -= 0.05, -0.1);
         glScalef(1/3500.0, 1/3500.0, 1/3500.0);
         for(char character : str){
             glutStrokeCharacter(GLUT_STROKE_MONO_ROMAN, character);
@@ -113,10 +134,23 @@ void Game::displayInfo() {
 
 void Game::display() {
     if(_isGameOver || _isGameWin){
-        std::string msg = _isGameWin ? "WIN!" : "GAME OVER!";
+        std::string msg = _isGameWin ? "WIN!" : "GAME OVER! - ";
+        float width = 0;
+
+        if((!_isGameWin)){
+            if(this->_itemLog.back() == ITEM_BOMB) {
+                msg += "BOMB exploded! That was not item X(";
+            } else {
+                msg += "You're killed by the enemy X(";
+            }
+        }
+
+        for(char i : msg){
+            width += (float)glutBitmapWidth(GLUT_BITMAP_HELVETICA_18, i);
+        }
 
         glLoadIdentity();
-
+        glTranslatef(-width / 800.0f, 0, 0);
         glColor3f(1, 0, 0);
         glRasterPos2f(0, 0);
 
@@ -150,4 +184,8 @@ bool Game::isGameOver() const {
 
 bool Game::isGameWin() const {
     return this->_isGameWin;
+}
+
+void Game::newItemLog(char type) {
+    this->_itemLog.push_back(type);
 }

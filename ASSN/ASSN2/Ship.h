@@ -11,6 +11,8 @@
 #include <ctime>
 
 #include "Shape.h"
+#include "Game.h"
+
 #include <random>
 #include <cmath>
 #include <array>

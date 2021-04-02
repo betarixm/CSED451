@@ -13,6 +13,8 @@ extern char mode;
 #define PIE 3.1415926
 #define MAX_BULLET 5
 
+extern Game* game;
+
 Ship::Ship(int _numLife, float x, float y, float size_torso, GLclampf r, GLclampf g, GLclampf b, float degree)
 : _head(0, size_torso + sqrt(3)*size_torso/6 , size_torso, 180, r, g, b),
 _torso(x, y, size_torso, 2*size_torso, degree, r, g, b),
@@ -222,6 +224,7 @@ void Player::HitBullet(list<Bullet*>* bullet_list)
 void Player::HitItem(list<Item*>* items)
 {
     bool isHit;
+    char type = 4;
     list<Item*>::iterator itr;
     Item * item;
 
@@ -235,22 +238,27 @@ void Player::HitItem(list<Item*>* items)
         if (isHit) {
             item_type = rand()%11;
 
-            /** Bomb : Game Over  10% */
-            if (item_type == 0)
+            if (item_type == 0){
+                /** Bomb : Game Over  10% */
                 _numLife = 0;
+                type = ITEM_BOMB;
+            } else if (item_type >= 1 && item_type < 7) {
                 /** addition Bullet  60% */
-            else if (item_type >= 1 && item_type < 7) {
-                if (_numBullet < MAX_BULLET )
+                if (_numBullet < MAX_BULLET) {
                     _numBullet += 1;
-            }
+                }
+                type = ITEM_INCR;
+            } else if (item_type >= 7 && item_type <= 10) {
                 /** delete one Bullet 40% */
-            else if (item_type >= 7 && item_type <= 10) {
-                if (_numBullet > 1)
+                if (_numBullet > 1) {
                     _numBullet -= 1;
+                }
+                type = ITEM_DESC;
             }
 
             item = *itr;
             items->erase(itr++);
+            game->newItemLog(type);
             delete (item);
         }
         else
