@@ -5,13 +5,14 @@
 #include <glm/vec3.hpp>
 
 #include "Game.h"
+#include "Stellar.h"
 
 char mode = 'n'; /* n : normal,  f: fail, c: king-god */
 static list<Bullet*> enemy_bullets;
 static list<Bullet*> player_bullets;
 static list<Item*> item_list;
 
-#define DEBUG
+vector<Stellar*> stellar_vec;
 
 Game* game;
 
@@ -26,6 +27,9 @@ void renderScene() {
     game->display();
 
     if(!(game->isGameOver() || game->isGameWin()) ) {
+        for(auto & i : stellar_vec) {
+            i->display();
+        }
         for (itr = enemy_bullets.begin(); itr != enemy_bullets.end(); itr++)
             (*itr)->display();
         for (itr = player_bullets.begin(); itr != player_bullets.end(); itr++)
@@ -227,6 +231,13 @@ void timerRedisplay(int value) {
     glutTimerFunc(1, timerRedisplay, -1);
 }
 
+void timerStellar(int value) {
+    for(auto & i : stellar_vec){
+        i->tick();
+    }
+    glutTimerFunc(1, timerStellar, -1);
+}
+
 int main(int argc, char **argv) {
 
     game = new Game();
@@ -243,6 +254,7 @@ int main(int argc, char **argv) {
     glutTimerFunc(1, timerDefault, -1);
     glutTimerFunc(100, timerBulletEnemyShot, -1);
     glutTimerFunc(1, timerRedisplay, -1);
+    glutTimerFunc(1, timerStellar, -1);
     glutKeyboardFunc(onKeyDown);
     glutKeyboardUpFunc(onKeyUp);
 
