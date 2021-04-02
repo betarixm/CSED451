@@ -55,8 +55,13 @@ public:
     list<Bullet*> shot();
 /* make bullet instance */
 
-    float dotOverline(vector<float> dot, vector<float> A1, vector<float>A2);
-    vector<vector<float>> getPosition();
+    float x() {
+        return _torso.x();
+    }
+
+    float y() {
+        return _torso.y();
+    }
 
     int numLife() const{
         return this->_numLife;

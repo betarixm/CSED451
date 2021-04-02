@@ -36,15 +36,12 @@ void Game::spawnEnemy() {
 
 Item * Game::tick() {
     Item *item = nullptr;
-    srand(time(NULL));
 
     if(_enemy->numLife() == 0){
         this->isEnemyDead = true;
         if(this->numEnemy){
+            item = new Square(_enemy->x(), _enemy->y(), 0.2, 0.2, 0, 0.3, 0.7, 0.6);
             this->spawnEnemy();
-
-            item = new Square(rand()/(float)RAND_MAX*2.0f - 1.0f,rand()/(float)RAND_MAX*1.0f, 0.2, 0.2, 0, 0.3, 0.7, 0.6);
-
         } else {
             this->_isGameWin = true;
         }
