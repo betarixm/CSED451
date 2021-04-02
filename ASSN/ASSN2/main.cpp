@@ -10,7 +10,7 @@
 
 char mode = 'n'; /* n : normal,  f: fail, c: king-god */
 static list<Bullet*> enemy_bullets;
-static list<Bullet*> player_bullets;
+list<Bullet*> player_bullets;
 static list<Item*> item_list;
 
 vector<Stellar*> stellar_vec;
@@ -87,6 +87,8 @@ void onSpecialKeyUp(int key, int x, int y) {
         case GLUT_KEY_RIGHT:
             game->player()->keyUp('R');
             break;
+        default:
+            break;
     }
 }
 /**
@@ -101,12 +103,7 @@ void onKeyDown(unsigned char key, int x, int y)
     switch(key){
         case 32: /* space bar */
             if(!game->player()){ break; }
-            bullets = game->player()->keyDown('S');
-            if(bullets.size() != 0)
-            {
-                for(Bullet* ptr : bullets)
-                    player_bullets.push_back(ptr);
-            }
+            game->player()->keyDown('S');
             break;
         case 'f':
             if(mode == 'f')
@@ -121,10 +118,15 @@ void onKeyDown(unsigned char key, int x, int y)
             else
                 mode = 'c';
             break;
+        default:
+            break;
     }
 }
 
 void onKeyUp(unsigned char key, int x, int y){
+    if(key == 32) {
+        key = 'S';
+    }
     game->player()->keyUp(key);
 }
 /**

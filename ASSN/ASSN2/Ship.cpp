@@ -14,6 +14,7 @@ extern char mode;
 #define MAX_BULLET 5
 
 extern Game* game;
+extern list<Bullet*> player_bullets;
 
 Ship::Ship(int _numLife, float x, float y, float size_torso, GLclampf r, GLclampf g, GLclampf b, float degree)
 : _head(0, size_torso + sqrt(3)*size_torso/6 , size_torso, 180, r, g, b),
@@ -291,6 +292,11 @@ list<Bullet *> Player::keyHandler()
     if(this->inputKey['S']){
         if (mode != 'f')
             bullets = shot();
+        if(!bullets.empty()) {
+            for(Bullet* ptr: bullets){
+                player_bullets.push_back(ptr);
+            }
+        }
     }
 
     if(this->inputKey['U']){
