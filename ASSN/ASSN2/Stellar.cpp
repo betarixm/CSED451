@@ -40,7 +40,7 @@ Stellar::Stellar(float x, float y, array<float, 3> &length, array<float, 2> &dis
     }
 
     for(int i = 1; i < 3; i++) {
-        this->orbs[2 - i]->addSatellite(this->orbs[2 - i + 1], distance[i - 1]);
+        this->orbs[2 - i]->addSatellite(this->orbs[2 - i + 1], distance[2 - i]);
     }
 
     this->_baseTranslate->move(x, y, 0.2);
