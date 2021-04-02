@@ -138,7 +138,7 @@ void Game::display() {
         float width = 0;
 
         if((!_isGameWin)){
-            if(this->_itemLog.back() == ITEM_BOMB) {
+            if((!this->_itemLog.empty()) && this->_itemLog.back() == ITEM_BOMB) {
                 msg += "BOMB exploded! That was not item X(";
             } else {
                 msg += "You're killed by the enemy X(";
