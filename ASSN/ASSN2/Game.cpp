@@ -29,7 +29,7 @@ void Game::spawnEnemy() {
         mt19937 gen(rd());
         uniform_real_distribution<> dis(0, 0.75);
 
-        this->_enemy = new Enemy(this->numLifeEnemy, 0, 0.75, 0.1, dis(gen), dis(gen), 1, ENEMY_DEGREE);
+        this->_enemy = new Enemy(this->numLifeEnemy, 0, 0.75, 0.1, dis(gen), dis(gen), 1, ENEMY_DEGREE, this->numLifeEnemy);
         this->numLifeEnemy++;
         this->isEnemyDead = false;
     }

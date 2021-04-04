@@ -16,7 +16,7 @@ extern char mode;
 extern Game* game;
 extern list<Bullet*> player_bullets;
 
-Ship::Ship(int _numLife, float x, float y, float size_torso, GLclampf r, GLclampf g, GLclampf b, float degree)
+Ship::Ship(int _numLife, float x, float y, float size_torso, GLclampf r, GLclampf g, GLclampf b, float degree, int numBullet)
 : _head(0, size_torso + sqrt(3)*size_torso/6 , size_torso, 180, r, g, b),
 _torso(x, y, size_torso, 2*size_torso, degree, r, g, b),
 _lwing(0, -size_torso, size_torso, 2*size_torso, -45, r, g, b),
@@ -27,7 +27,7 @@ _rcanon(0, -size_torso*2, size_torso, 2*size_torso, 135, r, g, b)
     this->_numLife = _numLife;
     this->_baseScene = new GroupNode;
     this->_size_torso = size_torso;
-    this->_numBullet = 1;
+    this->_numBullet = numBullet;
     this->_rotateDir = 1;
 
     this->_baseScene->addChild(this->_torso.groupNode());

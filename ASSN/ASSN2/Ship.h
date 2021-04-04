@@ -44,7 +44,7 @@ protected:
     float _rotateDir;
 
 public:
-    Ship(int _numLife, float x, float y, float size_torso, GLclampf r, GLclampf g, GLclampf b, float degree);
+    Ship(int _numLife, float x, float y, float size_torso, GLclampf r, GLclampf g, GLclampf b, float degree, int numBullet=1);
 
     ~Ship() {};
 
@@ -109,7 +109,7 @@ public:
 
 class Enemy : public Ship {
 public:
-    Enemy(int _numLife, float x, float y, float length, GLclampf r, GLclampf g, GLclampf b, float degree): Ship(_numLife, x, y, length, r, g, b, degree){};
+    Enemy(int _numLife, float x, float y, float length, GLclampf r, GLclampf g, GLclampf b, float degree, int numBullet=1): Ship(_numLife, x, y, length, r, g, b, degree, numBullet){};
     void randomMoveHandler();
     void checkHit(list<Bullet*>*);
 
