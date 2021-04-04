@@ -159,7 +159,6 @@ void timerBulletMoveHit(int value)
         }
         if(y < -1.0)
         {
-            cout << "delete !" << endl;
             enemy_bullets.erase(itr++);
             delete(bullet);
         }
