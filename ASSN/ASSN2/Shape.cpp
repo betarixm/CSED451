@@ -143,7 +143,7 @@ GroupNode* Shape::groupNode()
 void Shape::pivot_rotate(float dx, float dy, float dz)
 {
     TranslateNode * T = new TranslateNode(dx, dy, dz);
-    TranslateNode * T_1 = new TranslateNode(-dx, -dy, -dz);
+    auto * T_1 = new TranslateNode(-dx, -dy, -dz);
     this->_translation->addSibling(T);
     this->_rotation->addSibling(T_1);
 }

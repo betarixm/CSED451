@@ -157,12 +157,25 @@ VertexNode::VertexNode(std::vector<std::vector<float>> *_vertices, GLenum _mode,
                 if(colorfv) {
                     std::memcpy(this->_colorfv, colorfv, NUM_COLOR * sizeof(GLclampf));
                 }
+                for (int i = 0; i < 4; i++){
+                    for (int j = 0; j < 4; j++)
+                    {
+                        modelview[i*4 + j] = (i==j);
+                    }
+                }
             }
 
 VertexNode::VertexNode(std::vector<std::vector<float>> *_vertices, GLenum _mode, GLclampf colorfv[], Node *_child, Node *_sibling)
             : _vertices(_vertices), _mode(_mode), Node(_child, _sibling)
             {
                 std::memcpy(this->_colorfv, colorfv, NUM_COLOR * sizeof(GLclampf));
+
+                for (int i = 0; i < 4; i++){
+                    for (int j = 0; j < 4; j++)
+                    {
+                        modelview[i*4 + j] = (i==j);
+                    }
+                }
             }
 
 

@@ -4,7 +4,7 @@
 #include <vector>
 #include <glm/vec3.hpp>
 
-#include "Game.h"
+//#include "Game.h"
 #include "Stellar.h"
 #include "Ship.h"
 
@@ -145,8 +145,8 @@ void timerBulletMoveHit(int value)
         bullet = *itr;
         bullet->move(0, -0.1);  /** window 밖으로 나가는 것 방지 */
         pos = (*itr)->getPosition();
-        x = pos[0][0];
-        y = pos[0][1];
+        x = pos[0][0]/pos[0][3];
+        y = pos[0][1]/pos[0][3];
 
         if ((x > 1.0) || (x < -1.0))
         {
@@ -173,8 +173,8 @@ void timerBulletMoveHit(int value)
         bullet->move(0, +0.1);
 
         pos = (*itr)->getPosition();
-        x = pos[0][0];
-        y = pos[0][1];
+        x = pos[0][0]/pos[0][3];
+        y = pos[0][1]/pos[0][3];
 
         if ((x > 1.0) || (x < -1.0))
         {
