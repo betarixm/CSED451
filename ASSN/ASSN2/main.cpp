@@ -41,10 +41,10 @@ void renderScene() {
 
     glutSwapBuffers();
 }
- /**
-  * @breif 방향키 입력 핸들러
-  * @params key 입력키 종류
-  */
+/**
+ * @breif 방향키 입력 핸들러
+ * @params key 입력키 종류
+ */
 void onSpecialKeyDown(int key, int x, int y)
 {
     if(!game->player()){
@@ -136,14 +136,30 @@ void timerBulletMoveHit(int value)
 {
     list<Bullet*>::iterator itr;
     Bullet* bullet;
+    vector<vector<float>> pos;
+    float x, y;
 
     itr = enemy_bullets.begin();
     while(itr != enemy_bullets.end())
     {
         bullet = *itr;
         bullet->move(0, -0.1);  /** window 밖으로 나가는 것 방지 */
-        if((*itr)->getPosition()[0][1] < -1.0)
+        pos = (*itr)->getPosition();
+        x = pos[0][0];
+        y = pos[0][1];
+
+        if ((x > 1.0) || (x < -1.0))
         {
+            GroupNode * g = dynamic_cast<GroupNode *> ((*itr)->groupNode());
+            TranslateNode *t = dynamic_cast<TranslateNode *> (g->child());
+            t->set(((x > 0.0) ? 1.0 : -0.9)  , y , 0);
+            RotationNode* rn = dynamic_cast<RotationNode *>(t->sibling());
+            rn->set(rn->degree() * -1);
+            dynamic_cast<TranslateNode *>(rn->sibling())->set(0, 0, 0);
+        }
+        if(y < -1.0)
+        {
+            cout << "delete !" << endl;
             enemy_bullets.erase(itr++);
             delete(bullet);
         }
@@ -156,7 +172,22 @@ void timerBulletMoveHit(int value)
     {
         bullet = *itr;
         bullet->move(0, +0.1);
-        if((*itr)->getPosition()[0][1] > 1.0)           /** window 밖으로 나가는 것 방지 */
+
+        pos = (*itr)->getPosition();
+        x = pos[0][0];
+        y = pos[0][1];
+
+        if ((x > 1.0) || (x < -1.0))
+        {
+            GroupNode * g = dynamic_cast<GroupNode *> ((*itr)->groupNode());
+            TranslateNode *t = dynamic_cast<TranslateNode *> (g->child());
+            t->set(((x > 0.0) ? 1.0 : -0.9)  , y , 0);
+            RotationNode* rn = dynamic_cast<RotationNode *>(t->sibling());
+            rn->set(rn->degree() * -1);
+            dynamic_cast<TranslateNode *>(rn->sibling())->set(0, 0, 0);
+        }
+
+        if(y > 1.0)           /** window 밖으로 나가는 것 방지 */
         {
             player_bullets.erase(itr++);
             delete(bullet);
