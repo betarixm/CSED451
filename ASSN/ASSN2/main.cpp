@@ -152,7 +152,9 @@ void timerBulletMoveHit(int value)
         {
             GroupNode * g = dynamic_cast<GroupNode *> ((*itr)->groupNode());
             TranslateNode *t = dynamic_cast<TranslateNode *> (g->child());
-            t->set(((x > 0.0) ? 1.0 : -0.9)  , y , 0);
+            float w_unit = bullet->getWidth()/2.0;
+
+            t->set(((x > 0.0) ? 1.0-w_unit : -1.0+w_unit*2)  , y , 0);
             RotationNode* rn = dynamic_cast<RotationNode *>(t->sibling());
             rn->set(rn->degree() * -1);
             dynamic_cast<TranslateNode *>(rn->sibling())->set(0, 0, 0);
