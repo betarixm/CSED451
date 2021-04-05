@@ -3,6 +3,7 @@
   <component name="CMakeWorkspace" PROJECT_DIR="$PROJECT_DIR$" />
   <component name="CidrRootsConfiguration">
     <excludeRoots>
+      <file path="$PROJECT_DIR$/ASSN/ASSN1" />
       <file path="$PROJECT_DIR$/msvc" />
     </excludeRoots>
   </component>
