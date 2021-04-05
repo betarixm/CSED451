@@ -84,12 +84,18 @@ public:
 };
 
 class Square : public Shape {
+private:
+    float _width, _height;
 public:
     Square(float x, float y, float width, float height, float deg, GLclampf r, GLclampf g, GLclampf b);
 
     Square(float x, float y, float width, float height, float deg, GLclampf colorfv[]);
 
     Square(float x, float y, float width, float height, float x_r, float y_r, float z_r, float deg, GLclampf r, GLclampf g, GLclampf b);
+
+    float getWidth();
+
+    float getHeight();
 
 };
 

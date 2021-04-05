@@ -237,6 +237,8 @@ Triangle::Triangle(float x, float y, float length, float x_r, float y_r, float z
 Square::Square(float x, float y, float width, float height, float deg, GLclampf r, GLclampf g, GLclampf b)
 :Shape(x, y, deg, GL_QUADS, r, g, b)
 {
+    this->_width = width;
+    this->_height = height;
     float w_unit = width/2;
     float h_unit = height/2;
     this->_modelFrame = {
@@ -251,6 +253,8 @@ Square::Square(float x, float y, float width, float height, float deg, GLclampf 
 Square::Square(float x, float y, float width, float height, float deg, GLclampf colorfv[])
 :Shape(x, y, deg, GL_QUADS, colorfv)
 {
+    this->_width = width;
+    this->_height = height;
     float w_unit = width/2;
     float h_unit = height/2;
     this->_modelFrame = {
@@ -265,7 +269,8 @@ Square::Square(float x, float y, float width, float height, float deg, GLclampf 
 Square::Square(float x, float y, float width, float height, float x_r, float y_r, float z_r, float deg, GLclampf r, GLclampf g, GLclampf b)
         :Shape(x, y, deg, x_r, y_r, z_r, GL_QUADS, r, g, b)
 {
-    cout << "ok shape" << endl;
+    this->_width = width;
+    this->_height = height;
     float w_unit = width/2;
     float h_unit = height/2;
     this->_modelFrame = {
@@ -275,6 +280,16 @@ Square::Square(float x, float y, float width, float height, float x_r, float y_r
             {-w_unit, -h_unit}
     };
     this->setVertex(&(this->_modelFrame));
+}
+
+float Square::getWidth()
+{
+    return this->_width;
+}
+
+float Square::getHeight()
+{
+    return this->_height;
 }
 
 
