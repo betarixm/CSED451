@@ -346,16 +346,16 @@ void Enemy::randomMoveHandler()
     float x, y;
     /** it rotated 180 */
     x = this->_torso.x();
-    y = -1 * this->_torso.y();
+    y = this->_torso.y();
 
     std::vector<std::vector<float>> pos = {
             {x, y+2*_size_torso},
-            {x, y-_size_torso},
+            {x, y-2*_size_torso},
             {x-4*_size_torso, y},
             {x+4*_size_torso, y}
     };
 
-    for(int i=0; i < 3; i++)
+    for(int i=0; i < 4; i++)
     {
         float x = pos[i][0];
         if(x+dx > 1.0 || x+dx < -1.0 )
