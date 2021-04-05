@@ -357,7 +357,6 @@ void Enemy::randomMoveHandler()
     for(int i=0; i < 4; i++)
     {
         float x = pos[i][0];
-
         if(x+dx > 1.0 || x+dx < -1.0 )
         {
             return;
