@@ -53,7 +53,7 @@ Stellar::Stellar(float x, float y, array<float, 3> &length, array<float, 2> &dis
 
 void Stellar::tick() {
     for(int i = 0; i < 3; i++){
-        this->orbs[i]->planet()->rotate(1.0f);
+        this->orbs[i]->planet()->rotate(0.5f);
     }
 }
 

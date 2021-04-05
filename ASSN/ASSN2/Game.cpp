@@ -1,3 +1,4 @@
+#include <string>
 #include "Game.h"
 #include "Ship.h"
 
