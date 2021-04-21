@@ -340,3 +340,21 @@ Circle::Circle(float x, float y, float length, float x_r, float y_r, float z_r, 
 }
 
 
+Object::Object(char *path, float x, float y, float z, float deg, GLclampf r, GLclampf g, GLclampf b)
+        : Shape(x, y, z, deg, GL_TRIANGLES, r, g, b), _model(path) {
+    this->_modelFrame = _model.compat();
+    this->setVertex(&(this->_modelFrame));
+}
+
+Object::Object(char *path, float x, float y, float z, float deg, GLclampf *colorfv)
+        : Shape(x, y, z, deg, GL_TRIANGLES, colorfv), _model(path) {
+    this->_modelFrame = _model.compat();
+    this->setVertex(&(this->_modelFrame));
+}
+
+Object::Object(char *path, float x, float y, float z, float x_r, float y_r, float z_r, float deg, GLclampf r,
+               GLclampf g, GLclampf b)
+        : Shape(x, y, z, deg, x_r, y_r, z_r, GL_TRIANGLES, r, g, b), _model(path) {
+    this->_modelFrame = _model.compat();
+    this->setVertex(&(this->_modelFrame));
+}
