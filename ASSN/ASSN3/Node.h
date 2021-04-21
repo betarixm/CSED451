@@ -7,9 +7,9 @@
 
 #define NUM_COLOR 3
 
-#define R 0
-#define G 1
-#define B 2
+#define RED 0
+#define GREEN 1
+#define BLUE 2
 
 using namespace std;
 
@@ -112,9 +112,9 @@ public:
     std::vector<std::vector<float>>* vertices();
 
     void mutateColor(GLclampf dr, GLclampf dg, GLclampf db) {
-        this->_colorfv[R] += dr;
-        this->_colorfv[G] += dg;
-        this->_colorfv[B] += db;
+        this->_colorfv[RED] += dr;
+        this->_colorfv[GREEN] += dg;
+        this->_colorfv[BLUE] += db;
     }
     GLclampf *color();
 
