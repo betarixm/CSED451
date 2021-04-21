@@ -67,6 +67,15 @@ public:
     std::vector<std::vector<float>> getPosition();
 };
 
+class GradientShape: public Shape {
+private:
+    GradientVertexNode * _vertex;
+public:
+    GradientShape(float x, float y, float deg, GLenum mode, vector<GLclampf*>& colorfv);;
+
+    void setVertex(std::vector<std::vector<float>> *mat) override;
+};
+
 class Triangle : public Shape {
 public:
     Triangle(float x, float y, float length, float deg, GLclampf r, GLclampf g, GLclampf b);
@@ -111,5 +120,10 @@ public:
     Object(char* path, float x, float y, float z, float deg, GLclampf colorfv[]);
 
     Object(char* path, float x, float y, float z, float x_r, float y_r, float z_r, float deg, GLclampf r, GLclampf g, GLclampf b);
+};
+
+class GradientCircle: public GradientShape {
+public:
+    GradientCircle(float x, float y, float length, float deg, vector<GLclampf*>& colorfv);
 };
 #endif // CSED451_ASSN1_SHAPE_H
