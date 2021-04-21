@@ -17,20 +17,17 @@ extern Game *game;
 extern list<Bullet *> player_bullets;
 
 Ship::Ship(int _numLife, float x, float y, float size_torso, GLclampf r, GLclampf g, GLclampf b, float degree,
-           int numBullet)
-        : _head(0, size_torso + sqrt(3) * size_torso / 6, size_torso, 180, r, g, b),
-          _torso(x, y, size_torso, 2 * size_torso, degree, r, g, b) {
+           int numBullet): _obj(_path, x, y, 0, degree, r, g, b) {
     this->_numLife = _numLife;
     this->_size_torso = size_torso;
     this->_numBullet = numBullet;
 
-    // TODO: add object child
-    this->_baseScene->addChild(this->_torso.groupNode());
-
+    this->_baseScene = new GroupNode;
+    this->_baseScene->addChild(_obj.groupNode());
 }
 
 void Ship::display() {
-    // TODO: display model
+    this->_baseScene->display();
 }
 
 
@@ -42,8 +39,8 @@ void Ship::display() {
  */
 
 bool Ship::hit(Bullet *bullet) {
-    float x = _torso.x();
-    float y = _torso.y();
+    float x = _obj.x();
+    float y = _obj.y();
     float len = _size_torso;
     bool isHit = false;
 
@@ -82,8 +79,8 @@ bool Ship::hit(Bullet *bullet) {
  */
 
 list<Bullet *> Ship::shot() {
-    GLclampf *color = _torso.color();
-    vector<vector<float>> pos = _head.getPosition();
+    GLclampf *color = _obj.color();
+    vector<vector<float>> pos = _obj.getPosition();
     float x = pos[0][0] / pos[0][3];
     float y = pos[0][1] / pos[0][3];
     int numBullet = _numBullet;
@@ -221,8 +218,8 @@ list<Bullet *> Player::keyHandler() {
     float dx = 0, dy = 0;
 
     float x, y;
-    x = this->_torso.x();
-    y = this->_torso.y();
+    x = this->_obj.x();
+    y = this->_obj.y();
 
     std::vector<std::vector<float>> pos = {
             {x,                   y + 2 * _size_torso},
@@ -268,7 +265,7 @@ list<Bullet *> Player::keyHandler() {
         if ((dy != 0) && ((y + dy > 1.0) || (y + dy < -1.0)))
             return {};
     }
-    _torso.move(dx, dy); /** move base object */
+    _obj.move(dx, dy); /** move base object */
     return bullets;
 }
 
@@ -285,8 +282,8 @@ void Enemy::randomMoveHandler() {
 
     float x, y;
     /** it rotated 180 */
-    x = this->_torso.x();
-    y = this->_torso.y();
+    x = this->_obj.x();
+    y = this->_obj.y();
 
     std::vector<std::vector<float>> pos = {
             {x,                   y + 2 * _size_torso},
@@ -302,7 +299,7 @@ void Enemy::randomMoveHandler() {
         }
     }
 
-    _torso.move(dx, 0);
+    _obj.move(dx, 0);
 
 }
 

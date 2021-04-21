@@ -22,20 +22,20 @@ typedef Square Bullet;
 typedef Square Item;
 
 class Ship {
+private:
+    char _path[10] = "ship.obj";
 protected:
-    // TODO: Model
     int _numLife;
     int _numBullet;
     float _size_torso;
     GroupNode *_baseScene; /* Group Node */
-    Triangle _head;
-    Square _torso;
+    Object _obj;
 
 public:
     Ship(int _numLife, float x, float y, float size_torso, GLclampf r, GLclampf g, GLclampf b, float degree,
          int numBullet = 1);
 
-    ~Ship() {};
+    ~Ship() = default;
 
     void display();
 
@@ -48,11 +48,11 @@ public:
 /* make bullet instance */
 
     float x() {
-        return _torso.x();
+        return _obj.x();
     }
 
     float y() {
-        return _torso.y();
+        return _obj.y();
     }
 
     int numLife() const {
