@@ -48,15 +48,3 @@ Model::Model(char *path) {
         _normal.push_back(vertex);
     }
 }
-
-void Model::display() {
-    this->display(_mode);
-}
-
-void Model::display(GLenum mode) {
-    glBegin(mode);
-    for(auto & v : _vertex) {
-        glVertex3f(v.x, v.y, v.z);
-    }
-    glEnd();
-}

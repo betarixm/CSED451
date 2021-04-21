@@ -2,6 +2,7 @@
 #define CSED451_ASSN1_SHAPE_H
 
 #include "Node.h"
+#include "Model.h"
 #include <GL/glew.h>
 #include <vector>
 
@@ -18,21 +19,22 @@ class Shape {
 private:
 
 protected:
-    TranslateNode * _translation;
-    RotationNode * _rotation;
-    VertexNode * _vertex;
-    GroupNode * _group; /* Shape Group Node */
+    TranslateNode * _translation{};
+    RotationNode * _rotation{};
+    VertexNode * _vertex{};
+    GroupNode * _group{}; /* Shape Group Node */
 
     std::vector<std::vector<float>> _modelFrame;
 
 public:
     Shape() = default;
 
-    Shape(float x, float y, float deg, GLenum mode, GLclampf r, GLclampf g, GLclampf b);
+    Shape(float x, float y, float z, float deg, GLenum mode, GLclampf r, GLclampf g, GLclampf b);
 
-    Shape(float x, float y, float deg, GLenum mode, GLclampf colorfv[]);
+    Shape(float x, float y, float z, float deg, GLenum mode, GLclampf colorfv[]);
 
-    Shape(float x, float y, float deg, float x_r, float y_r, float z_r, GLenum mode, GLclampf r, GLclampf g, GLclampf b);
+    Shape(float x, float y, float z, float deg, float x_r, float y_r, float z_r, GLenum mode, GLclampf r, GLclampf g,
+          GLclampf b);
 
     void move(float dx, float dy);
 
@@ -63,15 +65,6 @@ public:
     GroupNode* groupNode();
 
     std::vector<std::vector<float>> getPosition();
-};
-
-class GradientShape: public Shape {
-private:
-    GradientVertexNode * _vertex;
-public:
-    GradientShape(float x, float y, float deg, GLenum mode, vector<GLclampf*>& colorfv);;
-
-    void setVertex(std::vector<std::vector<float>> *mat) override;
 };
 
 class Triangle : public Shape {
@@ -109,8 +102,26 @@ public:
 
 };
 
-class GradientCircle: public GradientShape {
+class Object : public Shape {
+private:
+    Model _model;
 public:
-    GradientCircle(float x, float y, float length, float deg, vector<GLclampf*>& colorfv);
+    Object(char* path, float x, float y, float z, float deg, GLclampf r, GLclampf g, GLclampf b)
+    : Shape(x, y, z, deg, GL_TRIANGLES, r, g, b), _model(path) {
+        this->_modelFrame = _model.compat();
+        this->setVertex(&(this->_modelFrame));
+    }
+
+    Object(char* path, float x, float y, float z, float deg, GLclampf colorfv[])
+            : Shape(x, y, z, deg, GL_TRIANGLES, colorfv), _model(path) {
+        this->_modelFrame = _model.compat();
+        this->setVertex(&(this->_modelFrame));
+    }
+
+    Object(char* path, float x, float y, float z, float x_r, float y_r, float z_r, float deg, GLclampf r, GLclampf g, GLclampf b)
+            : Shape(x, y, z, deg, x_r, y_r, z_r, GL_TRIANGLES, r, g, b), _model(path) {
+        this->_modelFrame = _model.compat();
+        this->setVertex(&(this->_modelFrame));
+    }
 };
 #endif // CSED451_ASSN1_SHAPE_H

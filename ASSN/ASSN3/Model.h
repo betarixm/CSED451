@@ -23,15 +23,25 @@ private:
     vector<glm::vec3> _vertexBuf;
     vector<glm::vec2> _uvBuf;
     vector<glm::vec3> _normalBuf;
+    vector<vector<float>> _compat;
 
     GLenum _mode = GL_TRIANGLES;
 
 public:
     explicit Model(char* path);
 
-    void display();
+    vector<vector<float>> compat(){
+        if(_compat.empty()) {
+            vector<vector<float>> result;
+            for(int i = 0; i < _vertex.size(); i += 1) {
+                vector<float> v = {_vertex[i].x, _vertex[i].y, _vertex[i].z};
+                result.push_back(v);
+            }
+            _compat = result;
+        }
 
-    void display(GLenum mode);
+        return _compat;
+    }
 
 };
 

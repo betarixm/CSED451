@@ -5,7 +5,7 @@ using namespace std;
 
 /// @class Shape
 
-Shape::Shape(float x, float y, float deg, GLenum mode, GLclampf r, GLclampf g, GLclampf b)
+Shape::Shape(float x, float y, float z, float deg, GLenum mode, GLclampf r, GLclampf g, GLclampf b)
 {
 
     GLclampf colorfv[3];
@@ -26,7 +26,7 @@ Shape::Shape(float x, float y, float deg, GLenum mode, GLclampf r, GLclampf g, G
 
 }
 
-Shape::Shape(float x, float y, float deg, GLenum mode, GLclampf *colorfv)
+Shape::Shape(float x, float y, float z, float deg, GLenum mode, GLclampf colorfv[])
 {
     this->_translation = new TranslateNode(x, y, 0);
     this->_rotation = new RotationNode(deg);
@@ -39,7 +39,8 @@ Shape::Shape(float x, float y, float deg, GLenum mode, GLclampf *colorfv)
     this->_rotation->addSibling(this->_vertex);
 }
 
-Shape::Shape(float x, float y, float deg, float x_r, float y_r, float z_r, GLenum mode, GLclampf r, GLclampf g, GLclampf b)
+Shape::Shape(float x, float y, float z, float deg, float x_r, float y_r, float z_r, GLenum mode, GLclampf r, GLclampf g,
+             GLclampf b)
 {
     GLclampf colorfv[3];
     colorfv[R] = r;
@@ -195,7 +196,7 @@ std::vector<std::vector<float>> Shape::getPosition()
 /// @class Triangle @extends Shape
 
 Triangle::Triangle(float x, float y, float length, float deg, GLclampf r, GLclampf g, GLclampf b)
-:Shape(x, y, deg, GL_TRIANGLES, r, g, b)
+: Shape(x, y, 0, deg, GL_TRIANGLES, r, g, b)
 {
 
     this->_modelFrame = {
@@ -209,7 +210,7 @@ Triangle::Triangle(float x, float y, float length, float deg, GLclampf r, GLclam
 
 
 Triangle::Triangle(float x, float y, float length, float deg, GLclampf *colorfv)
-:Shape(x, y, deg, GL_TRIANGLES, colorfv)
+: Shape(x, y, 0, deg, GL_TRIANGLES, colorfv)
 {
     this->_modelFrame = {
             {              0, -1 * length /      SQRT_3 },
@@ -221,7 +222,7 @@ Triangle::Triangle(float x, float y, float length, float deg, GLclampf *colorfv)
 }
 
 Triangle::Triangle(float x, float y, float length, float x_r, float y_r, float z_r, float deg, GLclampf r, GLclampf g, GLclampf b)
-        :Shape(x, y, deg, x_r, y_r, z_r, GL_TRIANGLES, r, g, b)
+        : Shape(x, y, 0, deg, x_r, y_r, z_r, GL_TRIANGLES, r, g, b)
 {
     this->_modelFrame = {
             {              0, -1 * length /      SQRT_3 },
@@ -235,7 +236,7 @@ Triangle::Triangle(float x, float y, float length, float x_r, float y_r, float z
 /// @class Square @extends Shape
 
 Square::Square(float x, float y, float width, float height, float deg, GLclampf r, GLclampf g, GLclampf b)
-:Shape(x, y, deg, GL_QUADS, r, g, b)
+: Shape(x, y, 0, deg, GL_QUADS, r, g, b)
 {
     this->_width = width;
     this->_height = height;
@@ -251,7 +252,7 @@ Square::Square(float x, float y, float width, float height, float deg, GLclampf 
 }
 
 Square::Square(float x, float y, float width, float height, float deg, GLclampf colorfv[])
-:Shape(x, y, deg, GL_QUADS, colorfv)
+: Shape(x, y, 0, deg, GL_QUADS, colorfv)
 {
     this->_width = width;
     this->_height = height;
@@ -267,7 +268,7 @@ Square::Square(float x, float y, float width, float height, float deg, GLclampf 
 }
 
 Square::Square(float x, float y, float width, float height, float x_r, float y_r, float z_r, float deg, GLclampf r, GLclampf g, GLclampf b)
-        :Shape(x, y, deg, x_r, y_r, z_r, GL_QUADS, r, g, b)
+        : Shape(x, y, 0, deg, x_r, y_r, z_r, GL_QUADS, r, g, b)
 {
     this->_width = width;
     this->_height = height;
@@ -294,7 +295,7 @@ float Square::getHeight()
 
 
 Circle::Circle(float x, float y, float length, float deg,  GLclampf r, GLclampf g, GLclampf b)
-:Shape(x, y, deg, GL_POLYGON, r, g, b)
+: Shape(x, y, 0, deg, GL_POLYGON, r, g, b)
 {
     this->_modelFrame = {};
 
@@ -309,7 +310,7 @@ Circle::Circle(float x, float y, float length, float deg,  GLclampf r, GLclampf 
 }
 
 Circle::Circle(float x, float y, float length, float deg, GLclampf colorfv[])
-:Shape(x, y, deg, GL_POLYGON, colorfv)
+: Shape(x, y, 0, deg, GL_POLYGON, colorfv)
 {
     this->_modelFrame = {};
 
@@ -324,7 +325,7 @@ Circle::Circle(float x, float y, float length, float deg, GLclampf colorfv[])
 }
 
 Circle::Circle(float x, float y, float length, float x_r, float y_r, float z_r, float deg,  GLclampf r, GLclampf g, GLclampf b)
-        :Shape(x, y, deg, x_r, y_r, z_r, GL_POLYGON, r, g, b)
+        : Shape(x, y, 0, deg, x_r, y_r, z_r, GL_POLYGON, r, g, b)
 {
     this->_modelFrame = {};
 
@@ -338,31 +339,4 @@ Circle::Circle(float x, float y, float length, float x_r, float y_r, float z_r, 
     this->setVertex(&(this->_modelFrame));
 }
 
-GradientShape::GradientShape(float x, float y, float deg, GLenum mode, vector<GLclampf *> &colorfv) {
-    this->_translation = new TranslateNode(x, y, 0);
-    this->_rotation = new RotationNode(deg);
-    this->_vertex = new GradientVertexNode(nullptr, mode, colorfv);
 
-    this->_group = new GroupNode;
-    /** Group < T R V > */
-    this->_group->addChild(this->_translation);
-    this->_translation->addSibling(this->_rotation);
-    this->_rotation->addSibling(this->_vertex);
-}
-
-void GradientShape::setVertex(std::vector<std::vector<float>> *mat) {
-    this->_vertex->set(mat);
-}
-
-GradientCircle::GradientCircle(float x, float y, float length, float deg, vector<GLclampf *> &colorfv)
-        :GradientShape(x, y, deg, GL_POLYGON, colorfv) {
-    this->_modelFrame = {};
-    for(int i = 0; i < 360; i++){
-        std::vector<float> ele = {
-                length * (float)cos((float)i * PI / 180),
-                length * (float)sin((float)i * PI / 180)
-        };
-        this->_modelFrame.push_back(ele);
-    }
-    this->setVertex(&(this->_modelFrame));
-}
