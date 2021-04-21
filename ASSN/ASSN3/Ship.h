@@ -1,7 +1,6 @@
-//
-// Created by 최은수 on 2021/03/04.
-//
-#include<iostream>
+#ifndef CSED451_SHIP_H
+#define CSED451_SHIP_H
+
 #include <GL/glew.h>
 #include <GL/freeglut.h>
 #include <glm/vec3.hpp>
@@ -19,29 +18,18 @@
 
 using namespace std;
 
-#ifndef CSED451_SHIP_H
-#define CSED451_SHIP_H
-
-#endif //CSED451_SHIP_H
-
-#define MAX_WINDOW 1.0
-
 typedef Square Bullet;
 typedef Square Item;
 
-#define MAX_ROTATION 45
-
-
 class Ship {
 protected:
+    // TODO: Model
     int _numLife;
     int _numBullet;
     float _size_torso;
     GroupNode *_baseScene; /* Group Node */
     Triangle _head;
-    Square _torso, _lwing, _rwing, _lcanon, _rcanon;
-
-    float _rotateDir;
+    Square _torso;
 
 public:
     Ship(int _numLife, float x, float y, float size_torso, GLclampf r, GLclampf g, GLclampf b, float degree,
@@ -50,7 +38,6 @@ public:
     ~Ship() {};
 
     void display();
-
 
     bool hit(Bullet *);
 
@@ -73,8 +60,6 @@ public:
     }
 
     void mutateColor(GLclampf r, GLclampf g, GLclampf b);
-
-    void wingMove();
 
 };
 
@@ -122,6 +107,4 @@ public:
 
 };
 
-
-
-
+#endif //CSED451_SHIP_H

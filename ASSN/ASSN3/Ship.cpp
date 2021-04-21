@@ -19,34 +19,18 @@ extern list<Bullet *> player_bullets;
 Ship::Ship(int _numLife, float x, float y, float size_torso, GLclampf r, GLclampf g, GLclampf b, float degree,
            int numBullet)
         : _head(0, size_torso + sqrt(3) * size_torso / 6, size_torso, 180, r, g, b),
-          _torso(x, y, size_torso, 2 * size_torso, degree, r, g, b),
-          _lwing(0, -size_torso, size_torso, 2 * size_torso, -45, r, g, b),
-          _rwing(0, -size_torso, size_torso, 2 * size_torso, 45, r, g, b),
-          _lcanon(0, -size_torso * 2, size_torso, 2 * size_torso, -135, r, g, b),
-          _rcanon(0, -size_torso * 2, size_torso, 2 * size_torso, 135, r, g, b) {
+          _torso(x, y, size_torso, 2 * size_torso, degree, r, g, b) {
     this->_numLife = _numLife;
-    this->_baseScene = new GroupNode;
     this->_size_torso = size_torso;
     this->_numBullet = numBullet;
-    this->_rotateDir = 1;
 
+    // TODO: add object child
     this->_baseScene->addChild(this->_torso.groupNode());
-    this->_torso.groupNode()->addToLast(this->_head.groupNode());
-    this->_head.groupNode()->addSibling(this->_lwing.groupNode());
-    this->_lwing.groupNode()->addToLast(this->_lcanon.groupNode());
-    this->_lwing.groupNode()->addSibling(this->_rwing.groupNode());
-    this->_rwing.groupNode()->addToLast(this->_rcanon.groupNode());
-
-    /** TRT-1 */
-    this->_lwing.pivot_rotate(0.0, size_torso, 0.0);
-    this->_lcanon.pivot_rotate(0.0, size_torso, 0.0);
-    this->_rwing.pivot_rotate(0.0, size_torso, 0.0);
-    this->_rcanon.pivot_rotate(0.0, size_torso, 0.0);
 
 }
 
 void Ship::display() {
-    this->_baseScene->display();
+    // TODO: display model
 }
 
 
@@ -108,7 +92,7 @@ list<Bullet *> Ship::shot() {
     list<Bullet *> result;
 
     if (numBullet % 2 != 0) {
-        Bullet *b = new Bullet(x, y, 0.02, 0.02, 0, color);
+        auto *b = new Bullet(x, y, 0.02, 0.02, 0, color);
         numBullet -= 1;
         result.push_back(b);
     }
@@ -118,9 +102,9 @@ list<Bullet *> Ship::shot() {
     degree = 90.0 / (numBullet / 2 + 1);
 
     for (int i = 1; i <= numBullet / 2; i++) {
-        Bullet *b = new Bullet(0, 0, 0.02, 0.02, 0, color);
-        RotationNode *r = new RotationNode(degree * i);
-        TranslateNode *t = new TranslateNode(x, y, 0);
+        auto *b = new Bullet(0, 0, 0.02, 0.02, 0, color);
+        auto *r = new RotationNode(degree * i);
+        auto *t = new TranslateNode(x, y, 0);
         r->addSibling(b->groupNode()->child());
         t->addSibling(r);
         b->groupNode()->addChild(t);
@@ -143,28 +127,7 @@ list<Bullet *> Ship::shot() {
 }
 
 void Ship::mutateColor(GLclampf r, GLclampf g, GLclampf b) {
-    _head.mutateColor(r, g, b);
-    _torso.mutateColor(r, g, b);
-    _lwing.mutateColor(r, g, b);
-    _lcanon.mutateColor(r, g, b);
-    _rwing.mutateColor(r, g, b);
-    _rcanon.mutateColor(r, g, b);
-}
-
-void Ship::wingMove() {
-    if (_rwing.degree() - 45 + 1 > MAX_ROTATION) {
-        _rotateDir = -1.0;
-    }
-    if (_rcanon.degree() - 45 - 1 < 0) {
-        _rotateDir = +1.0;
-    }
-
-    _rwing.rotate(_rotateDir);
-    _rcanon.rotate(_rotateDir);
-    _lwing.rotate(-_rotateDir);
-    _lcanon.rotate(-_rotateDir);
-
-
+    // TODO:: Set Color
 }
 
 /**
@@ -197,10 +160,7 @@ void Player::HitBullet(list<Bullet *> *bullet_list) {
                     delete (bullet);
                 } else
                     ++itr;
-
-
 /* 여러대 맞아도 목숨 다 깎이면 게임 종료 */
-
                 if (_numLife == 0)
                     return;
             }

@@ -201,12 +201,10 @@ void timerBulletMoveHit(int value)
     if(game->player()){
         game->player()->HitBullet(&enemy_bullets);
         game->player()->HitItem(&item_list);
-        game->player()->wingMove();
     }
 
     if(game->enemy()){
         game->enemy()->checkHit(&player_bullets);
-        game->enemy()->wingMove();
     }
 
     glutTimerFunc(30, timerBulletMoveHit, 1);
