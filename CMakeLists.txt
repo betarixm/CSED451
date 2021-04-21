@@ -35,9 +35,17 @@ ENDIF (APPLE)
 # ASSN1
 add_executable(ASSN1 ASSN/ASSN1/main.cpp ASSN/ASSN1/Shape.cpp ASSN/ASSN1/Shape.h ASSN/ASSN1/Ship.cpp ASSN/ASSN1/Ship.h ASSN/ASSN1/Game.cpp ASSN/ASSN1/Game.h)
 target_link_libraries(ASSN1 ${EXTRA_LIBS})
+
 # ASSN2
 file(GLOB ASSN2_H ASSN/ASSN2/*.h)
 file(GLOB ASSN2_CPP ASSN/ASSN2/*.cpp)
 add_executable(ASSN2 ${ASSN2_CPP} ${ASSN2_H})
 
 target_link_libraries(ASSN2 ${EXTRA_LIBS})
+
+# ASSN3
+file(GLOB ASSN3_H ASSN/ASSN2/*.h)
+file(GLOB ASSN3_CPP ASSN/ASSN2/*.cpp)
+add_executable(ASSN3 ${ASSN3_CPP} ${ASSN3_H})
+
+target_link_libraries(ASSN3 ${EXTRA_LIBS})
