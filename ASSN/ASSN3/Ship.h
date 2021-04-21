@@ -44,17 +44,20 @@ protected:
     float _rotateDir;
 
 public:
-    Ship(int _numLife, float x, float y, float size_torso, GLclampf r, GLclampf g, GLclampf b, float degree, int numBullet=1);
+    Ship(int _numLife, float x, float y, float size_torso, GLclampf r, GLclampf g, GLclampf b, float degree,
+         int numBullet = 1);
 
     ~Ship() {};
 
     void display();
 
 
-    bool hit(Bullet*);
+    bool hit(Bullet *);
+
 /* check whether ship hits bullet */
 
-    list<Bullet*> shot();
+    list<Bullet *> shot();
+
 /* make bullet instance */
 
     float x() {
@@ -65,7 +68,7 @@ public:
         return _torso.y();
     }
 
-    int numLife() const{
+    int numLife() const {
         return this->_numLife;
     }
 
@@ -77,19 +80,20 @@ public:
 
 class Player : public Ship {
 private:
-    std::array<bool, 0xff> inputKey = {false, };
+    std::array<bool, 0xff> inputKey = {false,};
 public:
     Player(int _numLife, float x, float y, float size_torso, GLclampf r, GLclampf g, GLclampf b, float degree)
-    : Ship(_numLife, x, y, size_torso, r, g, b, degree){};
+            : Ship(_numLife, x, y, size_torso, r, g, b, degree) {};
 
-    void HitBullet(list<Bullet*>*);
-    void HitItem(list<Item*>*);
+    void HitBullet(list<Bullet *> *);
+
+    void HitItem(list<Item *> *);
 
 
-    list<Bullet *>keyHandler();
+    list<Bullet *> keyHandler();
 
-    list<Bullet *> keyDown(unsigned char key){
-        if(!(0 <= key && key < 0xff)){
+    list<Bullet *> keyDown(unsigned char key) {
+        if (!(0 <= key && key < 0xff)) {
             return {nullptr};
         }
 
@@ -97,8 +101,8 @@ public:
         return this->keyHandler();
     }
 
-    void keyUp(unsigned char key){
-        if(!(0 <= key && key < 0xff)){
+    void keyUp(unsigned char key) {
+        if (!(0 <= key && key < 0xff)) {
             return;
         }
         this->inputKey[key] = false;
@@ -109,9 +113,12 @@ public:
 
 class Enemy : public Ship {
 public:
-    Enemy(int _numLife, float x, float y, float length, GLclampf r, GLclampf g, GLclampf b, float degree, int numBullet=1): Ship(_numLife, x, y, length, r, g, b, degree, numBullet){};
+    Enemy(int _numLife, float x, float y, float length, GLclampf r, GLclampf g, GLclampf b, float degree,
+          int numBullet = 1) : Ship(_numLife, x, y, length, r, g, b, degree, numBullet) {};
+
     void randomMoveHandler();
-    void checkHit(list<Bullet*>*);
+
+    void checkHit(list<Bullet *> *);
 
 };
 
