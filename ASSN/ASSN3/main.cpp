@@ -52,9 +52,6 @@ void renderScene() {
             (*itr)->display();
     }
 
-    sphere->display();
-    cube->display();
-
     glutSwapBuffers();
 }
 /**
