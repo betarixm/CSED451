@@ -10,6 +10,7 @@
 
 char mode = 'n'; /* n : normal,  f: fail, c: king-god */
 bool isHiddenLineRemoval = false;
+int frontCamera = -1;
 static list<Bullet*> enemy_bullets;
 list<Bullet*> player_bullets;
 static list<Item*> item_list;
@@ -140,6 +141,18 @@ void onKeyDown(unsigned char key, int x, int y)
 
         case 'r':
             isHiddenLineRemoval = !isHiddenLineRemoval;
+            break;
+
+        case 'v':
+            frontCamera = -1*frontCamera;
+            glMatrixMode(GL_MODELVIEW);
+            glLoadIdentity();
+
+            x = game->player()->x();
+            y = game->player()->y();
+
+            gluLookAt(x, y + frontCamera*0.05, 0.2, x, y+0.7, 0.1, 0, 0, 1);
+
 
         default:
             break;
@@ -149,8 +162,8 @@ void onKeyDown(unsigned char key, int x, int y)
 void onKeyUp(unsigned char key, int x, int y){
     if(key == 32) {
         key = 'S';
+        game->player()->keyUp(key);
     }
-    game->player()->keyUp(key);
 }
 /**
  * @brief 일정초마다 총알 이동 및 충돌 체크
@@ -321,7 +334,7 @@ int main(int argc, char **argv) {
     glMatrixMode(GL_MODELVIEW);
     glLoadIdentity();
     gluLookAt(0.60, -0.78, 0.2, 0.60, 0, 0.1, 0, 0, 1);
-    //gluLookAt(0, 0, 1, 0, 0, 0, 0, 0, 1);
+
     glClearColor(0.0f, 0.0f, 0.0f, 1.0f);
     glewInit();
     glutMainLoop();

@@ -9,6 +9,7 @@
  * n : normal, f : fail, c : king-god
  */
 extern char mode;
+extern int frontCamera;
 #define dist 0.05  /** ship 움직일때 거단위 */
 #define PIE 3.1415926
 #define MAX_BULLET 5
@@ -231,42 +232,44 @@ list<Bullet *> Player::keyHandler() {
         }
     }
 
-    if (this->inputKey['U']) {
-        dy = dist;
-    }
+    if(this->inputKey['U'] || this->inputKey['D'] ||this->inputKey['L'] || this->inputKey['R'] ) {
+        if (this->inputKey['U']) {
+            dy = dist;
+        }
 
-    if (this->inputKey['D']) {
-        dy = -1 * dist;
-    }
+        if (this->inputKey['D']) {
+            dy = -1 * dist;
+        }
 
-    if (this->inputKey['L']) {
-        dx = -1 * dist;
-    }
+        if (this->inputKey['L']) {
+            dx = -1 * dist;
+        }
 
-    if (this->inputKey['R']) {
-        dx = dist;
-    }
+        if (this->inputKey['R']) {
+            dx = dist;
+        }
 
 
 /** window 밖으로 넘어가는지 체크 */
 
-    for (int i = 0; i < 4; i++) {
-        float x = pos[i][0], y = pos[i][1];
+        for (int i = 0; i < 4; i++) {
+            float x = pos[i][0], y = pos[i][1];
 
-        if ((dx != 0) && ((x + dx > 1.0) || (x + dx < -1.0)))
-            return {};
-        if ((dy != 0) && ((y + dy > 1.0) || (y + dy < -1.0)))
-            return {};
+            if ((dx != 0) && ((x + dx > 1.0) || (x + dx < -1.0)))
+                return {};
+            if ((dy != 0) && ((y + dy > 1.0) || (y + dy < -1.0)))
+                return {};
+        }
+        _obj.move(dx, dy); /** move base object */
+
+        x = this->_obj.x();
+        y = this->_obj.y();
+
+
+        glMatrixMode(GL_MODELVIEW);
+        glLoadIdentity();
+        gluLookAt(x, y + frontCamera*0.05, 0.2, x, y+0.7, 0.1, 0, 0, 1);
     }
-    _obj.move(dx, dy); /** move base object */
-
-    x = this->_obj.x();
-    y = this->_obj.y();
-
-
-    glMatrixMode(GL_MODELVIEW);
-    glLoadIdentity();
-    gluLookAt(x, y - 0.05 , 0.2, x, y+0.7, 0.1, 0, 0, 1);
     return bullets;
 }
 
