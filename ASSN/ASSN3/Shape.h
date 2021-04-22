@@ -142,14 +142,11 @@ public:
 
 class Sphere : public Shape {
 private:
-    float _radius;
-    float _sector, _stack;
+    void init(int lat, int lon, float radius);
 public:
-    Sphere(float x, float y, float z, float radius, int sector, int stack, float deg, GLclampf r, GLclampf g, GLclampf b);
-    Sphere(float x, float y, float z, float radius, int sector, int stack, float deg, GLclampf colorfv[]);
-    float radius();
-    int sector();
-    int stack();
+    Sphere(int lat, int lon, float radius, float x, float y, float z, float deg, GLclampf colorfv[]);
+
+    Sphere(int lat, int lon, float radius, float x, float y, float z, float deg, GLclampf r, GLclampf g, GLclampf b);
 };
 
 

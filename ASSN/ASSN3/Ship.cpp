@@ -88,7 +88,7 @@ list<Bullet *> Ship::shot() {
     list<Bullet *> result;
 
     if (numBullet % 2 != 0) {
-        auto *b = new Sphere(x, y, 0, 0.01, 50, 50, 0, 1,0,0);
+        auto *b = new Sphere(50, 50, 0.01f, x, y, 0, 0, 1, 0, 0);
         b->setDirection(0, 0.1, 0);
         numBullet -= 1;
         result.push_back(b);
