@@ -46,6 +46,8 @@ target_link_libraries(ASSN2 ${EXTRA_LIBS})
 # ASSN3
 file(GLOB ASSN3_H ASSN/ASSN3/*.h)
 file(GLOB ASSN3_CPP ASSN/ASSN3/*.cpp)
+file(COPY ASSN/ASSN3/model/ship.obj DESTINATION "${CMAKE_BINARY_DIR}")
+
 add_executable(ASSN3 ${ASSN3_CPP} ${ASSN3_H})
 
 target_link_libraries(ASSN3 ${EXTRA_LIBS})
