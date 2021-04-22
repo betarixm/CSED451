@@ -296,6 +296,7 @@ int main(int argc, char **argv) {
     glEnable(GL_DEPTH_TEST);
     glEnable(GL_BLEND);
     glEnable(GL_LINE_SMOOTH);
+    glPolygonMode(GL_FRONT_AND_BACK,GL_LINE);
 
     glDepthFunc(GL_LEQUAL);
     glShadeModel(GL_SMOOTH);
