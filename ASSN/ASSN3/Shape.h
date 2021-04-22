@@ -17,6 +17,7 @@
 
 class Shape {
 private:
+    std::vector<float> _direction = {0, 0, 0};
 
 protected:
     TranslateNode * _translation{};
@@ -65,6 +66,10 @@ public:
     GroupNode* groupNode();
 
     std::vector<std::vector<float>> getPosition(int num_pos=1);
+
+    void setDirection(float x, float y, float z);
+
+    std::vector<float> direction();
 };
 
 class GradientShape: public Shape {

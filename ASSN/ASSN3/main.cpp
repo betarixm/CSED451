@@ -159,28 +159,21 @@ void timerBulletMoveHit(int value)
 {
     list<Bullet*>::iterator itr;
     Bullet* bullet;
-    vector<vector<float>> pos;
+    vector<float> dir;
     float x, y;
 
     itr = enemy_bullets.begin();
     while(itr != enemy_bullets.end())
     {
         bullet = *itr;
-        bullet->move(0, -0.1);  /** window 밖으로 나가는 것 방지 */
-        pos = bullet->getPosition(bullet->sector());
-        x = pos[0][0];
-        y = pos[0][1];
+        dir = bullet->direction();
+        bullet->move(-1*dir[0], -1*dir[1]);  /** window 밖으로 나가는 것 방지 */
+        x = bullet->x();
+        y = bullet->y();
 
         if ((x > 1.0) || (x < -1.0))
         {
-            GroupNode * g = dynamic_cast<GroupNode *> ((*itr)->groupNode());
-            TranslateNode *t = dynamic_cast<TranslateNode *> (g->child());
-            float w_unit = bullet->radius();
-
-            t->set(((x > 0.0) ? 0.9 : -0.9)  , y , 0);
-            RotationNode* rn = dynamic_cast<RotationNode *>(t->sibling());
-            rn->set(rn->degree() * -1);
-            dynamic_cast<TranslateNode *>(rn->sibling())->set(0, 0, 0);
+            bullet->setDirection(-1*dir[0], dir[1], 0);
         }
         if(y < -1.0)
         {
@@ -197,18 +190,14 @@ void timerBulletMoveHit(int value)
         bullet = *itr;
         bullet->move(0, +0.1);
 
-        pos = bullet->getPosition(bullet->sector());
-        x = pos[0][0];
-        y = pos[0][1];
+        dir = bullet->direction();
+        bullet->move(dir[0], dir[1]);  /** window 밖으로 나가는 것 방지 */
+        x = bullet->x();
+        y = bullet->y();
 
         if ((x > 1.0) || (x < -1.0))
         {
-            GroupNode * g = dynamic_cast<GroupNode *> ((*itr)->groupNode());
-            TranslateNode *t = dynamic_cast<TranslateNode *> (g->child());
-            t->set(((x > 0.0) ? 0.9 : -0.9)  , y , 0);
-            RotationNode* rn = dynamic_cast<RotationNode *>(t->sibling());
-            rn->set(rn->degree() * -1);
-            dynamic_cast<TranslateNode *>(rn->sibling())->set(0, 0, 0);
+            bullet->setDirection(-1*dir[0], dir[1], 0);
         }
 
         if(y > 1.0)           /** window 밖으로 나가는 것 방지 */

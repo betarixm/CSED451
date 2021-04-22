@@ -189,6 +189,18 @@ std::vector<std::vector<float>> Shape::getPosition(int num_pos)
     return result;
 }
 
+void Shape::setDirection(float x, float y, float z)
+{
+    this->_direction[0] = x;
+    this->_direction[1] = y;
+    this->_direction[2] = z;
+}
+
+std::vector<float> Shape::direction()
+{
+    return this->_direction;
+}
+
 
 
 /// @class Triangle @extends Shape

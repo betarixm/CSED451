@@ -88,33 +88,23 @@ list<Bullet *> Ship::shot() {
 
     if (numBullet % 2 != 0) {
         auto *b = new Sphere(x, y, 0, 0.01, 50, 50, 0, 1,0,0);
+        b->setDirection(0, 0.1, 0);
         numBullet -= 1;
         result.push_back(b);
     }
     if (numBullet == 0)
         return result;
 
-    degree = 90.0 / (numBullet / 2 + 1);
+    degree = (90.0 / (numBullet / 2 + 1))*PIE/180;
 
     for (int i = 1; i <= numBullet / 2; i++) {
-        auto *b = new Sphere(0, 0, 0, 0.01, 50, 50, 0, 1,0,0);
-        auto *r = new RotationNode(degree * i);
-        auto *t = new TranslateNode(x, y, 0);
-        r->addSibling(b->groupNode()->child());
-        t->addSibling(r);
-        b->groupNode()->addChild(t);
-        result.push_back(b);
-        /** Head 로 이동 T -> 발사각도로 좌표계 회전 R -> bullet 이동 y 움직임 T - */
-
-        /** Rotate model frame coordinate to direction of bullet */
-        b = new Sphere(0, 0, 0, 0.01, 50, 50, 0, 1,0,0);
-        r = new RotationNode(-degree * i);
-        t = new TranslateNode(x, y, 0);
-        r->addSibling(b->groupNode()->child());
-        t->addSibling(r);
-        b->groupNode()->addChild(t);
+        auto *b = new Sphere(x, y, 0, 0.01, 50, 50, 0, 1,0,0);
+        b->setDirection(0.1*cos(degree*i), 0.1*sin(degree*i), 0);
         result.push_back(b);
 
+        b = new Sphere(x, y, 0, 0.01, 50, 50, 0, 1,0,0);
+        b->setDirection(-0.1*cos(degree*i), 0.1*sin(degree*i), 0);
+        result.push_back(b);
     }
 
     return result;
