@@ -58,7 +58,7 @@ public:
 
     float degree() const;
 
-    void display();
+    void display(bool isBlack);
 
     void pivot_rotate(float dx, float dy, float dz);
 

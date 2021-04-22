@@ -43,7 +43,7 @@ public:
 
     void tick();
 
-    void display();
+    void display(bool isBlack);
 };
 
 

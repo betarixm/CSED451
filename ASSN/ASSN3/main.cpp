@@ -18,42 +18,46 @@ vector<Stellar*> stellar_vec;
 
 Game* game;
 Grid* grid;
+Grid* gameGrid;
 
 Sphere *sphere;
 Sphere *cube;
+
+void microRenderScene(bool isBlack) {
+    list<Bullet*>::iterator itr;
+    game->display(isBlack);
+
+    if(!(game->isGameOver() || game->isGameWin()) ) {
+        grid->display(isBlack);
+        for(auto & i : stellar_vec) {
+            i->display(isBlack);
+        }
+        for (itr = enemy_bullets.begin(); itr != enemy_bullets.end(); itr++)
+            (*itr)->display(isBlack);
+        for (itr = player_bullets.begin(); itr != player_bullets.end(); itr++)
+            (*itr)->display(isBlack);
+        for (itr = item_list.begin(); itr != item_list.end(); itr++)
+            (*itr)->display(isBlack);
+    }
+}
 
 /**
  * @brief 우주선/총알 display by Double buffer
  */
 void renderScene() {
-    list<Bullet*>::iterator itr;
 
     glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT);
 
+    glPolygonMode(GL_FRONT_AND_BACK, GL_LINE);
+    microRenderScene(false);
+
     if(isHiddenLineRemoval) {
-        glEnable(GL_CULL_FACE);
-        glCullFace(GL_BACK);
-    } else {
-        glDisable(GL_CULL_FACE);
+        glPolygonMode(GL_FRONT_AND_BACK, GL_FILL);
+        glEnable(GL_POLYGON_OFFSET_FILL);
+        glPolygonOffset(1.0, 5.0);
+        microRenderScene(true);
+        glDisable(GL_POLYGON_OFFSET_FILL);
     }
-
-    game->display();
-
-    if(!(game->isGameOver() || game->isGameWin()) ) {
-        grid->display();
-        for(auto & i : stellar_vec) {
-            i->display();
-        }
-        for (itr = enemy_bullets.begin(); itr != enemy_bullets.end(); itr++)
-            (*itr)->display();
-        for (itr = player_bullets.begin(); itr != player_bullets.end(); itr++)
-            (*itr)->display();
-        for (itr = item_list.begin(); itr != item_list.end(); itr++)
-            (*itr)->display();
-    }
-
-    sphere->display();
-    cube->display();
 
     glutSwapBuffers();
 }
@@ -295,7 +299,7 @@ void timerStellar(int value) {
 
 int main(int argc, char **argv) {
     game = new Game();
-    grid = new Grid(0.1f, 0.1f, 100, 100, 0, 0, 0.5f, 0, 1.0f, 1.0f, 1.0f);
+    grid = new Grid(0.1f, 0.1f, 100, 100, 0, 0, -0.9f, 0, 1.0f, 1.0f, 1.0f);
     initStellar();
 
     glutInit(&argc, argv);
@@ -314,12 +318,11 @@ int main(int argc, char **argv) {
     glutKeyboardFunc(onKeyDown);
     glutKeyboardUpFunc(onKeyUp);
 
+    glDepthMask(GL_TRUE);
     glEnable(GL_DEPTH_TEST);
     glEnable(GL_BLEND);
     glEnable(GL_LINE_SMOOTH);
-    glPolygonMode(GL_FRONT_AND_BACK,GL_LINE);
-
-    glDepthFunc(GL_LEQUAL);
+    glDepthFunc(GL_LESS);
     glShadeModel(GL_SMOOTH);
     glBlendFunc(GL_SRC_ALPHA, GL_ONE_MINUS_SRC_ALPHA); // https://flex.phys.tohoku.ac.jp/texi/glut/glutStrokeCharacter.3xglut.html
 
