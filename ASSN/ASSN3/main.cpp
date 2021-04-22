@@ -18,7 +18,6 @@ vector<Stellar*> stellar_vec;
 
 Game* game;
 Grid* grid;
-Grid* gameGrid;
 
 Sphere *sphere;
 Sphere *cube;
