@@ -6,12 +6,14 @@
 
 extern vector<Stellar*> stellar_vec;
 
-Orb::Orb(float x, float y, float length, vector<GLclampf*> &colorfv) {
-    this->_planet = new GradientCircle(x, y, length, 0.0f, colorfv);
+Orb::Orb(float x, float y, float z, float length, GLclampf colorfv[]) {
+
+    this->_planet = new Sphere(x, y, z, length, 50, 50, 0, colorfv);
+
 }
 
-Orb::Orb(float x, float y, float length, vector<GLclampf*> &colorfv, Orb *satellite, float distance) {
-    this->_planet = new GradientCircle(x, y, length, 0.0f, colorfv);
+Orb::Orb(float x, float y, float z, float length, GLclampf colorfv[], Orb *satellite, float distance) {
+    this->_planet = new Sphere(x, y, z, length, 50, 50, 0, colorfv);
     this->addSatellite(satellite, distance);
 }
 
@@ -28,24 +30,24 @@ GroupNode *Orb::groupNode() const {
     return this->planet()->groupNode();
 }
 
-GradientCircle *Orb::planet() const {
+Sphere *Orb::planet() const {
     return this->_planet;
 }
 
-Stellar::Stellar(float x, float y, array<float, 3> &length, array<float, 2> &distance,
-                 array<vector<GLclampf*>, 3> &colorfv) {
+Stellar::Stellar(float x, float y, float z, array<float, 3> &length, array<float, 2> &distance,
+                 vector<GLclampf *> colorfv) {
     this->_baseScene = new GroupNode;
     this->_baseTranslate = new TranslateNode;
 
     for(int i = 0; i < 3; i++){
-        this->orbs[i] = new Orb(0, 0, length[i], colorfv[i]);
+        this->orbs[i] = new Orb(0, 0, 0, length[i], colorfv[i]);
     }
 
     for(int i = 1; i < 3; i++) {
         this->orbs[2 - i]->addSatellite(this->orbs[2 - i + 1], distance[2 - i]);
     }
 
-    this->_baseTranslate->move(x, y, 0.2);
+    this->_baseTranslate->move(x, y, z);
 
     this->_baseScene->addChild(this->_baseTranslate);
     this->_baseTranslate->addChild(this->orbs[0]->groupNode());
@@ -83,6 +85,7 @@ vector<GLclampf*> circleGradient(array<GLclampf, 3>& start, array<GLclampf, 3>& 
 }
 
 void initStellar() {
+    /**
     array<GLclampf, 3> red = {1, 0, 0};
     array<GLclampf, 3> green = {0, 1, 0};
     array<GLclampf, 3> blue = {0, 0, 1};
@@ -110,5 +113,33 @@ void initStellar() {
 
     for(int i = 0; i < 2; i++){
         stellar_vec.push_back(new Stellar(-0.61f + (float)i, -0.5f + (float)i, length[i], distance[i], colorfv[i]));
+    }
+     */
+
+    GLclampf color[3] = {0,0,1};
+    array<vector<GLclampf *>, 2>colorfv;
+    vector<GLclampf *> color_vector;
+    int i;
+
+    array<array<float, 3>, 2> length = {
+            array<float, 3>{0.15, 0.07, 0.03},
+            array<float, 3>{0.2, 0.10, 0.05},
+    };
+
+    array<array<float, 2>, 2> distance = {
+            array<float, 2>{0.4, 0.15},
+            array<float, 2>{0.5, 0.2}
+    };
+
+    for(i = 0; i <3; i++) {
+        color[0] = i*0.3;
+        color[1] = 0.3 + i * 0.2;
+        color[2] = 0.5 + i *0.1;
+        color_vector.push_back(color);
+    }
+
+
+    for(int i = 0; i < 2; i++){
+        stellar_vec.push_back(new Stellar(-0.61f + (float)i, -0.5f + (float)i, -0.5f + (float)i, length[i], distance[i], color_vector));
     }
 }
