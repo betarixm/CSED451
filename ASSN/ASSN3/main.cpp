@@ -17,6 +17,7 @@ static list<Item*> item_list;
 vector<Stellar*> stellar_vec;
 
 Game* game;
+Grid* grid;
 
 /**
  * @brief 우주선/총알 display by Double buffer
@@ -36,6 +37,7 @@ void renderScene() {
     game->display();
 
     if(!(game->isGameOver() || game->isGameWin()) ) {
+        grid->display();
         for(auto & i : stellar_vec) {
             i->display();
         }
@@ -287,6 +289,7 @@ void timerStellar(int value) {
 
 int main(int argc, char **argv) {
     game = new Game();
+    grid = new Grid(0.1f, 0.1f, 100, 100, 0, 0, 0.5f, 0, 1.0f, 1.0f, 1.0f);
     initStellar();
 
     glutInit(&argc, argv);

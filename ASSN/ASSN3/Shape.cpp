@@ -386,3 +386,21 @@ Object::Object(char *path, float x, float y, float z, float x_r, float y_r, floa
     this->_modelFrame = _model.compat();
     this->setVertex(&(this->_modelFrame));
 }
+
+Grid::Grid(float width, float height, int row, int col, float x, float y, float z, float deg, GLclampf r, GLclampf g,
+           GLclampf b) : Shape(x, y, z, deg, GL_LINES, r, g, b){
+    float xAdj = - width * (float)col / 2.0f;
+    float yAdj = - height * (float)row / 2.0f;
+
+    for(int i = 0; i <= row; i++) {
+        _modelFrame.emplace_back(initializer_list<float>{          0 + xAdj, height * i + yAdj, z});
+        _modelFrame.emplace_back(initializer_list<float>{width * col + xAdj, height * i + yAdj, z});
+    }
+
+    for(int i = 0; i <= col; i++) {
+        _modelFrame.emplace_back(initializer_list<float>{width * i + xAdj,            0 + yAdj, z});
+        _modelFrame.emplace_back(initializer_list<float>{width * i + xAdj, height * row + yAdj, z});
+    }
+
+    this->setVertex(&(this->_modelFrame));
+}
