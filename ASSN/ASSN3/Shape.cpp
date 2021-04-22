@@ -149,12 +149,11 @@ void Shape::pivot_rotate(float dx, float dy, float dz)
     this->_rotation->addSibling(T_1);
 }
 
-std::vector<std::vector<float>> Shape::getPosition()
+std::vector<std::vector<float>> Shape::getPosition(int num_pos)
 {
     std::vector<std::vector<float>> model_frame = *_vertex->vertices();
     float *modelView = _vertex->modelView();
     std::vector<std::vector<float>> view;
-    int num_pos = model_frame.size();
 
     std::vector<std::vector<float>> result(num_pos, std::vector<float>(4, 0));
 
@@ -170,7 +169,6 @@ std::vector<std::vector<float>> Shape::getPosition()
     for (int i=0; i<num_pos; i++)
     {
         /** change to Homogeneous coordinate */
-        model_frame[i].push_back(0); //z
         model_frame[i].push_back(1); //w
     }
 
@@ -196,7 +194,7 @@ std::vector<std::vector<float>> Shape::getPosition()
 /// @class Triangle @extends Shape
 
 Triangle::Triangle(float x, float y, float length, float deg, GLclampf r, GLclampf g, GLclampf b)
-: Shape(x, y, 0, deg, GL_TRIANGLES, r, g, b)
+        : Shape(x, y, 0, deg, GL_TRIANGLES, r, g, b)
 {
 
     this->_modelFrame = {
@@ -210,7 +208,7 @@ Triangle::Triangle(float x, float y, float length, float deg, GLclampf r, GLclam
 
 
 Triangle::Triangle(float x, float y, float length, float deg, GLclampf *colorfv)
-: Shape(x, y, 0, deg, GL_TRIANGLES, colorfv)
+        : Shape(x, y, 0, deg, GL_TRIANGLES, colorfv)
 {
     this->_modelFrame = {
             {              0, -1 * length /      SQRT_3 },
@@ -236,7 +234,7 @@ Triangle::Triangle(float x, float y, float length, float x_r, float y_r, float z
 /// @class Square @extends Shape
 
 Square::Square(float x, float y, float width, float height, float deg, GLclampf r, GLclampf g, GLclampf b)
-: Shape(x, y, 0, deg, GL_QUADS, r, g, b)
+        : Shape(x, y, 0, deg, GL_QUADS, r, g, b)
 {
     this->_width = width;
     this->_height = height;
@@ -252,7 +250,7 @@ Square::Square(float x, float y, float width, float height, float deg, GLclampf 
 }
 
 Square::Square(float x, float y, float width, float height, float deg, GLclampf colorfv[])
-: Shape(x, y, 0, deg, GL_QUADS, colorfv)
+        : Shape(x, y, 0, deg, GL_QUADS, colorfv)
 {
     this->_width = width;
     this->_height = height;
@@ -295,7 +293,7 @@ float Square::getHeight()
 
 
 Circle::Circle(float x, float y, float length, float deg,  GLclampf r, GLclampf g, GLclampf b)
-: Shape(x, y, 0, deg, GL_POLYGON, r, g, b)
+        : Shape(x, y, 0, deg, GL_POLYGON, r, g, b)
 {
     this->_modelFrame = {};
 
@@ -310,7 +308,7 @@ Circle::Circle(float x, float y, float length, float deg,  GLclampf r, GLclampf 
 }
 
 Circle::Circle(float x, float y, float length, float deg, GLclampf colorfv[])
-: Shape(x, y, 0, deg, GL_POLYGON, colorfv)
+        : Shape(x, y, 0, deg, GL_POLYGON, colorfv)
 {
     this->_modelFrame = {};
 
@@ -391,6 +389,8 @@ Sphere::Sphere(float x, float y, float z, float radius, int sector, int stack, f
         : Shape(x, y, z, deg, GL_QUAD_STRIP, r, g, b){
 
     this->_modelFrame = {};
+    this->_sector = sector;
+    this->_stack = stack;
 
     int sector_count, sector_step;
     int stack_count, stack_step;
@@ -410,9 +410,9 @@ Sphere::Sphere(float x, float y, float z, float radius, int sector, int stack, f
 
             std::vector<float> point {
 
-                radius * cos(phi) * cos(theta),
-                radius * cos(phi) * sin(theta),
-                radius * sin(phi)
+                    radius * cos(phi) * cos(theta),
+                    radius * cos(phi) * sin(theta),
+                    radius * sin(phi)
             };
             this->_modelFrame.push_back(point);
         }
@@ -427,6 +427,8 @@ Sphere::Sphere(float x, float y, float z, float radius, int sector, int stack, f
         : Shape(x, y, z, deg, GL_QUAD_STRIP, colorfv){
 
     this->_modelFrame = {};
+    this->_sector = sector;
+    this->_stack = stack;
 
     int sector_count, sector_step;
     int stack_count, stack_step;
@@ -456,3 +458,16 @@ Sphere::Sphere(float x, float y, float z, float radius, int sector, int stack, f
 
 }
 
+float Sphere::radius()
+{
+    return this->_radius;
+}
+
+int Sphere::sector()
+{
+    return this->_sector;
+}
+int Sphere::stack()
+{
+    return this->_stack;
+}

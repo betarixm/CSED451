@@ -64,7 +64,7 @@ public:
 
     GroupNode* groupNode();
 
-    std::vector<std::vector<float>> getPosition();
+    std::vector<std::vector<float>> getPosition(int num_pos=1);
 };
 
 class GradientShape: public Shape {
@@ -130,10 +130,13 @@ public:
 class Sphere : public Shape {
 private:
     float _radius;
+    float _sector, _stack;
 public:
     Sphere(float x, float y, float z, float radius, int sector, int stack, float deg, GLclampf r, GLclampf g, GLclampf b);
     Sphere(float x, float y, float z, float radius, int sector, int stack, float deg, GLclampf colorfv[]);
     float radius();
+    int sector();
+    int stack();
 };
 
 
