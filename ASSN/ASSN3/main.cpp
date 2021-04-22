@@ -9,6 +9,7 @@
 #include "Ship.h"
 
 char mode = 'n'; /* n : normal,  f: fail, c: king-god */
+bool isHiddenLineRemoval = false;
 static list<Bullet*> enemy_bullets;
 list<Bullet*> player_bullets;
 static list<Item*> item_list;
@@ -24,6 +25,13 @@ void renderScene() {
     list<Bullet*>::iterator itr;
 
     glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT);
+
+    if(isHiddenLineRemoval) {
+        glEnable(GL_CULL_FACE);
+        glCullFace(GL_BACK);
+    } else {
+        glDisable(GL_CULL_FACE);
+    }
 
     game->display();
 
@@ -118,6 +126,10 @@ void onKeyDown(unsigned char key, int x, int y)
             else
                 mode = 'c';
             break;
+
+        case 'r':
+            isHiddenLineRemoval = !isHiddenLineRemoval;
+
         default:
             break;
     }
