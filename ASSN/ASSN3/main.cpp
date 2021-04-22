@@ -314,8 +314,14 @@ int main(int argc, char **argv) {
     glShadeModel(GL_SMOOTH);
     glBlendFunc(GL_SRC_ALPHA, GL_ONE_MINUS_SRC_ALPHA); // https://flex.phys.tohoku.ac.jp/texi/glut/glutStrokeCharacter.3xglut.html
 
-    //gluLookAt(0, -1, 0, 0.3, 1, 0.2, 0, 0, 1);
+    glMatrixMode(GL_PROJECTION);
+    glLoadIdentity();
+    glOrtho(-0.7, 0.7, -0.7, 0.7, 0, 10 );
 
+    glMatrixMode(GL_MODELVIEW);
+    glLoadIdentity();
+    gluLookAt(0.60, -0.78, 0.2, 0.60, 0, 0.1, 0, 0, 1);
+    //gluLookAt(0, 0, 1, 0, 0, 0, 0, 0, 1);
     glClearColor(0.0f, 0.0f, 0.0f, 1.0f);
     glewInit();
     glutMainLoop();

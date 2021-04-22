@@ -209,11 +209,16 @@ list<Bullet *> Player::keyHandler() {
     x = this->_obj.x();
     y = this->_obj.y();
 
+    glm::vec3 max, min;
+    bool isHit = true;
+    max = _obj.max();
+    min = _obj.min();
+
     std::vector<std::vector<float>> pos = {
-            {x,                   y + 2 * _size_torso},
-            {x,                   y - 2 * _size_torso},
-            {x - 4 * _size_torso, y},
-            {x + 4 * _size_torso, y}
+            {x + min[0], y + max[1]},
+            {x + max[0], y + max[1]},
+            {x + max[0], y + min[1]},
+            {x + min[0], y + min[1]}
     };
 
     if (this->inputKey['S']) {
@@ -254,6 +259,14 @@ list<Bullet *> Player::keyHandler() {
             return {};
     }
     _obj.move(dx, dy); /** move base object */
+
+    x = this->_obj.x();
+    y = this->_obj.y();
+
+
+    glMatrixMode(GL_MODELVIEW);
+    glLoadIdentity();
+    gluLookAt(x, y - 0.05 , 0.2, x, y+0.7, 0.1, 0, 0, 1);
     return bullets;
 }
 
