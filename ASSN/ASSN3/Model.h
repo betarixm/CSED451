@@ -27,21 +27,16 @@ private:
 
     GLenum _mode = GL_TRIANGLES;
 
+    glm::vec3 _max{0, 0, 0}, _min{0, 0, 0};
+
 public:
     explicit Model(char* path);
 
-    vector<vector<float>> compat(){
-        if(_compat.empty()) {
-            vector<vector<float>> result;
-            for(int i = 0; i < _vertex.size(); i += 1) {
-                vector<float> v = {_vertex[i].x, _vertex[i].y, _vertex[i].z};
-                result.push_back(v);
-            }
-            _compat = result;
-        }
+    vector<vector<float>> compat();
 
-        return _compat;
-    }
+    glm::vec3 max() const;
+
+    glm::vec3 min() const;
 
 };
 
