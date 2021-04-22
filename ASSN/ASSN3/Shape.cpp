@@ -384,6 +384,15 @@ Object::Object(char *path, float x, float y, float z, float x_r, float y_r, floa
     this->_modelFrame = _model.compat();
     this->setVertex(&(this->_modelFrame));
 }
+glm::vec3 Object::max()
+{
+    return _model.max();
+}
+glm::vec3 Object::min()
+{
+    return _model.min();
+}
+
 
 Sphere::Sphere(float x, float y, float z, float radius, int sector, int stack, float deg, GLclampf r, GLclampf g, GLclampf b)
         : Shape(x, y, z, deg, GL_QUAD_STRIP, r, g, b){

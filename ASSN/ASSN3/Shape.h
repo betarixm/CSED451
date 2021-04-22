@@ -120,6 +120,8 @@ public:
     Object(char* path, float x, float y, float z, float deg, GLclampf colorfv[]);
 
     Object(char* path, float x, float y, float z, float x_r, float y_r, float z_r, float deg, GLclampf r, GLclampf g, GLclampf b);
+    glm::vec3 max();
+    glm::vec3 min();
 };
 
 class Grid : public Shape {

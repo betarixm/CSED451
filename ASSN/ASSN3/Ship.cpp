@@ -41,14 +41,16 @@ void Ship::display() {
 bool Ship::hit(Bullet *bullet) {
     float x = _obj.x();
     float y = _obj.y();
-    float len = _size_torso;
+    glm::vec3 max, min;
     bool isHit = true;
+    max = _obj.max();
+    min = _obj.min();
 
     vector<vector<float>> detection_box = {
-            {x - 2.5f * len, y + len},
-            {x + 2.5f * len, y + len},
-            {x + 2.5f * len, y - len},
-            {x - 2.5f * len, y - len}
+            {x + min[0], y + max[1]},
+            {x + max[0], y + max[1]},
+            {x + max[0], y + min[1]},
+            {x + min[0], y + min[1]}
     };
 
     float x_b = bullet->x();
