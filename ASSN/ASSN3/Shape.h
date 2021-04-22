@@ -133,7 +133,7 @@ private:
 public:
     Sphere(float x, float y, float z, float radius, int sector, int stack, float deg, GLclampf r, GLclampf g, GLclampf b);
     Sphere(float x, float y, float z, float radius, int sector, int stack, float deg, GLclampf colorfv[]);
-
+    float radius();
 };
 
 

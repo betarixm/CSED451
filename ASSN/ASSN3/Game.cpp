@@ -42,7 +42,7 @@ Item * Game::tick() {
     if(_enemy->numLife() == 0){
         this->isEnemyDead = true;
         if(this->numEnemy){
-            item = new Square(_enemy->x(), _enemy->y(), 0.2, 0.2, 0, 0.3, 0.7, 0.6);
+            item = new Sphere(_enemy->x(), _enemy->y(), 0, 0.1, 50, 50, 0, 1,0,0);
             this->spawnEnemy();
         } else {
             this->_isGameWin = true;

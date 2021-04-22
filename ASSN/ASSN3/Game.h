@@ -16,11 +16,11 @@
 
 using namespace std;
 
-class Square;
+class Sphere;
 class Player;
 class Enemy;
 
-typedef Square Item;
+typedef Sphere Item;
 
 class Game {
 private:

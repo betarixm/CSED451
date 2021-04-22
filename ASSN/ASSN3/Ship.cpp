@@ -42,7 +42,7 @@ bool Ship::hit(Bullet *bullet) {
     float x = _obj.x();
     float y = _obj.y();
     float len = _size_torso;
-    bool isHit = false;
+    bool isHit = true;
 
     vector<vector<float>> detection_box = {
             {x - 2.5f * len, y + len},
@@ -51,24 +51,20 @@ bool Ship::hit(Bullet *bullet) {
             {x - 2.5f * len, y - len}
     };
 
-    vector<vector<float>> bullet_pos = bullet->getPosition();
+    float x_b = bullet->x();
+    float y_b = bullet->y();
 
-    for (int i = 0; i < 4; i++) {
-        float x_b = bullet_pos[i][0];
-        float y_b = bullet_pos[i][1];
 
-        if (detection_box[0][0] > x_b || detection_box[0][1] < y_b)
-            continue;
-        if (detection_box[1][0] < x_b || detection_box[1][1] < y_b)
-            continue;
-        if (detection_box[2][0] < x_b || detection_box[2][1] > y_b)
-            continue;
-        if (detection_box[3][0] > x_b || detection_box[3][1] > y_b)
-            continue;
 
-        isHit = true;
-        break;
-    }
+    if (detection_box[0][0] > x_b || detection_box[0][1] < y_b)
+        isHit = false;
+    if (detection_box[1][0] < x_b || detection_box[1][1] < y_b)
+        isHit = false;
+    if (detection_box[2][0] < x_b || detection_box[2][1] > y_b)
+        isHit = false;
+    if (detection_box[3][0] > x_b || detection_box[3][1] > y_b)
+        isHit = false;
+
     return isHit;
 }
 
@@ -80,16 +76,16 @@ bool Ship::hit(Bullet *bullet) {
 
 list<Bullet *> Ship::shot() {
     GLclampf *color = _obj.color();
-    vector<vector<float>> pos = _obj.getPosition();
-    float x = pos[0][0] / pos[0][3];
-    float y = pos[0][1] / pos[0][3];
+
+    float x = _obj.x();
+    float y = _obj.y();
     int numBullet = _numBullet;
     float degree;
 
     list<Bullet *> result;
 
     if (numBullet % 2 != 0) {
-        auto *b = new Bullet(x, y, 0.02, 0.02, 0, color);
+        auto *b = new Sphere(x, y, 0, 0.01, 50, 50, 0, 1,0,0);
         numBullet -= 1;
         result.push_back(b);
     }
@@ -99,7 +95,7 @@ list<Bullet *> Ship::shot() {
     degree = 90.0 / (numBullet / 2 + 1);
 
     for (int i = 1; i <= numBullet / 2; i++) {
-        auto *b = new Bullet(0, 0, 0.02, 0.02, 0, color);
+        auto *b = new Sphere(0, 0, 0, 0.01, 50, 50, 0, 1,0,0);
         auto *r = new RotationNode(degree * i);
         auto *t = new TranslateNode(x, y, 0);
         r->addSibling(b->groupNode()->child());
@@ -109,7 +105,7 @@ list<Bullet *> Ship::shot() {
         /** Head 로 이동 T -> 발사각도로 좌표계 회전 R -> bullet 이동 y 움직임 T - */
 
         /** Rotate model frame coordinate to direction of bullet */
-        b = new Bullet(0, 0, 0.02, 0.02, 0, color);
+        b = new Sphere(0, 0, 0, 0.01, 50, 50, 0, 1,0,0);
         r = new RotationNode(-degree * i);
         t = new TranslateNode(x, y, 0);
         r->addSibling(b->groupNode()->child());

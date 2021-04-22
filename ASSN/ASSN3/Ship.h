@@ -18,8 +18,9 @@
 
 using namespace std;
 
-typedef Square Bullet;
-typedef Square Item;
+typedef Sphere Bullet;
+typedef Sphere Item;
+
 
 class Ship {
 private:
