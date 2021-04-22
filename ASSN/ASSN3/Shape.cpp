@@ -386,3 +386,73 @@ Object::Object(char *path, float x, float y, float z, float x_r, float y_r, floa
     this->_modelFrame = _model.compat();
     this->setVertex(&(this->_modelFrame));
 }
+
+Sphere::Sphere(float x, float y, float z, float radius, int sector, int stack, float deg, GLclampf r, GLclampf g, GLclampf b)
+        : Shape(x, y, z, deg, GL_QUAD_STRIP, r, g, b){
+
+    this->_modelFrame = {};
+
+    int sector_count, sector_step;
+    int stack_count, stack_step;
+
+    sector_count = sector;
+    stack_count = stack;
+
+    float theta, phi;
+
+
+    for(sector_step=0; sector_step < sector_count; sector_step++)
+    {
+        for(stack_step=0; stack_step < stack_count; stack_step++)
+        {
+            theta = 2*PI*(sector_step/(float)sector_count);
+            phi = 2*PI*(stack_step/(float)stack_count);
+
+            std::vector<float> point {
+
+                radius * cos(phi) * cos(theta),
+                radius * cos(phi) * sin(theta),
+                radius * sin(phi)
+            };
+            this->_modelFrame.push_back(point);
+        }
+    }
+
+    this->setVertex(&(this->_modelFrame));
+
+
+}
+
+Sphere::Sphere(float x, float y, float z, float radius, int sector, int stack, float deg, GLclampf colorfv[])
+        : Shape(x, y, z, deg, GL_QUAD_STRIP, colorfv){
+
+    this->_modelFrame = {};
+
+    int sector_count, sector_step;
+    int stack_count, stack_step;
+
+    float theta, phi;
+
+    sector_count = sector;
+    stack_count = stack;
+
+    for(stack_step=0; stack_step < stack_count; stack_step++)
+    {
+        for(sector_step=0; sector_step < sector_count; sector_step++)
+        {
+            theta = 2*PI*(sector_step/(float)sector_count);
+            phi = 2*PI*(stack_step/(float)stack_count);
+
+            std::vector<float> point {
+
+                    radius * cos(phi) * cos(theta),
+                    radius * cos(phi) * sin(theta),
+                    radius * sin(phi)
+            };
+            this->_modelFrame.push_back(point);
+        }
+    }
+    this->setVertex(&(this->_modelFrame));
+
+}
+

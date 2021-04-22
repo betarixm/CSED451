@@ -126,4 +126,15 @@ class GradientCircle: public GradientShape {
 public:
     GradientCircle(float x, float y, float length, float deg, vector<GLclampf*>& colorfv);
 };
+
+class Sphere : public Shape {
+private:
+    float _radius;
+public:
+    Sphere(float x, float y, float z, float radius, int sector, int stack, float deg, GLclampf r, GLclampf g, GLclampf b);
+    Sphere(float x, float y, float z, float radius, int sector, int stack, float deg, GLclampf colorfv[]);
+
+};
+
+
 #endif // CSED451_ASSN1_SHAPE_H
