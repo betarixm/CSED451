@@ -122,6 +122,12 @@ public:
     Object(char* path, float x, float y, float z, float x_r, float y_r, float z_r, float deg, GLclampf r, GLclampf g, GLclampf b);
 };
 
+class Grid : public Shape {
+private:
+public:
+    Grid(float width, float height, int row, int col, float x, float y, float z, float deg, GLclampf r, GLclampf g, GLclampf b);
+};
+
 class GradientCircle: public GradientShape {
 public:
     GradientCircle(float x, float y, float length, float deg, vector<GLclampf*>& colorfv);

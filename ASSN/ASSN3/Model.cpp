@@ -35,6 +35,10 @@ Model::Model(char *path) {
 
     for(unsigned int idx : _vertexIdx) {
         glm::vec3 vertex = _vertexBuf[idx - 1];
+        for(int j = 0; j < 3; j++) {
+            _max[j] = (_max[j] < vertex[j]) ? vertex[j] : _max[j];
+            _min[j] = (_min[j] > vertex[j]) ? vertex[j] : _min[j];
+        }
         _vertex.push_back(vertex);
     }
 
@@ -47,4 +51,25 @@ Model::Model(char *path) {
         glm::vec3 vertex = _normalBuf[idx - 1];
         _normal.push_back(vertex);
     }
+}
+
+vector<vector<float>> Model::compat() {
+    if(_compat.empty()) {
+        vector<vector<float>> result;
+        for(int i = 0; i < _vertex.size(); i += 1) {
+            vector<float> v = {_vertex[i].x, _vertex[i].y, _vertex[i].z};
+            result.push_back(v);
+        }
+        _compat = result;
+    }
+
+    return _compat;
+}
+
+glm::vec3 Model::max() const {
+    return _max;
+}
+
+glm::vec3 Model::min() const {
+    return _min;
 }
