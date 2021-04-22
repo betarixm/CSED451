@@ -64,8 +64,8 @@ Shape::Shape(float x, float y, float z, float deg, float x_r, float y_r, float z
  * @param mat 기본 정점 벡터 행렬 ((x,y), (x,y), ...)
  * @param mode OpenGL 출력 모드
  */
-void Shape::display() {
-    this->_group->display();
+void Shape::display(bool isBlack) {
+    this->_group->display(isBlack);
 }
 
 /**

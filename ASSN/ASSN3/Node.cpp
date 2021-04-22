@@ -1,21 +1,20 @@
 #include "Node.h"
-#include <iostream>
 using namespace std;
 
 Node::Node() : _child(nullptr), _sibling(nullptr){}
 Node::Node(Node *_child, Node *_sibling) : _child(_child), _sibling(_sibling) {}
 
-void Node::display() {
+void Node::display(bool isBlack) {
     glPushMatrix();
 
-    this->_display();
+    this->_display(isBlack);
 
     if(this->_child != nullptr) {
-        this->_child->display();
+        this->_child->display(isBlack);
     }
 
     if(this->_sibling != nullptr) {
-        this->_sibling->display();
+        this->_sibling->display(isBlack);
     }
 
     glPopMatrix();
@@ -50,18 +49,18 @@ Node *Node::addSibling(Node *target) {
     return prevSibling;
 }
 
-void GroupNode::display()
+void GroupNode::display(bool isBlack)
 {
     glPushMatrix();
 
     if(this->_child != nullptr) {
-        this->_child->display();
+        this->_child->display(isBlack);
     }
 
     glPopMatrix();
 
     if(this->_sibling != nullptr) {
-        this->_sibling->display();
+        this->_sibling->display(isBlack);
     }
 }
 
@@ -80,7 +79,7 @@ void GroupNode::addToLast(Node *target)
 }
 
 
-void RotationNode::_display() {
+void RotationNode::_display(bool isBlack) {
     glRotatef(this->_degree, _x, _y, _z);
 }
 
@@ -105,7 +104,7 @@ float RotationNode::rotate(float delta) {
     return prevDegree;
 }
 
-void TranslateNode::_display() {
+void TranslateNode::_display(bool isBlack) {
     glTranslatef(this->_dx, this->_dy, this->_dz);
 }
 
@@ -129,13 +128,18 @@ std::vector<float> TranslateNode::delta() {
     return std::vector<float>{_dx, _dy, _dz};
 }
 
-void VertexNode::_display() {
+void VertexNode::_display(bool isBlack) {
     if(this->_vertices == nullptr) {
         return;
     }
 
     glPushMatrix();
-    glColor3fv(this->color());
+
+    if(isBlack) {
+        glColor3f(0.0f, 0.0f, 0.0f);
+    } else {
+        glColor3fv(this->color());
+    }
 
     glBegin(this->_mode);
     for(auto & _vertex : *this->_vertices) {
@@ -202,7 +206,7 @@ GradientVertexNode::GradientVertexNode(std::vector<std::vector<float>> *_vertice
     this->_colorfv = colorfv;
 }
 
-void GradientVertexNode::_display() {
+void GradientVertexNode::_display(bool isBlack) {
     if(this->_vertices == nullptr) {
         return;
     }

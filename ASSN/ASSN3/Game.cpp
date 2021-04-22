@@ -133,7 +133,7 @@ void Game::displayInfo() {
     }
 }
 
-void Game::display() {
+void Game::display(bool isBlack) {
     if(_isGameOver || _isGameWin){
         std::string msg = _isGameWin ? "WIN!" : "GAME OVER! - ";
         float width = 0;
@@ -164,10 +164,10 @@ void Game::display() {
     this->displayInfo();
 
     if(!isPlayerDead && this->_player){
-        _player->display();
+        _player->display(isBlack);
     }
     if(!isEnemyDead && this->_enemy){
-        _enemy->display();
+        _enemy->display(isBlack);
     }
 }
 

@@ -59,8 +59,8 @@ void Stellar::tick() {
     }
 }
 
-void Stellar::display() {
-    this->_baseScene->display();
+void Stellar::display(bool isBlack) {
+    this->_baseScene->display(isBlack);
 }
 
 vector<GLclampf*> circleGradient(array<GLclampf, 3>& start, array<GLclampf, 3>& end) {

@@ -45,7 +45,7 @@ public:
 
     void displayInfo();
 
-    void display();
+    void display(bool isBlack);
 
     Player* player() const;
 

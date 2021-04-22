@@ -22,9 +22,9 @@ public:
 
     Node(Node* _child, Node* _sibling);
 
-    virtual void _display() = 0;
+    virtual void _display(bool isBlack) = 0;
 
-    virtual void display();
+    virtual void display(bool isBlack);
 
     Node* child() const;
 
@@ -46,9 +46,9 @@ private:
 public:
     GroupNode() = default;
 
-    void _display() override {}
+    void _display(bool isBlack) override {}
 
-    virtual void display() override;
+    virtual void display(bool isBlack) override;
 
     void addToLast(Node *target);
 
@@ -65,7 +65,7 @@ public:
     RotationNode(float _degree, float _x, float _y, float _z);
     RotationNode(float _degree, Node* _child, Node* _sibling);
 
-    void _display() override;
+    void _display(bool isBlack) override;
 
     float degree() const;
 
@@ -83,7 +83,7 @@ public:
     TranslateNode(float _dx, float _dy, float _dz);
     TranslateNode(float _dx, float _dy, float _dz, Node* _child, Node* _sibling);
 
-    void _display() override;
+    void _display(bool isBlack) override;
 
     void set(float x, float y, float z);
 
@@ -98,14 +98,14 @@ protected:
     std::vector<std::vector<float>>* _vertices = nullptr;
     GLclampf _colorfv[3]{};
     GLenum _mode = GL_POLYGON;
-    float modelview[16]; /* 4x4 model view matrix */
+    float modelview[16]{}; /* 4x4 model view matrix */
 
 public:
     VertexNode() = default;
     explicit VertexNode(std::vector<std::vector<float>>* _vertices, GLenum _mode, GLclampf colorfv[]);
     VertexNode(std::vector<std::vector<float>>* _vertices, GLenum _mode, GLclampf colorfv[], Node* _child, Node* _sibling);
 
-    void _display() override;
+    void _display(bool isBlack) override;
 
     virtual void set(std::vector<std::vector<float>>* vertices);
 
@@ -128,7 +128,7 @@ public:
     GradientVertexNode() = default;
     GradientVertexNode(std::vector<std::vector<float>>* _vertices, GLenum _mode, vector<GLclampf*>& colorfv);;
 
-    void _display() override;
+    void _display(bool isBlack) override;
 
     void set(std::vector<std::vector<float>> *vertices) override;
 
