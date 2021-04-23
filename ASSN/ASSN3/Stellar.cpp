@@ -85,7 +85,8 @@ vector<GLclampf*> circleGradient(array<GLclampf, 3>& start, array<GLclampf, 3>& 
 }
 
 void initStellar() {
-    /**
+    int i;
+
     array<GLclampf, 3> red = {1, 0, 0};
     array<GLclampf, 3> green = {0, 1, 0};
     array<GLclampf, 3> blue = {0, 0, 1};
@@ -106,40 +107,13 @@ void initStellar() {
             array<float, 2>{0.5, 0.2}
     };
 
-    array<array<vector<GLclampf*>, 3>, 2> colorfv = {
-            array<vector<GLclampf*>, 3>{circleGradient(red, yellow), circleGradient(green, blue), circleGradient(grey, darkGrey)},
-            array<vector<GLclampf*>, 3>{circleGradient(blue, white), circleGradient(orange, darkGrey), circleGradient(grey, purple)}
+    vector<vector<GLclampf *>> color{
+            {&red[0], &green[0], &blue[0]},
+            {&yellow[0], &orange[0], &purple[0]}
     };
 
-    for(int i = 0; i < 2; i++){
-        stellar_vec.push_back(new Stellar(-0.61f + (float)i, -0.5f + (float)i, length[i], distance[i], colorfv[i]));
-    }
-     */
 
-    GLclampf color[3] = {0,0,1};
-    array<vector<GLclampf *>, 2>colorfv;
-    vector<GLclampf *> color_vector;
-    int i;
-
-    array<array<float, 3>, 2> length = {
-            array<float, 3>{0.15, 0.07, 0.03},
-            array<float, 3>{0.2, 0.10, 0.05},
-    };
-
-    array<array<float, 2>, 2> distance = {
-            array<float, 2>{0.4, 0.15},
-            array<float, 2>{0.5, 0.2}
-    };
-
-    for(i = 0; i <3; i++) {
-        color[0] = i*0.3;
-        color[1] = 0.3 + i * 0.2;
-        color[2] = 0.5 + i *0.1;
-        color_vector.push_back(color);
-    }
-
-
-    for(int i = 0; i < 2; i++){
-        stellar_vec.push_back(new Stellar(-0.61f + (float)i, -0.5f + (float)i, -0.5f + (float)i, length[i], distance[i], color_vector));
+    for(i = 0; i < 2; i++){
+        stellar_vec.push_back(new Stellar(-0.61f + (float)i, -0.5f + (float)i, 0.25f * (float)i, length[i], distance[i], color[i]));
     }
 }
