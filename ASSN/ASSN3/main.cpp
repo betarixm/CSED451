@@ -2,7 +2,11 @@
 #include <GL/glew.h>
 #include <GL/freeglut.h>
 #include <vector>
+#include <glm/glm.hpp>
+#include <glm/gtc/type_ptr.hpp>
 #include <glm/vec3.hpp>
+#include <glm/mat4x4.hpp>
+#include <glm/ext/matrix_clip_space.hpp>
 
 //#include "Game.h"
 #include "Stellar.h"
@@ -162,8 +166,8 @@ void onKeyDown(unsigned char key, int x, int y)
 void onKeyUp(unsigned char key, int x, int y){
     if(key == 32) {
         key = 'S';
-        game->player()->keyUp(key);
     }
+    game->player()->keyUp(key);
 }
 /**
  * @brief 일정초마다 총알 이동 및 충돌 체크
@@ -300,7 +304,7 @@ void timerStellar(int value) {
 
 int main(int argc, char **argv) {
     game = new Game();
-    grid = new Grid(0.1f, 0.1f, 100, 100, 0, 0, -0.9f, 0, 1.0f, 1.0f, 1.0f);
+    grid = new Grid(0.1f, 0.1f, 10, 10, 0, 0, -0.3f, 0, 1.0f, 1.0f, 1.0f);
     initStellar();
 
     glutInit(&argc, argv);
@@ -329,11 +333,11 @@ int main(int argc, char **argv) {
 
     glMatrixMode(GL_PROJECTION);
     glLoadIdentity();
-    glOrtho(-0.7, 0.7, -0.7, 0.7, 0, 10 );
-
+    glm::mat4x4 proj = glm::perspective(90.0f, 1.0f, 0.001f, 100.0f);
+    glLoadMatrixf(glm::value_ptr(proj));
     glMatrixMode(GL_MODELVIEW);
     glLoadIdentity();
-    gluLookAt(0.60, -0.78, 0.2, 0.60, 0, 0.1, 0, 0, 1);
+    gluLookAt(0.60, -1.5, 0.2, 0.60, 0, 0.1, 0, 0, 1);
 
     glClearColor(0.0f, 0.0f, 0.0f, 1.0f);
     glewInit();
