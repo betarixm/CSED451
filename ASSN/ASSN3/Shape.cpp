@@ -9,9 +9,9 @@ Shape::Shape(float x, float y, float z, float deg, GLenum mode, GLclampf r, GLcl
 {
 
     GLclampf colorfv[3];
-    colorfv[R] = r;
-    colorfv[G] = g;
-    colorfv[B] = b;
+    colorfv[RED] = r;
+    colorfv[GREEN] = g;
+    colorfv[BLUE] = b;
 
     this->_translation = new TranslateNode(x, y, 0);
     this->_rotation = new RotationNode(deg);
@@ -43,9 +43,9 @@ Shape::Shape(float x, float y, float z, float deg, float x_r, float y_r, float z
              GLclampf b)
 {
     GLclampf colorfv[3];
-    colorfv[R] = r;
-    colorfv[G] = g;
-    colorfv[B] = b;
+    colorfv[RED] = r;
+    colorfv[GREEN] = g;
+    colorfv[BLUE] = b;
 
     this->_translation = new TranslateNode(x, y, 0);
     this->_rotation = new RotationNode(deg, x_r, y_r, z_r);
@@ -98,7 +98,7 @@ void Shape::setDegree(float deg) {
  * @param dColorfv 색깔 변동량을 담고 있는 배열
  */
 void Shape::mutateColor(const GLclampf *dColorfv) {
-    this->_vertex->mutateColor(dColorfv[R], dColorfv[G], dColorfv[B]);
+    this->_vertex->mutateColor(dColorfv[RED], dColorfv[GREEN], dColorfv[BLUE]);
 }
 
 /**

@@ -8,9 +8,9 @@
 
 #define NUM_COLOR 3
 
-#define R 0
-#define G 1
-#define B 2
+#define RED 0
+#define GREEN 1
+#define BLUE 2
 
 #define SQRT_3 1.732f
 #define PI 3.141592
