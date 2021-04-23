@@ -306,7 +306,7 @@ void timerStellar(int value) {
 
 int main(int argc, char **argv) {
     game = new Game();
-    boundary = new Grid(0.1f, 0.1f, 20, 20, 0, 0, -0.29f, 0, 0.0f, 0.5f, 1.0f);
+    boundary = new Grid(0.1f, 0.1f, 20, 20, 0, 0, -0.295f, 0, 0.0f, 0.5f, 1.0f);
     grid = new Grid(0.1f, 0.1f, 30, 30, 0, 0, -0.3f, 0, 1.0f, 1.0f, 1.0f);
     initStellar();
 

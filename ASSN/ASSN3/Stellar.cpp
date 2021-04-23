@@ -7,13 +7,11 @@
 extern vector<Stellar*> stellar_vec;
 
 Orb::Orb(float x, float y, float z, float length, GLclampf colorfv[]) {
-
-    // this->_planet = new Sphere(x, y, z, length, 50, 50, 0, colorfv);
-    this->_planet = new Sphere(10, 10, length, x, y, z, 0, colorfv);
+    this->_planet = new Sphere(20, 20, length, x, y, z, 0, colorfv);
 }
 
 Orb::Orb(float x, float y, float z, float length, GLclampf colorfv[], Orb *satellite, float distance) {
-    this->_planet = new Sphere(10, 10, length, x, y, z, 0, colorfv);
+    this->_planet = new Sphere(20, 20, length, x, y, z, 0, colorfv);
     this->addSatellite(satellite, distance);
 }
 
