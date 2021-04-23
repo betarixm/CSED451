@@ -99,11 +99,11 @@ list<Bullet *> Ship::shot() {
     degree = (90.0 / (numBullet / 2 + 1))*PIE/180;
 
     for (int i = 1; i <= numBullet / 2; i++) {
-        auto *b = new Sphere(x, y, 0, 0.01, 50, 50, 0, 1,0,0);
+        auto *b = new Sphere(50, 50, 0.01, x, y, 0, 0, 1, 0, 0);
         b->setDirection(0.1*cos(degree*i), 0.1*sin(degree*i), 0);
         result.push_back(b);
 
-        b = new Sphere(x, y, 0, 0.01, 50, 50, 0, 1,0,0);
+        b = new Sphere(50, 50, 0.01, x, y, 0, 0, 1, 0, 0);
         b->setDirection(-0.1*cos(degree*i), 0.1*sin(degree*i), 0);
         result.push_back(b);
     }
@@ -268,7 +268,7 @@ list<Bullet *> Player::keyHandler() {
 
         glMatrixMode(GL_MODELVIEW);
         glLoadIdentity();
-        gluLookAt(x, y + frontCamera*0.05, 0.2, x, y+0.7, 0.1, 0, 0, 1);
+        gluLookAt(x + 00.1, y + frontCamera*0.05 + 0.5, 0.5, x, y+0.7, 0.1, 0, 0, 1);
     }
     return bullets;
 }
