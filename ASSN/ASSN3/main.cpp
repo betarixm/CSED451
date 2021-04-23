@@ -23,6 +23,7 @@ vector<Stellar*> stellar_vec;
 
 Game* game;
 Grid* grid;
+Grid* boundary;
 
 Sphere *sphere;
 Sphere *cube;
@@ -35,6 +36,7 @@ void microRenderScene(bool isBlack) {
         grid->display(isBlack);
         for(auto & i : stellar_vec) {
             i->display(isBlack);
+            boundary->display(isBlack);
         }
         for (itr = enemy_bullets.begin(); itr != enemy_bullets.end(); itr++)
             (*itr)->display(isBlack);
@@ -304,7 +306,8 @@ void timerStellar(int value) {
 
 int main(int argc, char **argv) {
     game = new Game();
-    grid = new Grid(0.1f, 0.1f, 10, 10, 0, 0, -0.3f, 0, 1.0f, 1.0f, 1.0f);
+    boundary = new Grid(0.1f, 0.1f, 20, 20, 0, 0, -0.29f, 0, 0.0f, 0.5f, 1.0f);
+    grid = new Grid(0.1f, 0.1f, 30, 30, 0, 0, -0.3f, 0, 1.0f, 1.0f, 1.0f);
     initStellar();
 
     glutInit(&argc, argv);
