@@ -34,7 +34,7 @@ void lookAt(float x, float y, int _frontCamera) {
     glLoadMatrixf(glm::value_ptr(proj));
     glMatrixMode(GL_MODELVIEW);
     glLoadIdentity();
-    gluLookAt(x, y + _frontCamera * 0.05 - 0.2, 0.15, x, y+0.7, 0.1, 0, 0, 1);
+    gluLookAt(x, y + _frontCamera * 0.22, 0.15, x, y+0.7, 0.1, 0, 0, 1);
 }
 
 void microRenderScene(bool isBlack) {
@@ -167,9 +167,6 @@ void onKeyDown(unsigned char key, int x, int y)
 
             x = game->player()->x();
             y = game->player()->y();
-
-            gluLookAt(x, y + frontCamera*0.05, 0.2, x, y+0.7, 0.1, 0, 0, 1);
-
 
         default:
             break;
