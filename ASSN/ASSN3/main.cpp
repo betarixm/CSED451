@@ -1,14 +1,12 @@
-#include <iostream>
+#include <vector>
+
 #include <GL/glew.h>
 #include <GL/freeglut.h>
-#include <vector>
-#include <glm/glm.hpp>
+
 #include <glm/gtc/type_ptr.hpp>
-#include <glm/vec3.hpp>
 #include <glm/mat4x4.hpp>
 #include <glm/ext/matrix_clip_space.hpp>
 
-//#include "Game.h"
 #include "Stellar.h"
 #include "Ship.h"
 
@@ -102,6 +100,8 @@ void onSpecialKeyDown(int key, int x, int y)
         case GLUT_KEY_RIGHT:
             game->player()->keyDown('R');
             break;
+        default:
+            break;
     }
 }
 
@@ -164,9 +164,6 @@ void onKeyDown(unsigned char key, int x, int y)
             frontCamera = -1*frontCamera;
             glMatrixMode(GL_MODELVIEW);
             glLoadIdentity();
-
-            x = game->player()->x();
-            y = game->player()->y();
 
         default:
             break;

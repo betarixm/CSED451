@@ -1,6 +1,5 @@
 #include "Shape.h"
 #define PI 3.141592
-#include <iostream>
 using namespace std;
 
 /// @class Shape
@@ -143,7 +142,7 @@ GroupNode* Shape::groupNode()
 
 void Shape::pivot_rotate(float dx, float dy, float dz)
 {
-    TranslateNode * T = new TranslateNode(dx, dy, dz);
+    auto* T = new TranslateNode(dx, dy, dz);
     auto * T_1 = new TranslateNode(-dx, -dy, -dz);
     this->_translation->addSibling(T);
     this->_rotation->addSibling(T_1);
@@ -161,6 +160,7 @@ std::vector<std::vector<float>> Shape::getPosition(int num_pos)
     for (int i=0; i<4; i++)
     {
         std::vector<float> temp;
+        temp.reserve(4);
         for (int j = 0; j <4; j++)
             temp.push_back(modelView[i+4*j]);
         view.push_back(temp);
@@ -293,12 +293,12 @@ Square::Square(float x, float y, float width, float height, float x_r, float y_r
     this->setVertex(&(this->_modelFrame));
 }
 
-float Square::getWidth()
+float Square::getWidth() const
 {
     return this->_width;
 }
 
-float Square::getHeight()
+float Square::getHeight() const
 {
     return this->_height;
 }
@@ -411,13 +411,13 @@ Grid::Grid(float width, float height, int row, int col, float x, float y, float 
     float yAdj = - height * (float)row / 2.0f;
 
     for(int i = 0; i <= row; i++) {
-        _modelFrame.emplace_back(initializer_list<float>{          0 + xAdj, height * i + yAdj, z});
-        _modelFrame.emplace_back(initializer_list<float>{width * col + xAdj, height * i + yAdj, z});
+        _modelFrame.emplace_back(initializer_list<float>{          0 + xAdj, height * (float)i + yAdj, z});
+        _modelFrame.emplace_back(initializer_list<float>{width * (float)col + xAdj, height * (float)i + yAdj, z});
     }
 
     for(int i = 0; i <= col; i++) {
-        _modelFrame.emplace_back(initializer_list<float>{width * i + xAdj,            0 + yAdj, z});
-        _modelFrame.emplace_back(initializer_list<float>{width * i + xAdj, height * row + yAdj, z});
+        _modelFrame.emplace_back(initializer_list<float>{width * (float)i + xAdj,            0 + yAdj, z});
+        _modelFrame.emplace_back(initializer_list<float>{width * (float)i + xAdj, height * (float)row + yAdj, z});
     }
 
     this->setVertex(&(this->_modelFrame));

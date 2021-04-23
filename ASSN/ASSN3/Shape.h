@@ -100,9 +100,9 @@ public:
 
     Square(float x, float y, float width, float height, float x_r, float y_r, float z_r, float deg, GLclampf r, GLclampf g, GLclampf b);
 
-    float getWidth();
+    float getWidth() const;
 
-    float getHeight();
+    float getHeight() const;
 
 };
 

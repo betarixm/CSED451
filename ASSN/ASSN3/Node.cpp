@@ -86,8 +86,6 @@ void RotationNode::_display(bool isBlack) {
 RotationNode::RotationNode(float _degree) : _x(0), _y(0), _z(1.0), _degree(_degree) {}
 RotationNode::RotationNode(float _degree, float _x, float _y, float _z) : _x(_x), _y(_y), _z(_z), _degree(_degree) {}
 
-RotationNode::RotationNode(float _degree, Node *_child, Node *_sibling) : _degree(_degree), Node(_child, _sibling) {}
-
 float RotationNode::degree() const {
     return this->_degree;
 }

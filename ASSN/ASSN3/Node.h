@@ -57,13 +57,12 @@ public:
 class RotationNode: public Node {
 private:
     float _degree = 0;
-    float _x, _y, _z;
+    float _x = 0, _y = 0, _z = 0;
 protected:
 public:
     RotationNode() = default;
     explicit RotationNode(float _degree);
     RotationNode(float _degree, float _x, float _y, float _z);
-    RotationNode(float _degree, Node* _child, Node* _sibling);
 
     void _display(bool isBlack) override;
 

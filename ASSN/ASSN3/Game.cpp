@@ -1,9 +1,6 @@
 #include <string>
 #include "Game.h"
 #include "Ship.h"
-#include <glm/mat4x4.hpp>
-#include <glm/ext/matrix_clip_space.hpp>
-#include <glm/gtc/type_ptr.hpp>
 
 extern char mode;
 
@@ -33,7 +30,7 @@ void Game::spawnEnemy() {
         mt19937 gen(rd());
         uniform_real_distribution<> dis(0, 0.75);
 
-        this->_enemy = new Enemy(this->numLifeEnemy, 0, 0.75, 0.1, dis(gen), dis(gen), 1, ENEMY_DEGREE, this->numLifeEnemy);
+        this->_enemy = new Enemy(this->numLifeEnemy, 0, 0.75, 0.1, (GLclampf)dis(gen), (GLclampf)dis(gen), 1, ENEMY_DEGREE, this->numLifeEnemy);
         this->numLifeEnemy++;
         this->isEnemyDead = false;
     }
@@ -42,7 +39,7 @@ void Game::spawnEnemy() {
 Item * Game::tick() {
     Item *item = nullptr;
 
-    if(_enemy->numLife() == 0){
+    if(_enemy && _enemy->numLife() == 0){
         this->isEnemyDead = true;
         if(this->numEnemy){
             item = new Sphere(50, 50, 0.1, _enemy->x(), _enemy->y(), 0, 0, 1, 0, 0);
@@ -52,7 +49,7 @@ Item * Game::tick() {
         }
     }
 
-    if(_player->numLife() == 0){
+    if(_player && _player->numLife() == 0){
         this->isPlayerDead = true;
         if(this->numPlayer){
             this->spawnPlayer();
@@ -110,10 +107,10 @@ void Game::displayInfo() {
     for(int i = 0; i < numPlayer; i++){ strNumPlayer += "O"; }
     for(int i = 0; i < NUM_PLAYER - numPlayer; i++){ strNumPlayer += "X"; }
 
-    for(int i = 0; i < this->_enemy->numLife(); i++){ strLifeEnemy += "O"; }
-    for(int i = 0; i < numLifeEnemy - 1 - this->_enemy->numLife(); i++){ strLifeEnemy += "X"; }
+    for(int i = 0; _enemy && (i < this->_enemy->numLife()); i++){ strLifeEnemy += "O"; }
+    for(int i = 0; _enemy && (i < numLifeEnemy - 1 - this->_enemy->numLife()); i++){ strLifeEnemy += "X"; }
 
-    for(int i = 0; i < this->_player->numLife(); i++){ strLifePlayer += "O"; }
+    for(int i = 0; _player && (i < this->_player->numLife()); i++){ strLifePlayer += "O"; }
     for(int i = 0; i < numLifePlayer - this->player()->numLife(); i++){strLifePlayer += "X";}
 
 

@@ -77,8 +77,6 @@ bool Ship::hit(Bullet *bullet) {
  */
 
 list<Bullet *> Ship::shot() {
-    GLclampf *color = _obj.color();
-
     float x = _obj.x();
     float y = _obj.y();
     int numBullet = _numBullet;
@@ -95,15 +93,15 @@ list<Bullet *> Ship::shot() {
     if (numBullet == 0)
         return result;
 
-    degree = (90.0 / (numBullet / 2 + 1))*PIE/180;
+    degree = (90.0f / ((float)numBullet / 2.0f + 1.0f)) * (float)PIE / 180.0f;
 
     for (int i = 1; i <= numBullet / 2; i++) {
         auto *b = new Sphere(50, 50, 0.01, x, y, 0, 0, 1, 0, 0);
-        b->setDirection(0.1*cos(degree*i), 0.1*sin(degree*i), 0);
+        b->setDirection(0.1f*cos(degree*(float)i), 0.1f*sin(degree*(float)i), 0);
         result.push_back(b);
 
         b = new Sphere(50, 50, 0.01, x, y, 0, 0, 1, 0, 0);
-        b->setDirection(-0.1*cos(degree*i), 0.1*sin(degree*i), 0);
+        b->setDirection(-0.1f*cos(degree*(float)i), 0.1f*sin(degree*(float)i), 0);
         result.push_back(b);
     }
 
@@ -139,7 +137,7 @@ void Player::HitBullet(list<Bullet *> *bullet_list) {
                 isHit = hit(*itr);
                 if (isHit) {
                     _numLife -= damage;
-                    mutateColor(0, 0, -0.1 * damage);
+                    mutateColor(0, 0, -0.1f * (float)damage);
                     bullet = *itr;
                     bullet_list->erase(itr++);
                     delete (bullet);
@@ -149,6 +147,8 @@ void Player::HitBullet(list<Bullet *> *bullet_list) {
                 if (_numLife == 0)
                     return;
             }
+        default:
+            break;
     }
 }
 
@@ -292,8 +292,8 @@ void Enemy::randomMoveHandler() {
     };
 
     for (int i = 0; i < 4; i++) {
-        float x = pos[i][0];
-        if (x + dx > 1.0 || x + dx < -1.0) {
+        float _x = pos[i][0];
+        if (_x + dx > 1.0 || _x + dx < -1.0) {
             return;
         }
     }
@@ -317,7 +317,6 @@ void Enemy::checkHit(list<Bullet *> *bullet_list) {
     switch (mode) {
         case 'c':
 /** c mode일 때 적은 1대만 맞아도 죽음 */
-
             damage = _numLife;
         default:
             itr = bullet_list->begin();
@@ -328,14 +327,13 @@ void Enemy::checkHit(list<Bullet *> *bullet_list) {
                     bullet = *itr;
                     bullet_list->erase(itr++);
                     delete (bullet);
-                } else
+                } else {
                     ++itr;;
-
-
+                }
 /** 여러대 맞아도 목숨 다 깎이면 게임 종료 */
-
-                if (_numLife == 0)
+                if (_numLife == 0) {
                     return;
+                }
             }
     }
 }
