@@ -1,6 +1,9 @@
 #include <string>
 #include "Game.h"
 #include "Ship.h"
+#include <glm/mat4x4.hpp>
+#include <glm/ext/matrix_clip_space.hpp>
+#include <glm/gtc/type_ptr.hpp>
 
 extern char mode;
 
@@ -61,6 +64,41 @@ Item * Game::tick() {
 }
 
 void Game::displayInfo() {
+    glPushMatrix();
+    glMatrixMode(GL_PROJECTION);
+    glLoadIdentity();
+    glOrtho(-1, 1, -1, 1, -1, 1);
+
+    glMatrixMode(GL_MODELVIEW);
+    glLoadIdentity();
+
+    if(_isGameOver || _isGameWin){
+        std::string msg = _isGameWin ? "WIN!" : "GAME OVER! - ";
+        float width = 0;
+
+        if((!_isGameWin)){
+            if((!this->_itemLog.empty()) && this->_itemLog.back() == ITEM_BOMB) {
+                msg += "BOMB exploded! That was not item X(";
+            } else {
+                msg += "You're killed by the enemy X(";
+            }
+        }
+
+        for(char i : msg){
+            width += (float)glutBitmapWidth(GLUT_BITMAP_HELVETICA_18, i);
+        }
+
+        glLoadIdentity();
+        glTranslatef(-width / 800.0f, 0, 0);
+        glColor3f(1, 0, 0);
+        glRasterPos2f(0, 0);
+
+        for(char i : msg) {
+            glutBitmapCharacter(GLUT_BITMAP_HELVETICA_18, i);
+        }
+        return;
+    }
+
     std::string strNumEnemy, strNumPlayer;
     std::string strLifeEnemy, strLifePlayer;
 
@@ -131,38 +169,10 @@ void Game::displayInfo() {
         }
         glPopMatrix();
     }
+    glPopMatrix();
 }
 
 void Game::display(bool isBlack) {
-    if(_isGameOver || _isGameWin){
-        std::string msg = _isGameWin ? "WIN!" : "GAME OVER! - ";
-        float width = 0;
-
-        if((!_isGameWin)){
-            if((!this->_itemLog.empty()) && this->_itemLog.back() == ITEM_BOMB) {
-                msg += "BOMB exploded! That was not item X(";
-            } else {
-                msg += "You're killed by the enemy X(";
-            }
-        }
-
-        for(char i : msg){
-            width += (float)glutBitmapWidth(GLUT_BITMAP_HELVETICA_18, i);
-        }
-
-        glLoadIdentity();
-        glTranslatef(-width / 800.0f, 0, 0);
-        glColor3f(1, 0, 0);
-        glRasterPos2f(0, 0);
-
-        for(char i : msg) {
-            glutBitmapCharacter(GLUT_BITMAP_HELVETICA_18, i);
-        }
-        return;
-    }
-
-    this->displayInfo();
-
     if(!isPlayerDead && this->_player){
         _player->display(isBlack);
     }

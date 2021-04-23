@@ -28,11 +28,22 @@ Grid* boundary;
 Sphere *sphere;
 Sphere *cube;
 
+void lookAt(float x, float y, int _frontCamera) {
+    glMatrixMode(GL_PROJECTION);
+    glm::mat4x4 proj = glm::perspective(90.0f, 1.0f, 0.001f, 100.0f);
+    glLoadMatrixf(glm::value_ptr(proj));
+    glMatrixMode(GL_MODELVIEW);
+    glLoadIdentity();
+    gluLookAt(x, y + _frontCamera * 0.05 - 0.2, 0.15, x, y+0.7, 0.1, 0, 0, 1);
+}
+
 void microRenderScene(bool isBlack) {
     list<Bullet*>::iterator itr;
-    game->display(isBlack);
+    game->displayInfo();
 
     if(!(game->isGameOver() || game->isGameWin()) ) {
+        lookAt(game->player()->x(), game->player()->y(), frontCamera);
+        game->display(isBlack);
         grid->display(isBlack);
         for(auto & i : stellar_vec) {
             i->display(isBlack);
@@ -333,14 +344,6 @@ int main(int argc, char **argv) {
     glDepthFunc(GL_LESS);
     glShadeModel(GL_SMOOTH);
     glBlendFunc(GL_SRC_ALPHA, GL_ONE_MINUS_SRC_ALPHA); // https://flex.phys.tohoku.ac.jp/texi/glut/glutStrokeCharacter.3xglut.html
-
-    glMatrixMode(GL_PROJECTION);
-    glLoadIdentity();
-    glm::mat4x4 proj = glm::perspective(90.0f, 1.0f, 0.001f, 100.0f);
-    glLoadMatrixf(glm::value_ptr(proj));
-    glMatrixMode(GL_MODELVIEW);
-    glLoadIdentity();
-    gluLookAt(0.60, -1.5, 0.2, 0.60, 0, 0.1, 0, 0, 1);
 
     glClearColor(0.0f, 0.0f, 0.0f, 1.0f);
     glewInit();
