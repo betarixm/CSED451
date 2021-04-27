@@ -5,6 +5,7 @@
     <excludeRoots>
       <file path="$PROJECT_DIR$/ASSN/ASSN1" />
       <file path="$PROJECT_DIR$/ASSN/ASSN2" />
+      <file path="$PROJECT_DIR$/ASSN/ASSN3" />
       <file path="$PROJECT_DIR$/msvc" />
     </excludeRoots>
   </component>
