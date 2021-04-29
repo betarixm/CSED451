@@ -31,8 +31,6 @@ Node *Node::sibling() const {
 Node *Node::addChild(Node *target) {
     Node *curChild = this->_child;
     this->_child = target;
-    if (!target)
-        target->addChild(curChild);
 
     return curChild;
 }
