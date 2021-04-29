@@ -237,3 +237,32 @@ void GradientVertexNode::_display(bool isBlack) {
 void GradientVertexNode::set(std::vector<std::vector<float>> *vertices) {
     this->_vertices = vertices;
 }
+
+
+ScaleNode::ScaleNode(float _sx, float _sy, float _sz) : _sx(_sx), _sy(_sy), _sz(_sz) {}
+
+ScaleNode(float _sx, float _sy, float _sz, Node* _child, Node* _sibling) : _sx(_sx), _sy(_sy), _sz(_sz), Node(_child, _sibling) {}
+
+void ScaleNode::_display(bool isBlack) {
+    glScalef(this->_sx, this->_sy, this->_sz);
+}
+
+void ScaleNode::set(float x, float y, float z)
+{
+    this->_sx = x;
+    this->_sy = y;
+    this->_sz = z;
+}
+
+void ScaleNode::resizing(float dx, float dy, float dz)
+{
+    this->_sx += dx;
+    this->_sy += dy;
+    this->_sz += dz;
+}
+
+std::vector<float> ScaleNode::delta(){
+    return std::vector<float>{_sx, _sy, _sz};
+}
+
+

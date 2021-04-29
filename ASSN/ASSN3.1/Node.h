@@ -133,4 +133,18 @@ public:
 
 };
 
+class ScaleNode: public Node {
+private:
+    float _sx = 1, _sy = 1, _sz = 1;
+public:
+    ScaleNode() = default;
+    ScaleNode(float _sx, float _sy, float _sz);
+    ScaleNode(float _sx, float _sy, float _sz, Node* _child, Node* _sibling);
+    void _display(bool isBlack) override;
+    void set(float x, float y, float z);
+    void resizing(float dx, float dy, float dz);
+    std::vector<float> delta();
+
+};
+
 #endif //CSED451_NODE_H
