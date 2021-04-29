@@ -3,8 +3,14 @@
 using namespace std;
 
 /// @class Shape
+// static variable vertices initialization
+// scale = length, model frame unit = 1
 
-Shape::Shape(float x, float y, float z, float deg, GLenum mode, GLclampf r, GLclampf g, GLclampf b)
+vector<vector<float>> Sphere::vertices = {};
+
+
+
+Shape::Shape(float x, float y, float z, float deg, float sx, float sy, float sz, GLenum mode, GLclampf r, GLclampf g, GLclampf b)
 {
 
     GLclampf colorfv[3];
@@ -14,47 +20,32 @@ Shape::Shape(float x, float y, float z, float deg, GLenum mode, GLclampf r, GLcl
 
     this->_translation = new TranslateNode(x, y, 0);
     this->_rotation = new RotationNode(deg);
+    this->_scale = new ScaleNode(sx, sy, sz);
     this->_vertex = new VertexNode(nullptr, mode, colorfv);
 
     this->_group = new GroupNode;
 
-    /** Group < T R V > */
+    /** Group < T R S V > */
     this->_group->addChild(this->_translation);
     this->_translation->addSibling(this->_rotation);
-    this->_rotation->addSibling(this->_vertex);
+    this->_rotation->addSibling(this->_scale);
+    this->_scale->addSibling(this->_vertex);
 
 }
 
-Shape::Shape(float x, float y, float z, float deg, GLenum mode, GLclampf colorfv[])
+Shape::Shape(float x, float y, float z, float deg, float sx, float sy, float sz, GLenum mode, GLclampf colorfv[])
 {
     this->_translation = new TranslateNode(x, y, 0);
     this->_rotation = new RotationNode(deg);
+    this->_scale = new ScaleNode(sx, sy, sz);
     this->_vertex = new VertexNode(nullptr, mode, colorfv);
 
     this->_group = new GroupNode;
-    /** Group < T R V > */
+    /** Group < T R S V > */
     this->_group->addChild(this->_translation);
     this->_translation->addSibling(this->_rotation);
-    this->_rotation->addSibling(this->_vertex);
-}
-
-Shape::Shape(float x, float y, float z, float deg, float x_r, float y_r, float z_r, GLenum mode, GLclampf r, GLclampf g,
-             GLclampf b)
-{
-    GLclampf colorfv[3];
-    colorfv[RED] = r;
-    colorfv[GREEN] = g;
-    colorfv[BLUE] = b;
-
-    this->_translation = new TranslateNode(x, y, 0);
-    this->_rotation = new RotationNode(deg, x_r, y_r, z_r);
-    this->_vertex = new VertexNode(nullptr, mode, colorfv);
-
-    this->_group = new GroupNode;
-    /** Group < T R V > */
-    this->_group->addChild(this->_translation);
-    this->_translation->addSibling(this->_rotation);
-    this->_rotation->addSibling(this->_vertex);
+    this->_rotation->addSibling(this->_scale);
+    this->_scale->addSibling(this->_vertex);
 }
 
 /**
@@ -203,189 +194,15 @@ std::vector<float> Shape::direction()
 
 
 
-/// @class Triangle @extends Shape
-
-Triangle::Triangle(float x, float y, float length, float deg, GLclampf r, GLclampf g, GLclampf b)
-        : Shape(x, y, 0, deg, GL_TRIANGLES, r, g, b)
-{
-
-    this->_modelFrame = {
-            {              0, -1 * length /      SQRT_3 },
-            {     length / 2,      length / (2 * SQRT_3)},
-            {-1 * length / 2,      length / (2 * SQRT_3)}
-    };
-
-    this->setVertex(&(this->_modelFrame));
-}
-
-
-Triangle::Triangle(float x, float y, float length, float deg, GLclampf *colorfv)
-        : Shape(x, y, 0, deg, GL_TRIANGLES, colorfv)
-{
-    this->_modelFrame = {
-            {              0, -1 * length /      SQRT_3 },
-            {     length / 2,      length / (2 * SQRT_3)},
-            {-1 * length / 2,      length / (2 * SQRT_3)}
-    };
-
-    this->setVertex(&(this->_modelFrame));
-}
-
-Triangle::Triangle(float x, float y, float length, float x_r, float y_r, float z_r, float deg, GLclampf r, GLclampf g, GLclampf b)
-        : Shape(x, y, 0, deg, x_r, y_r, z_r, GL_TRIANGLES, r, g, b)
-{
-    this->_modelFrame = {
-            {              0, -1 * length /      SQRT_3 },
-            {     length / 2,      length / (2 * SQRT_3)},
-            {-1 * length / 2,      length / (2 * SQRT_3)}
-    };
-
-    this->setVertex(&(this->_modelFrame));
-}
-
-/// @class Square @extends Shape
-
-Square::Square(float x, float y, float width, float height, float deg, GLclampf r, GLclampf g, GLclampf b)
-        : Shape(x, y, 0, deg, GL_QUADS, r, g, b)
-{
-    this->_width = width;
-    this->_height = height;
-    float w_unit = width/2;
-    float h_unit = height/2;
-    this->_modelFrame = {
-            {-w_unit, h_unit},
-            {w_unit,  h_unit},
-            {w_unit,  -h_unit},
-            {-w_unit, -h_unit}
-    };
-    this->setVertex(&(this->_modelFrame));
-}
-
-Square::Square(float x, float y, float width, float height, float deg, GLclampf colorfv[])
-        : Shape(x, y, 0, deg, GL_QUADS, colorfv)
-{
-    this->_width = width;
-    this->_height = height;
-    float w_unit = width/2;
-    float h_unit = height/2;
-    this->_modelFrame = {
-            {-w_unit, h_unit},
-            {w_unit,  h_unit},
-            {w_unit,  -h_unit},
-            {-w_unit, -h_unit}
-    };
-    this->setVertex(&(this->_modelFrame));
-}
-
-Square::Square(float x, float y, float width, float height, float x_r, float y_r, float z_r, float deg, GLclampf r, GLclampf g, GLclampf b)
-        : Shape(x, y, 0, deg, x_r, y_r, z_r, GL_QUADS, r, g, b)
-{
-    this->_width = width;
-    this->_height = height;
-    float w_unit = width/2;
-    float h_unit = height/2;
-    this->_modelFrame = {
-            {-w_unit, h_unit},
-            {w_unit,  h_unit},
-            {w_unit,  -h_unit},
-            {-w_unit, -h_unit}
-    };
-    this->setVertex(&(this->_modelFrame));
-}
-
-float Square::getWidth() const
-{
-    return this->_width;
-}
-
-float Square::getHeight() const
-{
-    return this->_height;
-}
-
-
-Circle::Circle(float x, float y, float length, float deg,  GLclampf r, GLclampf g, GLclampf b)
-        : Shape(x, y, 0, deg, GL_POLYGON, r, g, b)
-{
-    this->_modelFrame = {};
-
-    for(int i = 0; i < 360; i++){
-        std::vector<float> ele = {
-                length * (float)cos((float)i * PI / 180),
-                length * (float)sin((float)i * PI / 180)
-        };
-        this->_modelFrame.push_back(ele);
-    }
-    this->setVertex(&(this->_modelFrame));
-}
-
-Circle::Circle(float x, float y, float length, float deg, GLclampf colorfv[])
-        : Shape(x, y, 0, deg, GL_POLYGON, colorfv)
-{
-    this->_modelFrame = {};
-
-    for(int i = 0; i < 360; i++){
-        std::vector<float> ele = {
-                length * (float)cos((float)i * PI / 180),
-                length * (float)sin((float)i * PI / 180)
-        };
-        this->_modelFrame.push_back(ele);
-    }
-    this->setVertex(&(this->_modelFrame));
-}
-
-Circle::Circle(float x, float y, float length, float x_r, float y_r, float z_r, float deg,  GLclampf r, GLclampf g, GLclampf b)
-        : Shape(x, y, 0, deg, x_r, y_r, z_r, GL_POLYGON, r, g, b)
-{
-    this->_modelFrame = {};
-
-    for(int i = 0; i < 360; i++){
-        std::vector<float> ele = {
-                length * (float)cos((float)i * PI / 180),
-                length * (float)sin((float)i * PI / 180)
-        };
-        this->_modelFrame.push_back(ele);
-    }
-    this->setVertex(&(this->_modelFrame));
-}
-
-GradientShape::GradientShape(float x, float y, float deg, GLenum mode, vector<GLclampf *> &colorfv) {
-    this->_translation = new TranslateNode(x, y, 0);
-    this->_rotation = new RotationNode(deg);
-    this->_vertex = new GradientVertexNode(nullptr, mode, colorfv);
-
-    this->_group = new GroupNode;
-    /** Group < T R V > */
-    this->_group->addChild(this->_translation);
-    this->_translation->addSibling(this->_rotation);
-    this->_rotation->addSibling(this->_vertex);
-}
-
-void GradientShape::setVertex(std::vector<std::vector<float>> *mat) {
-    this->_vertex->set(mat);
-}
-
-GradientCircle::GradientCircle(float x, float y, float length, float deg, vector<GLclampf *> &colorfv)
-        :GradientShape(x, y, deg, GL_POLYGON, colorfv) {
-    this->_modelFrame = {};
-    for(int i = 0; i < 360; i++){
-        std::vector<float> ele = {
-                length * (float)cos((float)i * PI / 180),
-                length * (float)sin((float)i * PI / 180)
-        };
-        this->_modelFrame.push_back(ele);
-    }
-    this->setVertex(&(this->_modelFrame));
-}
 
 Object::Object(char *path, float x, float y, float z, float deg, GLclampf r, GLclampf g, GLclampf b)
-        : Shape(x, y, z, deg, GL_TRIANGLES, r, g, b), _model(path) {
+        : Shape(x, y, z, deg, 1, 1, 1, GL_TRIANGLES, r, g, b), _model(path) {
     this->_modelFrame = _model.compat();
     this->setVertex(&(this->_modelFrame));
 }
 
 Object::Object(char *path, float x, float y, float z, float deg, GLclampf *colorfv)
-        : Shape(x, y, z, deg, GL_TRIANGLES, colorfv), _model(path) {
+        : Shape(x, y, z, deg, 1, 1, 1, GL_TRIANGLES, colorfv), _model(path) {
     this->_modelFrame = _model.compat();
     this->setVertex(&(this->_modelFrame));
 }
@@ -406,7 +223,7 @@ glm::vec3 Object::min()
 }
 
 Grid::Grid(float width, float height, int row, int col, float x, float y, float z, float deg, GLclampf r, GLclampf g,
-           GLclampf b) : Shape(x, y, z, deg, GL_LINES, r, g, b){
+           GLclampf b) : Shape(x, y, z, deg, 1, 1, 1, GL_LINES, r, g, b){
     float xAdj = - width * (float)col / 2.0f;
     float yAdj = - height * (float)row / 2.0f;
 
@@ -423,40 +240,45 @@ Grid::Grid(float width, float height, int row, int col, float x, float y, float 
     this->setVertex(&(this->_modelFrame));
 }
 
-void Sphere::init(int lat, int lon, float radius) {
-    vector<vector<vector<float>>> vertex{};
 
-    for(int a = 0; a < lat + 1; a++) {
+
+
+Sphere::Sphere(int lat, int lon, float radius, float x, float y, float z, float deg, GLclampf *colorfv)
+        : Shape(x, y, z, deg, radius, radius, radius, GL_TRIANGLE_STRIP, colorfv) {
+
+    this->setVertex(&(this->vertices));
+}
+
+Sphere::Sphere(int lat, int lon, float radius, float x, float y, float z, float deg, GLclampf r, GLclampf g, GLclampf b)
+        : Shape(x, y, z, deg, radius, radius, radius, GL_TRIANGLE_STRIP, r, g, b) {
+    this->setVertex(&(this->vertices));
+}
+
+void Sphere::init(){
+    vector<vector<vector<float>>> vertex{};
+    //lat, lon = 20
+    //radius = 1 -> scaling k
+    for(int a = 0; a < 21; a++) {
         vector<vector<float>> latVec{};
-        float theta = (float)a / (float)lat * (float)PI;
-        float _z = radius * cos(theta);
-        for(int o = 0; o < lon; o++) {
-            float phi = (float)o / (float)lon * (float)PI * 2;
-            float _r = radius * sin(theta);
+        float theta = (float)a / (float)20 * (float)PI;
+        float _z = cos(theta);
+        for(int o = 0; o < 20; o++) {
+            float phi = (float)o / (float)20 * (float)PI * 2;
+            float _r = sin(theta);
             latVec.emplace_back(initializer_list<float>{_r * cos(phi), _r * sin(phi), _z});
         }
         vertex.push_back(latVec);
     }
 
-    for(int a = 0; a < lat; a++) {
-        for(int o = 0; o < lon; o++) {
-            this->_modelFrame.push_back(vertex[a][o]);
-            this->_modelFrame.push_back(vertex[a + 1][o]);
+    for(int a = 0; a < 20; a++) {
+        for(int o = 0; o < 20; o++) {
+            vertices.push_back(vertex[a][o]);
+            vertices.push_back(vertex[a][o]);
+            vertices.push_back(vertex[a + 1][o]);
         }
-        this->_modelFrame.push_back(vertex[a][0]);
+        vertices.push_back(vertex[a][0]);
     }
 
-    this->_modelFrame.push_back(vertex[lat][0]);
+    vertices.push_back(vertex[20][0]);
 
-    this->setVertex(&(this->_modelFrame));
-}
-
-Sphere::Sphere(int lat, int lon, float radius, float x, float y, float z, float deg, GLclampf *colorfv)
-        : Shape(x, y, z, deg, GL_TRIANGLE_STRIP, colorfv) {
-    init(lat, lon, radius);
-}
-
-Sphere::Sphere(int lat, int lon, float radius, float x, float y, float z, float deg, GLclampf r, GLclampf g, GLclampf b)
-        : Shape(x, y, z, deg, GL_TRIANGLE_STRIP, r, g, b) {
-    init(lat, lon, radius);
 }
