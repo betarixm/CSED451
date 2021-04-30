@@ -7,7 +7,7 @@ using namespace std;
 // scale = length, model frame unit = 1
 
 vector<vector<float>> Sphere::vertices = {};
-
+GLuint Sphere::buffer = 0;
 
 
 Shape::Shape(float x, float y, float z, float deg, float sx, float sy, float sz, GLenum mode, GLclampf r, GLclampf g, GLclampf b)
@@ -197,22 +197,27 @@ std::vector<float> Shape::direction()
 
 Object::Object(char *path, float x, float y, float z, float deg, GLclampf r, GLclampf g, GLclampf b)
         : Shape(x, y, z, deg, 1, 1, 1, GL_TRIANGLES, r, g, b), _model(path) {
-    this->_modelFrame = _model.compat();
-    this->setVertex(&(this->_modelFrame));
+    this->vertices = _model.compat();
+    this->setVertex(&(this->vertices));
+
+    glGenBuffers(1, &buffer);
+    glBindBuffer(GL_ARRAY_BUFFER, buffer);
+    for (int i = 0; i < vertices.size(); i ++)
+        glBufferSubData(GL_ARRAY_BUFFER, 3*sizeof(float)*i, 3*sizeof(float), &vertices[i][0]);
 }
 
 Object::Object(char *path, float x, float y, float z, float deg, GLclampf *colorfv)
         : Shape(x, y, z, deg, 1, 1, 1, GL_TRIANGLES, colorfv), _model(path) {
-    this->_modelFrame = _model.compat();
-    this->setVertex(&(this->_modelFrame));
+    this->vertices = _model.compat();
+    this->setVertex(&(this->vertices));
+
+    glGenBuffers(1, &buffer);
+    glBindBuffer(GL_ARRAY_BUFFER, buffer);
+    for (int i = 0; i < vertices.size(); i ++)
+        glBufferSubData(GL_ARRAY_BUFFER, 3*sizeof(float)*i, 3*sizeof(float), &vertices[i][0]);
 }
 
-Object::Object(char *path, float x, float y, float z, float x_r, float y_r, float z_r, float deg, GLclampf r,
-               GLclampf g, GLclampf b)
-        : Shape(x, y, z, deg, x_r, y_r, z_r, GL_TRIANGLES, r, g, b), _model(path) {
-    this->_modelFrame = _model.compat();
-    this->setVertex(&(this->_modelFrame));
-}
+
 glm::vec3 Object::max()
 {
     return _model.max();
@@ -222,24 +227,30 @@ glm::vec3 Object::min()
     return _model.min();
 }
 
+
+
 Grid::Grid(float width, float height, int row, int col, float x, float y, float z, float deg, GLclampf r, GLclampf g,
            GLclampf b) : Shape(x, y, z, deg, 1, 1, 1, GL_LINES, r, g, b){
     float xAdj = - width * (float)col / 2.0f;
     float yAdj = - height * (float)row / 2.0f;
 
     for(int i = 0; i <= row; i++) {
-        _modelFrame.emplace_back(initializer_list<float>{          0 + xAdj, height * (float)i + yAdj, z});
-        _modelFrame.emplace_back(initializer_list<float>{width * (float)col + xAdj, height * (float)i + yAdj, z});
+        vertices.emplace_back(initializer_list<float>{          0 + xAdj, height * (float)i + yAdj, z});
+        vertices.emplace_back(initializer_list<float>{width * (float)col + xAdj, height * (float)i + yAdj, z});
     }
 
     for(int i = 0; i <= col; i++) {
-        _modelFrame.emplace_back(initializer_list<float>{width * (float)i + xAdj,            0 + yAdj, z});
-        _modelFrame.emplace_back(initializer_list<float>{width * (float)i + xAdj, height * (float)row + yAdj, z});
+        vertices.emplace_back(initializer_list<float>{width * (float)i + xAdj,            0 + yAdj, z});
+        vertices.emplace_back(initializer_list<float>{width * (float)i + xAdj, height * (float)row + yAdj, z});
     }
 
-    this->setVertex(&(this->_modelFrame));
-}
+    this->setVertex(&(this->vertices));
 
+    glGenBuffers(1, &buffer);
+    glBindBuffer(GL_ARRAY_BUFFER, buffer);
+    for (int i = 0; i < vertices.size(); i ++)
+        glBufferSubData(GL_ARRAY_BUFFER, 3*sizeof(float)*i, 3*sizeof(float), &vertices[i][0]);
+}
 
 
 
@@ -279,5 +290,12 @@ void Sphere::init(){
     }
 
     vertices.push_back(vertex[20][0]);
+
+    // setting VBO
+    glGenBuffers(1, &buffer);
+    glBindBuffer(GL_ARRAY_BUFFER, buffer);
+    for (int i = 0; i < vertices.size(); i ++)
+        glBufferSubData(GL_ARRAY_BUFFER, 3*sizeof(float)*i, 3*sizeof(float), &vertices[i][0]);
+
 
 }

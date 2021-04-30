@@ -10,6 +10,7 @@
 #include "Stellar.h"
 #include "Ship.h"
 
+
 char mode = 'n'; /* n : normal,  f: fail, c: king-god */
 bool isHiddenLineRemoval = false;
 int frontCamera = -1;
@@ -27,34 +28,43 @@ Sphere *sphere;
 Sphere *cube;
 
 GLuint myProgObj;
-stack<glm::mat4> ModelView;
-stack<glm::mat4> Projection;
+GLuint VAO[4];
+deque<glm::mat4> ModelView;
+deque<glm::mat4> Projection;
 
 void lookAt(float x, float y, int _frontCamera) {
 
     glm::mat4 P = glm::perspective(90.0f, 1.0f, 0.001f, 100.0f);
-    glm::mat4 cur_p = Projection.top();
-    Projection.pop();
-    Projection.push(P*cur_p);
+    glm::mat4 cur_p = Projection.back();
+    Projection.pop_back();
+    Projection.push_back(P*cur_p);
 
     glm::mat4 C = glm::lookAt(glm::vec3(x, y + _frontCamera*0.22, 0.15), glm::vec3(x, y+0.7, 0.1), glm::vec3(0, 0, 1));
-    glm::mat4 cur_C = ModelView.top();
-    ModelView.pop();
-    ModelView.push(C*cur_C);
+    glm::mat4 cur_C = ModelView.back();
+    ModelView.pop_back();
+    ModelView.push_back(C*cur_C);
 
 }
 
 void microRenderScene(bool isBlack) {
     list<Bullet*>::iterator itr;
-    game->displayInfo();
-
+    //game->displayInfo();
+    glBindBuffer(GL_ARRAY_BUFFER, 0);
+    glBindBuffer(GL_ARRAY_BUFFER, VAO[0]);
     if(!(game->isGameOver() || game->isGameWin()) ) {
         lookAt(game->player()->x(), game->player()->y(), frontCamera);
         game->display(isBlack);
+        glBindBuffer(GL_ARRAY_BUFFER, 0);
+        glBindBuffer(GL_ARRAY_BUFFER, VAO[1]);
         grid->display(isBlack);
+        glBindBuffer(GL_ARRAY_BUFFER, 0);
+        glBindBuffer(GL_ARRAY_BUFFER, VAO[2]);
+        boundary->display(isBlack);
+
+        glBindBuffer(GL_ARRAY_BUFFER, 0);
+        glBindBuffer(GL_ARRAY_BUFFER, VAO[3]);
         for(auto & i : stellar_vec) {
             i->display(isBlack);
-            boundary->display(isBlack);
         }
         for (itr = enemy_bullets.begin(); itr != enemy_bullets.end(); itr++)
             (*itr)->display(isBlack);
@@ -318,14 +328,6 @@ void timerStellar(int value) {
 
 
 void initShader(){
-
-    // Shape static vertices init
-    Sphere::init();
-
-    // Uniform Matrix init
-    ModelView.push(glm::mat4(1.0f));
-    Projection.push(glm::mat4(1.0f));
-
     // Load & Compile Shader program
     // create program object, read, compiler link -> vertex attribute, uniform varibales.
     GLchar vShaderFileName[] = "shader.vert";
@@ -334,6 +336,10 @@ void initShader(){
     std::stringstream vShaderStream, fShaderStream;
 
     int myVertexShader, myFragShader;
+
+
+
+    myProgObj = glCreateProgram();
 
     vShaderFile.open(vShaderFileName);
     fShaderFile.open(fShaderFileName);
@@ -346,7 +352,6 @@ void initShader(){
     const char * vShaderCode = vShaderStream.str().c_str();
     const char * fShaderCode = fShaderStream.str().c_str();
 
-    myProgObj = glCreateProgram();
 
     myVertexShader = glCreateShader(GL_VERTEX_SHADER);
     glShaderSource(myVertexShader, 1, &vShaderCode, NULL);
@@ -359,21 +364,57 @@ void initShader(){
     glAttachShader(myProgObj, myFragShader);
 
 
-    glUseProgram(myProgObj);
+    //glUseProgram(myProgObj);
     glLinkProgram(myProgObj);
+    glUseProgram(myProgObj);
 
     // delete after linking
     glDeleteShader(myVertexShader);
     glDeleteShader(myFragShader);
 }
 
+void initGraphic()
+{
+    initShader();
+
+    // Uniform Matrix init
+    ModelView.push_back(glm::mat4(1.0f));
+    Projection.push_back(glm::mat4(1.0f));
+
+
+    glGenVertexArrays(1, &VAO[0]);
+    glBindVertexArray(VAO[0]);
+    game = new Game();
+    //  VAO binding
+    glEnableVertexAttribArray(0);
+    glEnableVertexAttribArray(1);
+
+    glGenVertexArrays(1, &VAO[1]);
+    glBindBuffer(GL_ARRAY_BUFFER, 0);
+    glBindVertexArray(VAO[1]);
+    boundary = new Grid(0.1f, 0.1f, 20, 24, 0, 0, -0.295f, 0, 0.0f, 0.5f, 1.0f);
+    glVertexAttribPointer(0, 3, GL_FLOAT, GL_FALSE, 3*sizeof(float), (void*)0);
+    glEnableVertexAttribArray(0);
+
+    glGenVertexArrays(1, &VAO[2]);
+    glBindBuffer(GL_ARRAY_BUFFER, 0);
+    glBindVertexArray(VAO[2]);
+    grid = new Grid(0.1f, 0.1f, 30, 40, 0, 0, -0.3f, 0, 1.0f, 1.0f, 1.0f);
+    glVertexAttribPointer(0, 3, GL_FLOAT, GL_FALSE, 3*sizeof(float), (void*)0);
+    glEnableVertexAttribArray(0);
+
+    glGenVertexArrays(1, &VAO[3]);
+    glBindBuffer(GL_ARRAY_BUFFER, 0);
+    glBindVertexArray(VAO[3]);
+    Sphere::init();
+    glVertexAttribPointer(0, 3, GL_FLOAT, GL_FALSE, 3*sizeof(float), (void*)0);
+    glEnableVertexAttribArray(0);
+    initStellar();
+
+}
+
 
 int main(int argc, char **argv) {
-    initShader();
-    game = new Game();
-    boundary = new Grid(0.1f, 0.1f, 20, 24, 0, 0, -0.295f, 0, 0.0f, 0.5f, 1.0f);
-    grid = new Grid(0.1f, 0.1f, 30, 40, 0, 0, -0.3f, 0, 1.0f, 1.0f, 1.0f);
-    initStellar();
 
     glutInit(&argc, argv);
     glutInitDisplayMode(GLUT_DOUBLE | GLUT_RGB | GLUT_DEPTH);
@@ -400,7 +441,10 @@ int main(int argc, char **argv) {
     glBlendFunc(GL_SRC_ALPHA, GL_ONE_MINUS_SRC_ALPHA); // https://flex.phys.tohoku.ac.jp/texi/glut/glutStrokeCharacter.3xglut.html
 
     glClearColor(0.0f, 0.0f, 0.0f, 1.0f);
+    glewExperimental = GL_TRUE;
     glewInit();
+
+    initGraphic();
     glutMainLoop();
 
 }

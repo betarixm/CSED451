@@ -6,7 +6,9 @@ extern char mode;
 
 Game::Game() {
     this->spawnPlayer();
+    glVertexAttribPointer(0, 3, GL_FLOAT, GL_FALSE, 3*sizeof(float), (void*)0);
     this->spawnEnemy();
+    glVertexAttribPointer(1, 3, GL_FLOAT, GL_FALSE, 3*sizeof(float), (void*)0);
 }
 
 Game::~Game() {

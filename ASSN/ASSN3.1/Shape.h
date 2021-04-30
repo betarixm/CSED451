@@ -69,6 +69,7 @@ public:
     void setDirection(float x, float y, float z);
 
     std::vector<float> direction();
+
 };
 
 
@@ -77,19 +78,24 @@ public:
 
 class Object : public Shape {
 private:
-    static std::vector<std::vector<float>> vertices;
+    std::vector<std::vector<float>> vertices;
+    GLuint buffer;
     Model _model;
 public:
     Object(char* path, float x, float y, float z, float deg, GLclampf r, GLclampf g, GLclampf b);
 
     Object(char* path, float x, float y, float z, float deg, GLclampf colorfv[]);
 
-    Object(char* path, float x, float y, float z, float x_r, float y_r, float z_r, float deg, GLclampf r, GLclampf g, GLclampf b);
     glm::vec3 max();
     glm::vec3 min();
+
 };
 
 class Grid : public Shape {
+private:
+    std::vector<std::vector<float>> vertices;
+    GLuint buffer;
+
 public:
     Grid(float width, float height, int row, int col, float x, float y, float z, float deg, GLclampf r, GLclampf g, GLclampf b);
 };
@@ -98,6 +104,8 @@ public:
 class Sphere : public Shape {
 private:
     static std::vector<std::vector<float>> vertices;
+    static GLuint buffer; //VBO
+
 public:
     Sphere(int lat, int lon, float radius, float x, float y, float z, float deg, GLclampf colorfv[]);
 

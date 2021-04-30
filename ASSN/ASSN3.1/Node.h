@@ -20,8 +20,10 @@
 
 using namespace std;
 
-extern stack<glm::mat4> ModelView;
-extern stack<glm::mat4> Projection;
+extern GLuint myProgObj;
+extern deque<glm::mat4> ModelView;
+extern deque<glm::mat4> Projection;
+
 
 class Node {
 private:
