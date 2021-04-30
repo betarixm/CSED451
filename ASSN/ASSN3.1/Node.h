@@ -4,6 +4,13 @@
 #include <GL/glew.h>
 #include <vector>
 #include <utility>
+#include <stack>
+
+#include <glm/glm.hpp>
+#include <glm/vec3.hpp>
+#include <glm/mat4x4.hpp>
+#include <glm/gtc/matrix_transform.hpp>
+
 
 #define NUM_COLOR 3
 
@@ -12,6 +19,9 @@
 #define BLUE 2
 
 using namespace std;
+
+extern stack<glm::mat4> ModelView;
+extern stack<glm::mat4> Projection;
 
 class Node {
 private:
@@ -120,18 +130,7 @@ public:
     float *modelView();
 };
 
-class GradientVertexNode: public VertexNode {
-private:
-    vector<GLclampf*> _colorfv;
-public:
-    GradientVertexNode() = default;
-    GradientVertexNode(std::vector<std::vector<float>>* _vertices, GLenum _mode, vector<GLclampf*>& colorfv);;
 
-    void _display(bool isBlack) override;
-
-    void set(std::vector<std::vector<float>> *vertices) override;
-
-};
 
 class ScaleNode: public Node {
 private:

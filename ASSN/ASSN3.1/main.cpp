@@ -4,7 +4,6 @@
 #include <GL/freeglut.h>
 
 #include <glm/gtc/type_ptr.hpp>
-#include <glm/mat4x4.hpp>
 #include <glm/ext/matrix_clip_space.hpp>
 
 #include "Stellar.h"
@@ -25,6 +24,9 @@ Grid* boundary;
 
 Sphere *sphere;
 Sphere *cube;
+
+stack<glm::mat4> ModelView = {};
+stack<glm::mat4> Projection = {};
 
 void lookAt(float x, float y, int _frontCamera) {
     glMatrixMode(GL_PROJECTION);
