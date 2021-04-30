@@ -25,16 +25,21 @@ Grid* boundary;
 Sphere *sphere;
 Sphere *cube;
 
-stack<glm::mat4> ModelView = {};
-stack<glm::mat4> Projection = {};
+stack<glm::mat4> ModelView;
+stack<glm::mat4> Projection;
 
 void lookAt(float x, float y, int _frontCamera) {
-    glMatrixMode(GL_PROJECTION);
-    glm::mat4x4 proj = glm::perspective(90.0f, 1.0f, 0.001f, 100.0f);
-    glLoadMatrixf(glm::value_ptr(proj));
-    glMatrixMode(GL_MODELVIEW);
-    glLoadIdentity();
-    gluLookAt(x, y + _frontCamera * 0.22, 0.15, x, y+0.7, 0.1, 0, 0, 1);
+
+    glm::mat4 P = glm::perspective(90.0f, 1.0f, 0.001f, 100.0f);
+    glm::mat4 cur_p = Projection.top();
+    Projection.pop();
+    Projection.push(P*cur_p);
+
+    glm::mat4 C = glm::lookAt(glm::vec3(x, y + _frontCamera*0.22, 0.15), glm::vec3(x, y+0.7, 0.1), glm::vec3(0, 0, 1));
+    glm::mat4 cur_C = ModelView.top();
+    ModelView.pop();
+    ModelView.push(C*cur_C);
+
 }
 
 void microRenderScene(bool isBlack) {
@@ -310,9 +315,20 @@ void timerStellar(int value) {
 }
 
 
+void initShader(){
+
+    // Shape static vertices init
+    Sphere::init();
+
+    // Uniform Matrix init
+    ModelView.push(glm::mat4(1.0f));
+    Projection.push(glm::mat4(1.0f));
+
+}
+
 
 int main(int argc, char **argv) {
-    Sphere::init();
+    initShader();
     game = new Game();
     boundary = new Grid(0.1f, 0.1f, 20, 24, 0, 0, -0.295f, 0, 0.0f, 0.5f, 1.0f);
     grid = new Grid(0.1f, 0.1f, 30, 40, 0, 0, -0.3f, 0, 1.0f, 1.0f, 1.0f);

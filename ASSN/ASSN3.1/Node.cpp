@@ -51,7 +51,10 @@ Node *Node::addSibling(Node *target) {
 
 void GroupNode::display(bool isBlack)
 {
-    ModelView.push(glm::mat4(1.0f));
+    ModelView.push(glm::mat4(1.0f));glm::mat4 T = glm::translate(glm::mat4(1.0f), glm::vec3(this->_dx, this->_dy, this->_dz));
+    glm::mat4 myModelView = ModelView.top();
+    ModelView.pop();
+    ModelView.push(T * myModelView);
     //glPushMatrix();
 
     if(this->_child != nullptr) {
