@@ -25,7 +25,7 @@ typedef Sphere Item;
 
 class Ship {
 private:
-    char _path[20] = "model/ship.obj";
+    char _path[20] = "model/cube.obj";
 protected:
     int _numLife;
     int _numBullet;

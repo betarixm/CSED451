@@ -150,14 +150,14 @@ void VertexNode::_display(bool isBlack) {
     for (int i = 0; i < Projection.size(); i++)
         ProjectionFinal = Projection[i] * ProjectionFinal;
 
+    glm::mat4  P = glm::perspective(90.0f, 1.0f, 0.001f, 100.0f);
 
-
-    GLuint Modelview, projection, color;
+    GLint Modelview, projection, color;
     Modelview = glGetUniformLocation(myProgObj, "ModelView"); // in vertex shader
-    glUniformMatrix4fv(Modelview, 1, GL_TRUE, &ModelViewFinal[0][0]);
+    glUniformMatrix4fv(Modelview, 1, GL_TRUE, &glm::mat4(1.0f)[0][0]);
 
     projection = glGetUniformLocation(myProgObj, "Projection");
-    glUniformMatrix4fv(projection, 1, GL_TRUE, &ProjectionFinal[0][0]);
+    glUniformMatrix4fv(projection, 1, GL_TRUE, &P[0][0]);
 
     color = glGetUniformLocation(myProgObj, "color");
     if(isBlack) {

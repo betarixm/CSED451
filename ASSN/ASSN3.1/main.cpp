@@ -1,7 +1,8 @@
 #include <vector>
-
+#include <iostream>
 #include <GL/glew.h>
 #include <GL/freeglut.h>
+#include <OpenGL/gl.h>
 
 #include <glm/gtc/type_ptr.hpp>
 #include <glm/ext/matrix_clip_space.hpp>
@@ -48,20 +49,44 @@ void lookAt(float x, float y, int _frontCamera) {
 
 void microRenderScene(bool isBlack) {
     list<Bullet*>::iterator itr;
+    GLuint Modelview, projection, color;
+    glm::mat4  P = glm::perspective(90.0f, 1.0f, 0.001f, 100.0f);
     //game->displayInfo();
+    //glBindBuffer(GL_ARRAY_BUFFER, 0);
+    //glBindBuffer(GL_ELEMENT_ARRAY_BUFFER, 0);
+    //glBindBuffer(GL_ARRAY_BUFFER, VAO[0]);
+
+    //Modelview = glGetUniformLocation(myProgObj, "ModelView"); // in vertex shader
+    //glUniformMatrix4fv(Modelview, 1, GL_TRUE, &glm::mat4(1.0f)[0][0]);
+
+    //projection = glGetUniformLocation(myProgObj, "Projection");
+    //glUniformMatrix4fv(projection, 1, GL_TRUE, &P[0][0]);
+
+    //color = glGetUniformLocation(myProgObj, "color");
+
+    //glUniform4f(color, 1.0f, 0.0f, 0.0f, 1.0f);
+
+
+    //glDrawArrays(GL_POLYGON, 0, 3);
+
     glBindBuffer(GL_ARRAY_BUFFER, 0);
+    glBindBuffer(GL_ELEMENT_ARRAY_BUFFER, 0);
     glBindBuffer(GL_ARRAY_BUFFER, VAO[0]);
     if(!(game->isGameOver() || game->isGameWin()) ) {
         lookAt(game->player()->x(), game->player()->y(), frontCamera);
         game->display(isBlack);
+        /**
         glBindBuffer(GL_ARRAY_BUFFER, 0);
+        glBindBuffer(GL_ELEMENT_ARRAY_BUFFER, 0);
         glBindBuffer(GL_ARRAY_BUFFER, VAO[1]);
         grid->display(isBlack);
         glBindBuffer(GL_ARRAY_BUFFER, 0);
+        glBindBuffer(GL_ELEMENT_ARRAY_BUFFER, 0);
         glBindBuffer(GL_ARRAY_BUFFER, VAO[2]);
         boundary->display(isBlack);
 
         glBindBuffer(GL_ARRAY_BUFFER, 0);
+        glBindBuffer(GL_ELEMENT_ARRAY_BUFFER, 0);
         glBindBuffer(GL_ARRAY_BUFFER, VAO[3]);
         for(auto & i : stellar_vec) {
             i->display(isBlack);
@@ -72,8 +97,10 @@ void microRenderScene(bool isBlack) {
             (*itr)->display(isBlack);
         for (itr = item_list.begin(); itr != item_list.end(); itr++)
             (*itr)->display(isBlack);
+**/
     }
-}
+
+    }
 
 /**
  * @brief 우주선/총알 display by Double buffer
@@ -278,7 +305,7 @@ void timerBulletEnemyShot(int value)
         game->enemy()->randomMoveHandler();
 
         if(value == 0) {    /* 총알 발사 */
-            new_bullet = game->enemy()->shot();
+            //new_bullet = game->enemy()->shot();
             for(Bullet* ptr : new_bullet)
                 enemy_bullets.push_back(ptr);
         }
@@ -330,17 +357,18 @@ void timerStellar(int value) {
 void initShader(){
     // Load & Compile Shader program
     // create program object, read, compiler link -> vertex attribute, uniform varibales.
-    GLchar vShaderFileName[] = "shader.vert";
-    GLchar fShaderFileName[] = "shader.frag";
+    GLchar vShaderFileName[] = "Shader.vert";
+    GLchar fShaderFileName[] = "Shader.frag";
     std::ifstream vShaderFile, fShaderFile;
     std::stringstream vShaderStream, fShaderStream;
+    std::string vShaderString, fShaderString;
 
     int myVertexShader, myFragShader;
 
+    vShaderFile.exceptions (std::ifstream::failbit | std::ifstream::badbit);
+    fShaderFile.exceptions (std::ifstream::failbit | std::ifstream::badbit);
 
-
-    myProgObj = glCreateProgram();
-
+try {
     vShaderFile.open(vShaderFileName);
     fShaderFile.open(fShaderFileName);
 
@@ -349,24 +377,56 @@ void initShader(){
     vShaderFile.close();
     fShaderFile.close();
 
-    const char * vShaderCode = vShaderStream.str().c_str();
-    const char * fShaderCode = fShaderStream.str().c_str();
+    vShaderString = vShaderStream.str();
+    fShaderString = fShaderStream.str();
+}
+    catch(std::ifstream::failure e) {
+        std::cout << "ERROR::SHADER::FILE_NOT_SUCCESFULLY_READ" << std::endl;
+    }
+    const char * vShaderCode = vShaderString.c_str();
+    const char * fShaderCode = fShaderString.c_str();
 
+    int success;
+    char infoLog[512];
 
     myVertexShader = glCreateShader(GL_VERTEX_SHADER);
     glShaderSource(myVertexShader, 1, &vShaderCode, NULL);
     glCompileShader(myVertexShader);
-    glAttachShader(myProgObj, myVertexShader);
+    glGetShaderiv(myVertexShader, GL_COMPILE_STATUS, &success);
+    if(!success)
+    {
+        glGetShaderInfoLog(myVertexShader, 512, NULL, infoLog);
+        std::cout << "ERROR::SHADER::VERTEX::COMPILATION_FAILED\n" << infoLog << std::endl;
+    };
+
+
 
     myFragShader = glCreateShader(GL_FRAGMENT_SHADER);
     glShaderSource(myFragShader, 1, &fShaderCode, NULL);
     glCompileShader(myFragShader);
+    glGetShaderiv(myFragShader, GL_COMPILE_STATUS, &success);
+    if(!success)
+    {
+        glGetShaderInfoLog(myFragShader, 512, NULL, infoLog);
+        std::cout << "ERROR::SHADER::VERTEX::COMPILATION_FAILED\n" << infoLog << std::endl;
+    };
+
+
+
+
+    myProgObj = glCreateProgram();
+    glAttachShader(myProgObj, myVertexShader);
     glAttachShader(myProgObj, myFragShader);
 
-
-    //glUseProgram(myProgObj);
-    glLinkProgram(myProgObj);
     glUseProgram(myProgObj);
+    glLinkProgram(myProgObj);
+    glGetProgramiv(myProgObj, GL_LINK_STATUS, &success);
+    if(!success)
+    {
+        glGetProgramInfoLog(myProgObj, 512, NULL, infoLog);
+        std::cout << "ERROR::SHADER::PROGRAM::LINKING_FAILED\n" << infoLog << std::endl;
+    }
+    //glUseProgram(myProgObj);
 
     // delete after linking
     glDeleteShader(myVertexShader);
@@ -376,6 +436,12 @@ void initShader(){
 void initGraphic()
 {
     initShader();
+    GLuint VBO;
+    vector<vector<float>> vertices = {
+            {0.1, 0.1, 0.0},
+            {0.2, 0.2, 0.0},
+            {0.0, 0.0, 0.0}
+    };
 
     // Uniform Matrix init
     ModelView.push_back(glm::mat4(1.0f));
@@ -384,13 +450,18 @@ void initGraphic()
 
     glGenVertexArrays(1, &VAO[0]);
     glBindVertexArray(VAO[0]);
+    //glGenBuffers(1, &VBO);
+    //glBindBuffer(GL_ARRAY_BUFFER, VBO);
+    //glBufferData(GL_ARRAY_BUFFER, 3*sizeof(float)*vertices.size(), &vertices[0][0], GL_STATIC_DRAW);
     game = new Game();
     //  VAO binding
+    //glVertexAttribPointer(0, 3, GL_FLOAT, GL_FALSE, 3*sizeof(float), (void*)0);
     glEnableVertexAttribArray(0);
-    glEnableVertexAttribArray(1);
-
+    //glEnableVertexAttribArray(1);
+/**
     glGenVertexArrays(1, &VAO[1]);
     glBindBuffer(GL_ARRAY_BUFFER, 0);
+    glBindBuffer(GL_ELEMENT_ARRAY_BUFFER, 0);
     glBindVertexArray(VAO[1]);
     boundary = new Grid(0.1f, 0.1f, 20, 24, 0, 0, -0.295f, 0, 0.0f, 0.5f, 1.0f);
     glVertexAttribPointer(0, 3, GL_FLOAT, GL_FALSE, 3*sizeof(float), (void*)0);
@@ -398,6 +469,7 @@ void initGraphic()
 
     glGenVertexArrays(1, &VAO[2]);
     glBindBuffer(GL_ARRAY_BUFFER, 0);
+    glBindBuffer(GL_ELEMENT_ARRAY_BUFFER, 0);
     glBindVertexArray(VAO[2]);
     grid = new Grid(0.1f, 0.1f, 30, 40, 0, 0, -0.3f, 0, 1.0f, 1.0f, 1.0f);
     glVertexAttribPointer(0, 3, GL_FLOAT, GL_FALSE, 3*sizeof(float), (void*)0);
@@ -405,19 +477,21 @@ void initGraphic()
 
     glGenVertexArrays(1, &VAO[3]);
     glBindBuffer(GL_ARRAY_BUFFER, 0);
+    glBindBuffer(GL_ELEMENT_ARRAY_BUFFER, 0);
     glBindVertexArray(VAO[3]);
     Sphere::init();
     glVertexAttribPointer(0, 3, GL_FLOAT, GL_FALSE, 3*sizeof(float), (void*)0);
     glEnableVertexAttribArray(0);
     initStellar();
-
+**/
 }
 
 
 int main(int argc, char **argv) {
 
     glutInit(&argc, argv);
-    glutInitDisplayMode(GLUT_DOUBLE | GLUT_RGB | GLUT_DEPTH);
+    glutInitContextVersion(3, 2);
+    glutInitDisplayMode( GLUT_CORE_PROFILE | GLUT_DOUBLE | GLUT_RGB | GLUT_DEPTH);
     glutInitWindowPosition(0, 0);
     glutInitWindowSize(800, 800);
     glutCreateWindow("beta&ches");
@@ -425,10 +499,10 @@ int main(int argc, char **argv) {
 
     glutSpecialFunc(onSpecialKeyDown);
     glutSpecialUpFunc(onSpecialKeyUp);
-    glutTimerFunc(1, timerDefault, -1);
-    glutTimerFunc(100, timerBulletEnemyShot, -1);
-    glutTimerFunc(1, timerRedisplay, -1);
-    glutTimerFunc(1, timerStellar, -1);
+    //glutTimerFunc(1, timerDefault, -1);
+    //glutTimerFunc(100, timerBulletEnemyShot, -1);
+    //glutTimerFunc(1, timerRedisplay, -1);
+    //glutTimerFunc(1, timerStellar, -1);
     glutKeyboardFunc(onKeyDown);
     glutKeyboardUpFunc(onKeyUp);
 
