@@ -273,7 +273,6 @@ void Sphere::init(){
     for(int a = 0; a < 20; a++) {
         for(int o = 0; o < 20; o++) {
             vertices.push_back(vertex[a][o]);
-            vertices.push_back(vertex[a][o]);
             vertices.push_back(vertex[a + 1][o]);
         }
         vertices.push_back(vertex[a][0]);

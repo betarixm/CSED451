@@ -147,6 +147,9 @@ void VertexNode::_display(bool isBlack) {
     }
     glEnd();
     glPopMatrix();
+    glPopMatrix(); // remove ScaleNode
+    glPopMatrix();
+
 
     glGetFloatv(GL_MODELVIEW_MATRIX, modelview);
 }
@@ -241,10 +244,12 @@ void GradientVertexNode::set(std::vector<std::vector<float>> *vertices) {
 
 ScaleNode::ScaleNode(float _sx, float _sy, float _sz) : _sx(_sx), _sy(_sy), _sz(_sz) {}
 
-ScaleNode(float _sx, float _sy, float _sz, Node* _child, Node* _sibling) : _sx(_sx), _sy(_sy), _sz(_sz), Node(_child, _sibling) {}
+ScaleNode::ScaleNode(float _sx, float _sy, float _sz, Node* _child, Node* _sibling) : _sx(_sx), _sy(_sy), _sz(_sz), Node(_child, _sibling) {}
 
 void ScaleNode::_display(bool isBlack) {
+    glPushMatrix();
     glScalef(this->_sx, this->_sy, this->_sz);
+
 }
 
 void ScaleNode::set(float x, float y, float z)
