@@ -6,6 +6,7 @@
 #include <glm/gtc/type_ptr.hpp>
 #include <glm/ext/matrix_clip_space.hpp>
 
+
 #include "Stellar.h"
 #include "Ship.h"
 
@@ -25,6 +26,7 @@ Grid* boundary;
 Sphere *sphere;
 Sphere *cube;
 
+GLuint myProgObj;
 stack<glm::mat4> ModelView;
 stack<glm::mat4> Projection;
 
@@ -324,6 +326,45 @@ void initShader(){
     ModelView.push(glm::mat4(1.0f));
     Projection.push(glm::mat4(1.0f));
 
+    // Load & Compile Shader program
+    // create program object, read, compiler link -> vertex attribute, uniform varibales.
+    GLchar vShaderFileName[] = "shader.vert";
+    GLchar fShaderFileName[] = "shader.frag";
+    std::ifstream vShaderFile, fShaderFile;
+    std::stringstream vShaderStream, fShaderStream;
+
+    int myVertexShader, myFragShader;
+
+    vShaderFile.open(vShaderFileName);
+    fShaderFile.open(fShaderFileName);
+
+    vShaderStream << vShaderFile.rdbuf();
+    fShaderStream << fShaderFile.rdbuf();
+    vShaderFile.close();
+    fShaderFile.close();
+
+    const char * vShaderCode = vShaderStream.str().c_str();
+    const char * fShaderCode = fShaderStream.str().c_str();
+
+    myProgObj = glCreateProgram();
+
+    myVertexShader = glCreateShader(GL_VERTEX_SHADER);
+    glShaderSource(myVertexShader, 1, &vShaderCode, NULL);
+    glCompileShader(myVertexShader);
+    glAttachShader(myProgObj, myVertexShader);
+
+    myFragShader = glCreateShader(GL_FRAGMENT_SHADER);
+    glShaderSource(myFragShader, 1, &fShaderCode, NULL);
+    glCompileShader(myFragShader);
+    glAttachShader(myProgObj, myFragShader);
+
+
+    glUseProgram(myProgObj);
+    glLinkProgram(myProgObj);
+
+    // delete after linking
+    glDeleteShader(myVertexShader);
+    glDeleteShader(myFragShader);
 }
 
 
