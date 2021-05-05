@@ -1,23 +1,15 @@
-//
-// Created by 최은수 on 2021/04/29.
-//
+#version 330 core
 
-/**  vertex shader */
-
-in vec3 vPosition;
-
-
-// to Fragment Shader
+layout (location = 0) in vec3 vPosition;
 out vec4 vertexColor;
 
-// Matrix from appl
 uniform mat4 ModelView;
 uniform mat4 Projection;
 uniform vec4 color;
 
 void main(){
 
-gl_Position = Projection * ModelView * vec4(vPosition, 1);
+gl_Position = Projection * ModelView * vec4(vPosition, 1.0);
 vertexColor = color;
 
 }

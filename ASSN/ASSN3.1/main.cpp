@@ -386,6 +386,8 @@ try {
     const char * vShaderCode = vShaderString.c_str();
     const char * fShaderCode = fShaderString.c_str();
 
+    cout << vShaderCode << endl;
+
     int success;
     char infoLog[512];
 
@@ -488,10 +490,10 @@ void initGraphic()
 
 
 int main(int argc, char **argv) {
-
+    glutInitContextVersion(2, 1);
+    glutInitContextProfile(GLUT_CORE_PROFILE);
     glutInit(&argc, argv);
-    glutInitContextVersion(3, 2);
-    glutInitDisplayMode( GLUT_CORE_PROFILE | GLUT_DOUBLE | GLUT_RGB | GLUT_DEPTH);
+    glutInitDisplayMode(  GLUT_DOUBLE | GLUT_RGB | GLUT_DEPTH);
     glutInitWindowPosition(0, 0);
     glutInitWindowSize(800, 800);
     glutCreateWindow("beta&ches");

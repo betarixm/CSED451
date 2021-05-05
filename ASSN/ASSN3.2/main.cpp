@@ -2,7 +2,6 @@
 #include <iostream>
 #include <GL/glew.h>
 #include <GL/freeglut.h>
-
 #include <glm/gtc/type_ptr.hpp>
 #include <glm/ext/matrix_clip_space.hpp>
 
@@ -51,22 +50,19 @@ void microRenderScene(bool isBlack) {
     GLuint Modelview, projection, color;
     glm::mat4  P = glm::perspective(90.0f, 1.0f, 0.001f, 100.0f);
     //game->displayInfo();
-    //glBindBuffer(GL_ARRAY_BUFFER, 0);
-    //glBindBuffer(GL_ELEMENT_ARRAY_BUFFER, 0);
-    //glBindBuffer(GL_ARRAY_BUFFER, VAO[0]);
 
-    //Modelview = glGetUniformLocation(myProgObj, "ModelView"); // in vertex shader
-    //glUniformMatrix4fv(Modelview, 1, GL_TRUE, &glm::mat4(1.0f)[0][0]);
+    Modelview = glGetUniformLocation(myProgObj, "ModelView"); // in vertex shader
+    glUniformMatrix4fv(Modelview, 1, GL_TRUE, &glm::mat4(1.0f)[0][0]);
 
-    //projection = glGetUniformLocation(myProgObj, "Projection");
-    //glUniformMatrix4fv(projection, 1, GL_TRUE, &P[0][0]);
+    projection = glGetUniformLocation(myProgObj, "Projection");
+    glUniformMatrix4fv(projection, 1, GL_TRUE, &P[0][0]);
 
-    //color = glGetUniformLocation(myProgObj, "color");
+    color = glGetUniformLocation(myProgObj, "color");
 
-    //glUniform4f(color, 1.0f, 0.0f, 0.0f, 1.0f);
+    glUniform4f(color, 1.0f, 0.0f, 0.0f, 1.0f);
 
 
-    //glDrawArrays(GL_POLYGON, 0, 3);
+    // glDrawArrays(GL_POLYGON, 0, 3);
 
     glBindBuffer(GL_ARRAY_BUFFER, 0);
     glBindBuffer(GL_ELEMENT_ARRAY_BUFFER, 0);
@@ -74,19 +70,16 @@ void microRenderScene(bool isBlack) {
     if(!(game->isGameOver() || game->isGameWin()) ) {
         lookAt(game->player()->x(), game->player()->y(), frontCamera);
         game->display(isBlack);
-        /**
-        glBindBuffer(GL_ARRAY_BUFFER, 0);
-        glBindBuffer(GL_ELEMENT_ARRAY_BUFFER, 0);
-        glBindBuffer(GL_ARRAY_BUFFER, VAO[1]);
+        
+        glBindVertexArray(VAO[1]);
         grid->display(isBlack);
-        glBindBuffer(GL_ARRAY_BUFFER, 0);
-        glBindBuffer(GL_ELEMENT_ARRAY_BUFFER, 0);
-        glBindBuffer(GL_ARRAY_BUFFER, VAO[2]);
-        boundary->display(isBlack);
+        glBindVertexArray(0);
 
-        glBindBuffer(GL_ARRAY_BUFFER, 0);
-        glBindBuffer(GL_ELEMENT_ARRAY_BUFFER, 0);
-        glBindBuffer(GL_ARRAY_BUFFER, VAO[3]);
+        glBindVertexArray(VAO[2]);
+        boundary->display(isBlack);
+        glBindVertexArray(0);
+
+        glBindVertexArray(VAO[3]);
         for(auto & i : stellar_vec) {
             i->display(isBlack);
         }
@@ -96,10 +89,10 @@ void microRenderScene(bool isBlack) {
             (*itr)->display(isBlack);
         for (itr = item_list.begin(); itr != item_list.end(); itr++)
             (*itr)->display(isBlack);
-**/
+        glBindVertexArray(0);
     }
 
-    }
+}
 
 /**
  * @brief 우주선/총알 display by Double buffer
@@ -437,7 +430,6 @@ try {
 void initGraphic()
 {
     initShader();
-    GLuint VBO;
     vector<vector<float>> vertices = {
             {0.1, 0.1, 0.0},
             {0.2, 0.2, 0.0},
@@ -449,50 +441,40 @@ void initGraphic()
     Projection.push_back(glm::mat4(1.0f));
 
 
-    glGenVertexArrays(1, &VAO[0]);
-    glBindVertexArray(VAO[0]);
-    //glGenBuffers(1, &VBO);
-    //glBindBuffer(GL_ARRAY_BUFFER, VBO);
-    //glBufferData(GL_ARRAY_BUFFER, 3*sizeof(float)*vertices.size(), &vertices[0][0], GL_STATIC_DRAW);
+    // glGenVertexArrays(1, &VAO[0]);
+    // glBindVertexArray(VAO[0]);
     game = new Game();
     //  VAO binding
-    //glVertexAttribPointer(0, 3, GL_FLOAT, GL_FALSE, 3*sizeof(float), (void*)0);
-    glEnableVertexAttribArray(0);
-    //glEnableVertexAttribArray(1);
-/**
+    // glEnableVertexAttribArray(0);
+    // glEnableVertexAttribArray(1);
+
     glGenVertexArrays(1, &VAO[1]);
-    glBindBuffer(GL_ARRAY_BUFFER, 0);
-    glBindBuffer(GL_ELEMENT_ARRAY_BUFFER, 0);
     glBindVertexArray(VAO[1]);
     boundary = new Grid(0.1f, 0.1f, 20, 24, 0, 0, -0.295f, 0, 0.0f, 0.5f, 1.0f);
     glVertexAttribPointer(0, 3, GL_FLOAT, GL_FALSE, 3*sizeof(float), (void*)0);
     glEnableVertexAttribArray(0);
 
     glGenVertexArrays(1, &VAO[2]);
-    glBindBuffer(GL_ARRAY_BUFFER, 0);
-    glBindBuffer(GL_ELEMENT_ARRAY_BUFFER, 0);
     glBindVertexArray(VAO[2]);
     grid = new Grid(0.1f, 0.1f, 30, 40, 0, 0, -0.3f, 0, 1.0f, 1.0f, 1.0f);
     glVertexAttribPointer(0, 3, GL_FLOAT, GL_FALSE, 3*sizeof(float), (void*)0);
     glEnableVertexAttribArray(0);
 
     glGenVertexArrays(1, &VAO[3]);
-    glBindBuffer(GL_ARRAY_BUFFER, 0);
-    glBindBuffer(GL_ELEMENT_ARRAY_BUFFER, 0);
     glBindVertexArray(VAO[3]);
     Sphere::init();
     glVertexAttribPointer(0, 3, GL_FLOAT, GL_FALSE, 3*sizeof(float), (void*)0);
     glEnableVertexAttribArray(0);
     initStellar();
-**/
 }
 
 
 int main(int argc, char **argv) {
-    glutInitContextVersion(2, 1);
+    glutInitContextVersion(3, 3);
+    glutInitContextFlags(GLUT_FORWARD_COMPATIBLE);
     glutInitContextProfile(GLUT_CORE_PROFILE);
     glutInit(&argc, argv);
-    glutInitDisplayMode(  GLUT_DOUBLE | GLUT_RGB | GLUT_DEPTH);
+    glutInitDisplayMode(GLUT_DOUBLE | GLUT_RGB | GLUT_DEPTH);
     glutInitWindowPosition(0, 0);
     glutInitWindowSize(800, 800);
     glutCreateWindow("beta&ches");
@@ -500,10 +482,10 @@ int main(int argc, char **argv) {
 
     glutSpecialFunc(onSpecialKeyDown);
     glutSpecialUpFunc(onSpecialKeyUp);
-    //glutTimerFunc(1, timerDefault, -1);
-    //glutTimerFunc(100, timerBulletEnemyShot, -1);
-    //glutTimerFunc(1, timerRedisplay, -1);
-    //glutTimerFunc(1, timerStellar, -1);
+    glutTimerFunc(1, timerDefault, -1);
+    glutTimerFunc(100, timerBulletEnemyShot, -1);
+    glutTimerFunc(1, timerRedisplay, -1);
+    glutTimerFunc(1, timerStellar, -1);
     glutKeyboardFunc(onKeyDown);
     glutKeyboardUpFunc(onKeyUp);
 

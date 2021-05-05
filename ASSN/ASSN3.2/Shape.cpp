@@ -199,10 +199,9 @@ Object::Object(char *path, float x, float y, float z, float deg, GLclampf r, GLc
         : Shape(x, y, z, deg, 1, 1, 1, GL_TRIANGLES, r, g, b), _model(path) {
     this->vertices = _model.compat();
     this->setVertex(&(this->vertices));
-
-    glGenBuffers(1, &buffer);
-    glBindBuffer(GL_ARRAY_BUFFER, buffer);
-    glBufferData(GL_ARRAY_BUFFER, 3*sizeof(float)*vertices.size(), &vertices[0][0], GL_STATIC_DRAW);
+    // glGenBuffers(1, &buffer);
+    // glBindBuffer(GL_ARRAY_BUFFER, buffer);
+    // glBufferData(GL_ARRAY_BUFFER, 3*sizeof(float)*vertices.size(), &vertices[0][0], GL_STATIC_DRAW);
     //for (int i = 0; i < vertices.size(); i ++)
     //    glBufferSubData(GL_ARRAY_BUFFER, 3*sizeof(float)*i, 3*sizeof(float), &vertices[i][0]);
 }
@@ -211,7 +210,6 @@ Object::Object(char *path, float x, float y, float z, float deg, GLclampf *color
         : Shape(x, y, z, deg, 1, 1, 1, GL_TRIANGLES, colorfv), _model(path) {
     this->vertices = _model.compat();
     this->setVertex(&(this->vertices));
-
     glGenBuffers(1, &buffer);
     glBindBuffer(GL_ARRAY_BUFFER, buffer);
     glBufferData(GL_ARRAY_BUFFER, 3*sizeof(float)*vertices.size(), &vertices[0][0], GL_STATIC_DRAW);

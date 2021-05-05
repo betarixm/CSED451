@@ -4,6 +4,7 @@
 #include "Node.h"
 #include "Model.h"
 #include <GL/glew.h>
+#include <GL/wglew.h>
 #include <vector>
 
 #define NUM_COLOR 3
@@ -79,7 +80,7 @@ public:
 class Object : public Shape {
 private:
     std::vector<std::vector<float>> vertices;
-    GLuint buffer;
+    GLuint buffer = 0;
     Model _model;
 public:
     Object(char* path, float x, float y, float z, float deg, GLclampf r, GLclampf g, GLclampf b);

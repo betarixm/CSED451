@@ -143,27 +143,26 @@ void VertexNode::_display(bool isBlack) {
     if(this->_vertices == nullptr) {
         return;
     }
-    glm::mat4 ModelViewFinal = glm::mat4(1.0f), ProjectionFinal = glm::mat4(1.0f);
+    glm::mat4 modelView = glm::mat4(1.0f);
 
-    for (int i = 0; i < ModelView.size(); i ++)
-        ModelViewFinal = ModelView[i] * ModelViewFinal;
-    for (int i = 0; i < Projection.size(); i++)
-        ProjectionFinal = Projection[i] * ProjectionFinal;
+    for (auto & i : ModelView){
+        modelView = i * modelView;
+    }
 
-    glm::mat4  P = glm::perspective(90.0f, 1.0f, 0.001f, 100.0f);
+    glm::mat4 P = glm::perspective(90.0f, 1.0f, 0.001f, 100.0f);
 
-    GLint Modelview, projection, color;
-    Modelview = glGetUniformLocation(myProgObj, "ModelView"); // in vertex shader
-    glUniformMatrix4fv(Modelview, 1, GL_TRUE, &glm::mat4(1.0f)[0][0]);
+    GLint uniformModelView, uniformProjection, uniformColor;
+    uniformModelView = glGetUniformLocation(myProgObj, "ModelView"); // in vertex shader
+    glUniformMatrix4fv(uniformModelView, 1, GL_FALSE, &modelView[0][0]);
 
-    projection = glGetUniformLocation(myProgObj, "Projection");
-    glUniformMatrix4fv(projection, 1, GL_TRUE, &P[0][0]);
+    uniformProjection = glGetUniformLocation(myProgObj, "Projection");
+    glUniformMatrix4fv(uniformProjection, 1, GL_FALSE, &P[0][0]);
 
-    color = glGetUniformLocation(myProgObj, "color");
+    uniformColor = glGetUniformLocation(myProgObj, "uniformColor");
     if(isBlack) {
-        glUniform4f(color, 0.0f, 0.0f, 0.0f, 1.0f);
+        glUniform4f(uniformColor, 0.0f, 0.0f, 0.0f, 1.0f);
     } else {
-        glUniform4f(color, _colorfv[0], _colorfv[1], _colorfv[2], 1.0f);
+        glUniform4f(uniformColor, _colorfv[0], _colorfv[1], _colorfv[2], 1.0f);
     }
 
     glDrawArrays(this->_mode, 0, _vertices->size());
