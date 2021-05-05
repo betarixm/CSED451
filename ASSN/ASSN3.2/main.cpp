@@ -52,10 +52,10 @@ void microRenderScene(bool isBlack) {
     //game->displayInfo();
 
     Modelview = glGetUniformLocation(myProgObj, "ModelView"); // in vertex shader
-    glUniformMatrix4fv(Modelview, 1, GL_TRUE, &glm::mat4(1.0f)[0][0]);
+    glUniformMatrix4fv(Modelview, 1, GL_FALSE, &glm::mat4(1.0f)[0][0]);
 
     projection = glGetUniformLocation(myProgObj, "Projection");
-    glUniformMatrix4fv(projection, 1, GL_TRUE, &P[0][0]);
+    glUniformMatrix4fv(projection, 1, GL_FALSE, &P[0][0]);
 
     color = glGetUniformLocation(myProgObj, "color");
 

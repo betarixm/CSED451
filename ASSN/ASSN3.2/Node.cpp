@@ -6,7 +6,7 @@ Node::Node(Node *_child, Node *_sibling) : _child(_child), _sibling(_sibling) {}
 
 void Node::display(bool isBlack) {
     //glPushMatrix();
-    ModelView.push_back(glm::mat4(1.0f));
+    ModelView.emplace_back(1.0f);
 
     this->_display(isBlack);
 
@@ -51,7 +51,7 @@ Node *Node::addSibling(Node *target) {
 
 void GroupNode::display(bool isBlack)
 {
-    ModelView.push_back(glm::mat4(0.1f));
+    ModelView.emplace_back(0.1f);
     //glPushMatrix();
 
     if(this->_child != nullptr) {
@@ -110,8 +110,6 @@ float RotationNode::rotate(float delta) {
 }
 
 void TranslateNode::_display(bool isBlack) {
-
-
     glm::mat4 T = glm::translate(glm::mat4(1.0f), glm::vec3(this->_dx, this->_dy, this->_dz));
     glm::mat4 myModelView = ModelView.back();
     ModelView.pop_back();
@@ -166,14 +164,6 @@ void VertexNode::_display(bool isBlack) {
     }
 
     glDrawArrays(this->_mode, 0, _vertices->size());
-
-    ModelView.pop_back();
-    //ModelView.pop_back();
-    //glPopMatrix(); // remove ScaleNode
-    //glPopMatrix();
-
-
-    //glGetFloatv(GL_MODELVIEW_MATRIX, modelview);
 }
 
 VertexNode::VertexNode(std::vector<std::vector<float>> *_vertices, GLenum _mode, GLclampf colorfv[])

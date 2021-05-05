@@ -14,3 +14,15 @@ glm::vec2 getVector2f(ifstream& f) {
     glm::vec2 result(stof(a), stof(b));
     return result;
 }
+
+vector<float> vectorCompat(const vector<vector<float>>& vertices) {
+    vector<float> compat;
+
+    for(auto & ver : vertices) {
+        for(float v : ver) {
+            compat.push_back(v);
+        }
+    }
+
+    return compat;
+}

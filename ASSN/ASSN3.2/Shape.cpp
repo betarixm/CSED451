@@ -1,4 +1,5 @@
 #include "Shape.h"
+#include "helper.h"
 #define PI 3.141592
 using namespace std;
 
@@ -245,10 +246,11 @@ Grid::Grid(float width, float height, int row, int col, float x, float y, float 
     }
 
     this->setVertex(&(this->vertices));
+    vector<float> compat = vectorCompat(vertices);
 
     glGenBuffers(1, &buffer);
     glBindBuffer(GL_ARRAY_BUFFER, buffer);
-    glBufferData(GL_ARRAY_BUFFER, 3*sizeof(float)*vertices.size(), &vertices[0][0], GL_STATIC_DRAW);
+    glBufferData(GL_ARRAY_BUFFER, 3*sizeof(float)*vertices.size(), &compat[0], GL_STATIC_DRAW);
     //for (int i = 0; i < vertices.size(); i ++)
     //    glBufferSubData(GL_ARRAY_BUFFER, 3*sizeof(float)*i, 3*sizeof(float), &vertices[i][0]);
 }
@@ -292,27 +294,10 @@ void Sphere::init(){
 
     vertices.push_back(vertex[20][0]);
 
+    vector<float> compat = vectorCompat(vertices);
+
     // setting VBO
     glGenBuffers(1, &buffer);
     glBindBuffer(GL_ARRAY_BUFFER, buffer);
-    glBufferData(GL_ARRAY_BUFFER, 3*sizeof(float)*vertices.size(), &vertices[0][0], GL_STATIC_DRAW);
-    //for (int i = 0; i < vertices.size(); i ++)
-    //    glBufferSubData(GL_ARRAY_BUFFER, 3*sizeof(float)*i, 3*sizeof(float), &vertices[i][0]);
-
+    glBufferData(GL_ARRAY_BUFFER, 3*sizeof(float)*vertices.size(), &compat[0], GL_STATIC_DRAW);
 }
-
-
-/**
-detective beta ^0^
-glDrawarrays ->
-shader compile -> (0)
-client? (0)
-glm::mat4  P = glm::perspective(90.0f, 1.0f, 0.001f, 100.0f);
-vector<vecotr<float>> -> buffer data (0)
-
-*/
-
-
-
-
-
