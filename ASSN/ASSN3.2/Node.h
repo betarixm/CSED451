@@ -11,6 +11,9 @@
 #include <glm/mat4x4.hpp>
 #include <glm/gtc/matrix_transform.hpp>
 
+#include <glm/gtc/type_ptr.hpp>
+#include <glm/ext/matrix_clip_space.hpp>
+
 
 #define NUM_COLOR 3
 
@@ -110,6 +113,8 @@ protected:
     GLclampf _colorfv[3]{};
     GLenum _mode = GL_POLYGON;
     float modelview[16]{}; /* 4x4 model view matrix */
+    GLuint _VAO = 0;
+    int _numVertex = 0;
 
 public:
     VertexNode() = default;
@@ -130,22 +135,17 @@ public:
     GLclampf *color();
 
     float *modelView();
+
+    void setVAO(GLuint _vao)
+    {
+        this->_VAO = _vao;
+    };
+
+    void setNumVertex(int num)
+    {
+        this->_numVertex = num;
+    }
 };
 
-
-
-class ScaleNode: public Node {
-private:
-    float _sx = 1, _sy = 1, _sz = 1;
-public:
-    ScaleNode() = default;
-    ScaleNode(float _sx, float _sy, float _sz);
-    ScaleNode(float _sx, float _sy, float _sz, Node* _child, Node* _sibling);
-    void _display(bool isBlack) override;
-    void set(float x, float y, float z);
-    void resizing(float dx, float dy, float dz);
-    std::vector<float> delta();
-
-};
 
 #endif //CSED451_NODE_H

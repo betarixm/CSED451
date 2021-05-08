@@ -27,17 +27,17 @@ Sphere *sphere;
 Sphere *cube;
 
 GLuint myProgObj;
-GLuint VAO[4];
+
 deque<glm::mat4> ModelView;
 deque<glm::mat4> Projection;
 
 void lookAt(float x, float y, int _frontCamera) {
-
+    
     glm::mat4 P = glm::perspective(90.0f, 1.0f, 0.001f, 100.0f);
     glm::mat4 cur_p = Projection.back();
     Projection.pop_back();
     Projection.push_back(P*cur_p);
-
+    
     glm::mat4 C = glm::lookAt(glm::vec3(x, y + _frontCamera*0.22, 0.15), glm::vec3(x, y+0.7, 0.1), glm::vec3(0, 0, 1));
     glm::mat4 cur_C = ModelView.back();
     ModelView.pop_back();
@@ -47,51 +47,33 @@ void lookAt(float x, float y, int _frontCamera) {
 
 void microRenderScene(bool isBlack) {
     list<Bullet*>::iterator itr;
-    GLuint Modelview, projection, color;
-    glm::mat4  P = glm::perspective(90.0f, 1.0f, 0.001f, 100.0f);
+    
+    ModelView = { glm::mat4(1.0f) };
+    Projection = { glm::mat4(1.0f) };
+
     //game->displayInfo();
-
-    Modelview = glGetUniformLocation(myProgObj, "ModelView"); // in vertex shader
-    glUniformMatrix4fv(Modelview, 1, GL_FALSE, &glm::mat4(1.0f)[0][0]);
-
-    projection = glGetUniformLocation(myProgObj, "Projection");
-    glUniformMatrix4fv(projection, 1, GL_FALSE, &P[0][0]);
-
-    color = glGetUniformLocation(myProgObj, "color");
-
-    glUniform4f(color, 1.0f, 0.0f, 0.0f, 1.0f);
-
-
-    // glDrawArrays(GL_POLYGON, 0, 3);
-
-    glBindBuffer(GL_ARRAY_BUFFER, 0);
-    glBindBuffer(GL_ELEMENT_ARRAY_BUFFER, 0);
-    glBindBuffer(GL_ARRAY_BUFFER, VAO[0]);
+  
+  
     if(!(game->isGameOver() || game->isGameWin()) ) {
         lookAt(game->player()->x(), game->player()->y(), frontCamera);
         game->display(isBlack);
-        
-        glBindVertexArray(VAO[1]);
+ 
         grid->display(isBlack);
-        glBindVertexArray(0);
-
-        glBindVertexArray(VAO[2]);
+        
         boundary->display(isBlack);
-        glBindVertexArray(0);
-
-        glBindVertexArray(VAO[3]);
+        
         for(auto & i : stellar_vec) {
             i->display(isBlack);
         }
+        
         for (itr = enemy_bullets.begin(); itr != enemy_bullets.end(); itr++)
             (*itr)->display(isBlack);
         for (itr = player_bullets.begin(); itr != player_bullets.end(); itr++)
             (*itr)->display(isBlack);
         for (itr = item_list.begin(); itr != item_list.end(); itr++)
-            (*itr)->display(isBlack);
-        glBindVertexArray(0);
+            (*itr)->display(isBlack);       
+        
     }
-
 }
 
 /**
@@ -297,7 +279,7 @@ void timerBulletEnemyShot(int value)
         game->enemy()->randomMoveHandler();
 
         if(value == 0) {    /* 총알 발사 */
-            //new_bullet = game->enemy()->shot();
+            new_bullet = game->enemy()->shot();
             for(Bullet* ptr : new_bullet)
                 enemy_bullets.push_back(ptr);
         }
@@ -437,34 +419,13 @@ void initGraphic()
     };
 
     // Uniform Matrix init
-    ModelView.push_back(glm::mat4(1.0f));
-    Projection.push_back(glm::mat4(1.0f));
 
-
-    // glGenVertexArrays(1, &VAO[0]);
-    // glBindVertexArray(VAO[0]);
     game = new Game();
-    //  VAO binding
-    // glEnableVertexAttribArray(0);
-    // glEnableVertexAttribArray(1);
-
-    glGenVertexArrays(1, &VAO[1]);
-    glBindVertexArray(VAO[1]);
+   
     boundary = new Grid(0.1f, 0.1f, 20, 24, 0, 0, -0.295f, 0, 0.0f, 0.5f, 1.0f);
-    glVertexAttribPointer(0, 3, GL_FLOAT, GL_FALSE, 3*sizeof(float), (void*)0);
-    glEnableVertexAttribArray(0);
 
-    glGenVertexArrays(1, &VAO[2]);
-    glBindVertexArray(VAO[2]);
     grid = new Grid(0.1f, 0.1f, 30, 40, 0, 0, -0.3f, 0, 1.0f, 1.0f, 1.0f);
-    glVertexAttribPointer(0, 3, GL_FLOAT, GL_FALSE, 3*sizeof(float), (void*)0);
-    glEnableVertexAttribArray(0);
 
-    glGenVertexArrays(1, &VAO[3]);
-    glBindVertexArray(VAO[3]);
-    Sphere::init();
-    glVertexAttribPointer(0, 3, GL_FLOAT, GL_FALSE, 3*sizeof(float), (void*)0);
-    glEnableVertexAttribArray(0);
     initStellar();
 }
 

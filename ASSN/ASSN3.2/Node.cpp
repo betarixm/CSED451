@@ -1,11 +1,15 @@
 #include "Node.h"
+
+#define PIE 3.141592
 using namespace std;
+
+extern GLuint myProgObj;
 
 Node::Node() : _child(nullptr), _sibling(nullptr){}
 Node::Node(Node *_child, Node *_sibling) : _child(_child), _sibling(_sibling) {}
 
 void Node::display(bool isBlack) {
-    //glPushMatrix();
+
     ModelView.emplace_back(1.0f);
 
     this->_display(isBlack);
@@ -19,7 +23,6 @@ void Node::display(bool isBlack) {
     }
 
     ModelView.pop_back();
-    //glPopMatrix();
 }
 
 Node *Node::child() const {
@@ -52,14 +55,14 @@ Node *Node::addSibling(Node *target) {
 void GroupNode::display(bool isBlack)
 {
     ModelView.emplace_back(0.1f);
-    //glPushMatrix();
+
 
     if(this->_child != nullptr) {
         this->_child->display(isBlack);
     }
 
     ModelView.pop_back();
-    //glPopMatrix();
+
 
     if(this->_sibling != nullptr) {
         this->_sibling->display(isBlack);
@@ -82,12 +85,11 @@ void GroupNode::addToLast(Node *target)
 
 
 void RotationNode::_display(bool isBlack) {
-    glm::mat4 R = glm::rotate(glm::mat4(1.0f), this->_degree, glm::vec3(_x, _y, _z));
     glm::mat4 myModelView = ModelView.back();
+    glm::mat4 R = glm::rotate(glm::mat4(1.0f), glm::radians(this->_degree), glm::vec3(_x, _y, _z));
     ModelView.pop_back();
-    ModelView.push_back(R * myModelView);
+    ModelView.push_back(myModelView * R);
 
-    //glRotatef(this->_degree, _x, _y, _z);
 }
 
 RotationNode::RotationNode(float _degree) : _x(0), _y(0), _z(1.0), _degree(_degree) {}
@@ -110,10 +112,10 @@ float RotationNode::rotate(float delta) {
 }
 
 void TranslateNode::_display(bool isBlack) {
-    glm::mat4 T = glm::translate(glm::mat4(1.0f), glm::vec3(this->_dx, this->_dy, this->_dz));
     glm::mat4 myModelView = ModelView.back();
+    glm::mat4 T = glm::translate(glm::mat4(1.0f), glm::vec3(this->_dx, this->_dy, this->_dz));
     ModelView.pop_back();
-    ModelView.push_back(T * myModelView);
+    ModelView.push_back(myModelView * T);
 
 }
 
@@ -138,32 +140,39 @@ std::vector<float> TranslateNode::delta() {
 }
 
 void VertexNode::_display(bool isBlack) {
-    if(this->_vertices == nullptr) {
-        return;
-    }
+   
     glm::mat4 modelView = glm::mat4(1.0f);
+    glm::mat4 projection = glm::mat4(1.0f);
 
     for (auto & i : ModelView){
-        modelView = i * modelView;
+        modelView = modelView * i;
     }
 
-    glm::mat4 P = glm::perspective(90.0f, 1.0f, 0.001f, 100.0f);
+    for (auto& i : Projection) {
+        projection = projection * i;
+    }
 
+   
+    //glUseProgram(myProgObj);
     GLint uniformModelView, uniformProjection, uniformColor;
-    uniformModelView = glGetUniformLocation(myProgObj, "ModelView"); // in vertex shader
-    glUniformMatrix4fv(uniformModelView, 1, GL_FALSE, &modelView[0][0]);
+    uniformModelView = glGetUniformLocation(myProgObj, "ModelView");
+    glUniformMatrix4fv(uniformModelView, 1, GL_FALSE, glm::value_ptr(modelView));
 
     uniformProjection = glGetUniformLocation(myProgObj, "Projection");
-    glUniformMatrix4fv(uniformProjection, 1, GL_FALSE, &P[0][0]);
+    glUniformMatrix4fv(uniformProjection, 1, GL_FALSE, glm::value_ptr(projection));
 
-    uniformColor = glGetUniformLocation(myProgObj, "uniformColor");
+    uniformColor = glGetUniformLocation(myProgObj, "color");
     if(isBlack) {
         glUniform4f(uniformColor, 0.0f, 0.0f, 0.0f, 1.0f);
     } else {
         glUniform4f(uniformColor, _colorfv[0], _colorfv[1], _colorfv[2], 1.0f);
     }
-
-    glDrawArrays(this->_mode, 0, _vertices->size());
+    
+    glBindBuffer(GL_ARRAY_BUFFER, 0);
+    glBindBuffer(GL_ELEMENT_ARRAY_BUFFER, 0);
+    glBindVertexArray(_VAO);
+    glDrawArrays(this->_mode, 0, _numVertex);
+    glBindVertexArray(0);
 }
 
 VertexNode::VertexNode(std::vector<std::vector<float>> *_vertices, GLenum _mode, GLclampf colorfv[])
@@ -209,43 +218,6 @@ GLclampf *VertexNode::color() {
 float * VertexNode::modelView()
 {
     return modelview;
-}
-
-
-
-ScaleNode::ScaleNode(float _sx, float _sy, float _sz) : _sx(_sx), _sy(_sy), _sz(_sz) {}
-
-ScaleNode::ScaleNode(float _sx, float _sy, float _sz, Node* _child, Node* _sibling) : _sx(_sx), _sy(_sy), _sz(_sz), Node(_child, _sibling) {}
-
-void ScaleNode::_display(bool isBlack) {
-    ModelView.push_back(glm::mat4(1.0f));
-    //glPushMatrix();
-
-    glm::mat4 S = glm::scale(glm::mat4(1.0f), glm::vec3(this->_sx, this->_sy, this->_sz));
-    glm::mat4 myModelView = ModelView.back();
-    ModelView.pop_back();
-    ModelView.push_back(S * myModelView);
-
-    //glScalef(this->_sx, this->_sy, this->_sz);
-
-}
-
-void ScaleNode::set(float x, float y, float z)
-{
-    this->_sx = x;
-    this->_sy = y;
-    this->_sz = z;
-}
-
-void ScaleNode::resizing(float dx, float dy, float dz)
-{
-    this->_sx += dx;
-    this->_sy += dy;
-    this->_sz += dz;
-}
-
-std::vector<float> ScaleNode::delta(){
-    return std::vector<float>{_sx, _sy, _sz};
 }
 
 

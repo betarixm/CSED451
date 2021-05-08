@@ -27,7 +27,7 @@ Ship::Ship(int _numLife, float x, float y, float size_torso, GLclampf r, GLclamp
 }
 
 void Ship::display(bool isBlack) {
-    // this->_baseScene->display(isBlack);
+     this->_baseScene->display(isBlack);
 }
 
 

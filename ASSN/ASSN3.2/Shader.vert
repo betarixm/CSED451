@@ -9,7 +9,7 @@ uniform vec4 color;
 
 void main(){
 
-gl_Position = Projection * ModelView * vec4(vPosition, 1.0);
+gl_Position =   Projection * ModelView *vec4(vPosition, 1.0);
 vertexColor = color;
 
 }

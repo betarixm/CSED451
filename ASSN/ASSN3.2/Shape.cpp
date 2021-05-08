@@ -7,8 +7,7 @@ using namespace std;
 // static variable vertices initialization
 // scale = length, model frame unit = 1
 
-vector<vector<float>> Sphere::vertices = {};
-GLuint Sphere::buffer = 0;
+
 
 
 Shape::Shape(float x, float y, float z, float deg, float sx, float sy, float sz, GLenum mode, GLclampf r, GLclampf g, GLclampf b)
@@ -21,16 +20,16 @@ Shape::Shape(float x, float y, float z, float deg, float sx, float sy, float sz,
 
     this->_translation = new TranslateNode(x, y, 0);
     this->_rotation = new RotationNode(deg);
-    this->_scale = new ScaleNode(sx, sy, sz);
+    //this->_scale = new ScaleNode(sx, sy, sz);
     this->_vertex = new VertexNode(nullptr, mode, colorfv);
 
     this->_group = new GroupNode;
 
-    /** Group < T R S V > */
+    /** Group < T R S V >  -> Group <TRV> */
     this->_group->addChild(this->_translation);
     this->_translation->addSibling(this->_rotation);
-    this->_rotation->addSibling(this->_scale);
-    this->_scale->addSibling(this->_vertex);
+    this->_rotation->addSibling(this->_vertex);
+    //this->_scale->addSibling(this->_vertex);
 
 }
 
@@ -38,15 +37,15 @@ Shape::Shape(float x, float y, float z, float deg, float sx, float sy, float sz,
 {
     this->_translation = new TranslateNode(x, y, 0);
     this->_rotation = new RotationNode(deg);
-    this->_scale = new ScaleNode(sx, sy, sz);
+    //this->_scale = new ScaleNode(sx, sy, sz);
     this->_vertex = new VertexNode(nullptr, mode, colorfv);
 
     this->_group = new GroupNode;
     /** Group < T R S V > */
     this->_group->addChild(this->_translation);
     this->_translation->addSibling(this->_rotation);
-    this->_rotation->addSibling(this->_scale);
-    this->_scale->addSibling(this->_vertex);
+    this->_rotation->addSibling(this->_vertex);
+    //this->_scale->addSibling(this->_vertex);
 }
 
 /**
@@ -193,29 +192,27 @@ std::vector<float> Shape::direction()
     return this->_direction;
 }
 
+void Shape::setNumVertex(int num)
+{
+    this->_vertex->setNumVertex(num);
+}
 
 
 
 Object::Object(char *path, float x, float y, float z, float deg, GLclampf r, GLclampf g, GLclampf b)
         : Shape(x, y, z, deg, 1, 1, 1, GL_TRIANGLES, r, g, b), _model(path) {
-    this->vertices = _model.compat();
-    this->setVertex(&(this->vertices));
-    // glGenBuffers(1, &buffer);
-    // glBindBuffer(GL_ARRAY_BUFFER, buffer);
-    // glBufferData(GL_ARRAY_BUFFER, 3*sizeof(float)*vertices.size(), &vertices[0][0], GL_STATIC_DRAW);
-    //for (int i = 0; i < vertices.size(); i ++)
-    //    glBufferSubData(GL_ARRAY_BUFFER, 3*sizeof(float)*i, 3*sizeof(float), &vertices[i][0]);
+
+    vector<vector<float>> vertices = _model.compat();
+    setNumVertex(vertices.size());
+    this->setVertexArray(vertices);
 }
 
 Object::Object(char *path, float x, float y, float z, float deg, GLclampf *colorfv)
         : Shape(x, y, z, deg, 1, 1, 1, GL_TRIANGLES, colorfv), _model(path) {
-    this->vertices = _model.compat();
-    this->setVertex(&(this->vertices));
-    glGenBuffers(1, &buffer);
-    glBindBuffer(GL_ARRAY_BUFFER, buffer);
-    glBufferData(GL_ARRAY_BUFFER, 3*sizeof(float)*vertices.size(), &vertices[0][0], GL_STATIC_DRAW);
-    //for (int i = 0; i < vertices.size(); i ++)
-     //   glBufferSubData(GL_ARRAY_BUFFER, 3*sizeof(float)*i, 3*sizeof(float), &vertices[i][0]);
+ 
+    vector<vector<float>> vertices = _model.compat();
+    setNumVertex(vertices.size());
+    this->setVertexArray(vertices);
 }
 
 
@@ -235,6 +232,8 @@ Grid::Grid(float width, float height, int row, int col, float x, float y, float 
     float xAdj = - width * (float)col / 2.0f;
     float yAdj = - height * (float)row / 2.0f;
 
+    vector<vector<float>> vertices;
+
     for(int i = 0; i <= row; i++) {
         vertices.emplace_back(initializer_list<float>{          0 + xAdj, height * (float)i + yAdj, z});
         vertices.emplace_back(initializer_list<float>{width * (float)col + xAdj, height * (float)i + yAdj, z});
@@ -244,15 +243,8 @@ Grid::Grid(float width, float height, int row, int col, float x, float y, float 
         vertices.emplace_back(initializer_list<float>{width * (float)i + xAdj,            0 + yAdj, z});
         vertices.emplace_back(initializer_list<float>{width * (float)i + xAdj, height * (float)row + yAdj, z});
     }
-
-    this->setVertex(&(this->vertices));
-    vector<float> compat = vectorCompat(vertices);
-
-    glGenBuffers(1, &buffer);
-    glBindBuffer(GL_ARRAY_BUFFER, buffer);
-    glBufferData(GL_ARRAY_BUFFER, 3*sizeof(float)*vertices.size(), &compat[0], GL_STATIC_DRAW);
-    //for (int i = 0; i < vertices.size(); i ++)
-    //    glBufferSubData(GL_ARRAY_BUFFER, 3*sizeof(float)*i, 3*sizeof(float), &vertices[i][0]);
+    setNumVertex(vertices.size());
+    this->setVertexArray(vertices);
 }
 
 
@@ -260,44 +252,62 @@ Grid::Grid(float width, float height, int row, int col, float x, float y, float 
 Sphere::Sphere(int lat, int lon, float radius, float x, float y, float z, float deg, GLclampf *colorfv)
         : Shape(x, y, z, deg, radius, radius, radius, GL_TRIANGLE_STRIP, colorfv) {
 
-    this->setVertex(&(this->vertices));
+    this->init(lat, lon, radius);
 }
 
 Sphere::Sphere(int lat, int lon, float radius, float x, float y, float z, float deg, GLclampf r, GLclampf g, GLclampf b)
         : Shape(x, y, z, deg, radius, radius, radius, GL_TRIANGLE_STRIP, r, g, b) {
-    this->setVertex(&(this->vertices));
+    this->init(lat, lon, radius);
 }
 
-void Sphere::init(){
+void Sphere::init(int lat, int lon, float radius){
     vector<vector<vector<float>>> vertex{};
-    //lat, lon = 20
-    //radius = 1 -> scaling k
-    for(int a = 0; a < 21; a++) {
+    vector<vector<float>> vertices;
+
+    for (int a = 0; a < lat + 1; a++) {
         vector<vector<float>> latVec{};
-        float theta = (float)a / (float)20 * (float)PI;
-        float _z = cos(theta);
-        for(int o = 0; o < 20; o++) {
-            float phi = (float)o / (float)20 * (float)PI * 2;
-            float _r = sin(theta);
-            latVec.emplace_back(initializer_list<float>{_r * cos(phi), _r * sin(phi), _z});
+        float theta = (float)a / (float)lat * (float)PI;
+        float _z = radius * cos(theta);
+        for (int o = 0; o < lon; o++) {
+            float phi = (float)o / (float)lon * (float)PI * 2;
+            float _r = radius * sin(theta);
+            latVec.emplace_back(initializer_list<float>{_r* cos(phi), _r* sin(phi), _z});
         }
         vertex.push_back(latVec);
     }
 
-    for(int a = 0; a < 20; a++) {
-        for(int o = 0; o < 20; o++) {
+    for (int a = 0; a < lat; a++) {
+        for (int o = 0; o < lon; o++) {
             vertices.push_back(vertex[a][o]);
             vertices.push_back(vertex[a + 1][o]);
         }
         vertices.push_back(vertex[a][0]);
     }
 
-    vertices.push_back(vertex[20][0]);
+    vertices.push_back(vertex[lat][0]);
 
+    setNumVertex(vertices.size());
     vector<float> compat = vectorCompat(vertices);
+    setVertexArray(vertices);
+}
+
+
+void Shape::setVertexArray(std::vector<std::vector<float>> &vertices)
+{
+    vector<float> compat = vectorCompat(vertices);
+
+    //Bind VAO
+    glGenVertexArrays(1, &VAO);
+    glBindVertexArray(VAO);
 
     // setting VBO
     glGenBuffers(1, &buffer);
     glBindBuffer(GL_ARRAY_BUFFER, buffer);
-    glBufferData(GL_ARRAY_BUFFER, 3*sizeof(float)*vertices.size(), &compat[0], GL_STATIC_DRAW);
+    glBufferData(GL_ARRAY_BUFFER, 3 * sizeof(float) * vertices.size(), &compat[0], GL_STATIC_DRAW);
+
+    glVertexAttribPointer(0, 3, GL_FLOAT, GL_FALSE, 3 * sizeof(float), (void*)0);
+    glEnableVertexAttribArray(0);
+
+    this->_vertex->setVAO(VAO);
+
 }
