@@ -4,7 +4,6 @@
 #include "Node.h"
 #include "Model.h"
 #include <GL/glew.h>
-#include <GL/wglew.h>
 #include <vector>
 
 #define NUM_COLOR 3

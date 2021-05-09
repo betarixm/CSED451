@@ -360,8 +360,6 @@ try {
     const char * vShaderCode = vShaderString.c_str();
     const char * fShaderCode = fShaderString.c_str();
 
-    cout << vShaderCode << endl;
-
     int success;
     char infoLog[512];
 

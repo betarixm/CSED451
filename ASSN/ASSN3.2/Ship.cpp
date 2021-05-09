@@ -166,24 +166,31 @@ void Player::HitItem(list<Item *> *items) {
     while (itr != items->end()) {
         isHit = hit(*itr);
         if (isHit) {
+            /* Random Item is Disabled
             item_type = rand() % 11;
 
             if (item_type == 0) {
-                /** Bomb : Game Over  10% */
+                // Bomb : Game Over  10%
                 _numLife = 0;
                 type = ITEM_BOMB;
             } else if (item_type >= 1 && item_type < 7) {
-                /** addition Bullet  60% */
+                // addition Bullet  60%
                 if (_numBullet < MAX_BULLET) {
                     _numBullet += 1;
                 }
                 type = ITEM_INCR;
             } else if (item_type >= 7 && item_type <= 10) {
-                /** delete one Bullet 40% */
+                // delete one Bullet 40%
                 if (_numBullet > 1) {
                     _numBullet -= 1;
                 }
                 type = ITEM_DESC;
+            }
+            */
+
+            type = ITEM_INCR;
+            if (_numBullet < MAX_BULLET) {
+                _numBullet += 1;
             }
 
             item = *itr;
