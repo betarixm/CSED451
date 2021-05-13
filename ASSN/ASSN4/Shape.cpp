@@ -285,7 +285,10 @@ void Shape::setVertexArray(std::vector<std::vector<float>> &vertex, std::vector<
                            std::vector<std::vector<float>> &uv)
 {
     vector<float> vertexBuffer = vectorCompat(vertex, normal, uv);
+    setVBO(vertexBuffer);
+}
 
+void Shape::setVBO(vector<float> &VBO) {
     //Bind VAO
     glGenVertexArrays(1, &VAO);
     glBindVertexArray(VAO);
@@ -293,7 +296,7 @@ void Shape::setVertexArray(std::vector<std::vector<float>> &vertex, std::vector<
     // setting VBO
     glGenBuffers(1, &buffer);
     glBindBuffer(GL_ARRAY_BUFFER, buffer);
-    glBufferData(GL_ARRAY_BUFFER, 3 * (GLsizeiptr)sizeof(float) * (GLsizeiptr)vertexBuffer.size(), &vertexBuffer[0], GL_STATIC_DRAW);
+    glBufferData(GL_ARRAY_BUFFER, 3 * (GLsizeiptr)sizeof(float) * (GLsizeiptr)VBO.size(), &VBO[0], GL_STATIC_DRAW);
 
     glVertexAttribPointer(0, 3, GL_FLOAT, GL_FALSE, 9 * sizeof(float), (void*)(0 * sizeof(float)));
     glEnableVertexAttribArray(0);
@@ -305,5 +308,9 @@ void Shape::setVertexArray(std::vector<std::vector<float>> &vertex, std::vector<
     glEnableVertexAttribArray(2);
 
     this->_vertex->setVAO(VAO);
-
 }
+
+void Shape::setVertexArray(vector<float> &VBO) {
+    setVBO(VBO);
+}
+

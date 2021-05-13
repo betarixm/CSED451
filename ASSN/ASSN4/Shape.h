@@ -21,6 +21,8 @@ private:
     GLuint buffer = 0;
     GLuint VAO = 0;
 
+    void setVBO(vector<float>& VBO);
+
 protected:
     TranslateNode * _translation{};
     RotationNode * _rotation{};
@@ -74,6 +76,8 @@ public:
 
     void setVertexArray(std::vector<std::vector<float>> &vertex, std::vector<std::vector<float>> &normal,
                         std::vector<std::vector<float>> &uv);
+
+    void setVertexArray(vector<float>& VBO);
 
     void setNumVertex(unsigned long num);
 
