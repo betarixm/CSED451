@@ -8,6 +8,7 @@
 #include "Shader.h"
 #include "Stellar.h"
 #include "Ship.h"
+#include "keyboard.h"
 
 
 char mode = 'n'; /* n : normal,  f: fail, c: king-god */
@@ -32,7 +33,6 @@ deque<glm::mat4> Projection;
 Shader* shader;
 
 void lookAt(float x, float y, int _frontCamera) {
-    
     glm::mat4 P = glm::perspective(90.0f, 1.0f, 0.001f, 100.0f);
     glm::mat4 cur_p = Projection.back();
     Projection.pop_back();
@@ -51,9 +51,6 @@ void microRenderScene(bool isBlack) {
     ModelView = { glm::mat4(1.0f) };
     Projection = { glm::mat4(1.0f) };
 
-    //game->displayInfo();
-  
-  
     if(!(game->isGameOver() || game->isGameWin()) ) {
         lookAt(game->player()->x(), game->player()->y(), frontCamera);
         game->display(isBlack);
@@ -71,8 +68,7 @@ void microRenderScene(bool isBlack) {
         for (itr = player_bullets.begin(); itr != player_bullets.end(); itr++)
             (*itr)->display(isBlack);
         for (itr = item_list.begin(); itr != item_list.end(); itr++)
-            (*itr)->display(isBlack);       
-        
+            (*itr)->display(isBlack);
     }
 }
 
@@ -97,106 +93,7 @@ void renderScene() {
 
     glutSwapBuffers();
 }
-/**
- * @breif 방향키 입력 핸들러
- * @params key 입력키 종류
- */
-void onSpecialKeyDown(int key, int x, int y)
-{
-    if(!game->player()){
-        return;
-    }
 
-    switch(key)
-    {
-        case GLUT_KEY_UP:
-            game->player()->keyDown('U');
-            break;
-        case GLUT_KEY_DOWN:
-            game->player()->keyDown('D');
-            break;
-        case GLUT_KEY_LEFT:
-            game->player()->keyDown('L');
-            break;
-        case GLUT_KEY_RIGHT:
-            game->player()->keyDown('R');
-            break;
-        default:
-            break;
-    }
-}
-
-void onSpecialKeyUp(int key, int x, int y) {
-    if(!game->player()){
-        return;
-    }
-
-    switch(key)
-    {
-        case GLUT_KEY_UP:
-            game->player()->keyUp('U');
-            break;
-        case GLUT_KEY_DOWN:
-            game->player()->keyUp('D');
-            break;
-        case GLUT_KEY_LEFT:
-            game->player()->keyUp('L');
-            break;
-        case GLUT_KEY_RIGHT:
-            game->player()->keyUp('R');
-            break;
-        default:
-            break;
-    }
-}
-/**
- * @brief 스페이스바/f/c 입력 핸들
- * @param key 입력키 종
- */
-void onKeyDown(unsigned char key, int x, int y)
-{
-    list<Bullet*> bullets;
-
-
-    switch(key){
-        case 32: /* space bar */
-            if(!game->player()){ break; }
-            game->player()->keyDown('S');
-            break;
-        case 'f':
-            if(mode == 'f')
-                mode = 'n';
-            else
-                mode = 'f';
-            break;
-
-        case 'c':
-            if(mode == 'c')
-                mode = 'n';
-            else
-                mode = 'c';
-            break;
-
-        case 'r':
-            isHiddenLineRemoval = !isHiddenLineRemoval;
-            break;
-
-        case 'v':
-            frontCamera = -1*frontCamera;
-            glMatrixMode(GL_MODELVIEW);
-            glLoadIdentity();
-
-        default:
-            break;
-    }
-}
-
-void onKeyUp(unsigned char key, int x, int y){
-    if(key == 32) {
-        key = 'S';
-    }
-    game->player()->keyUp(key);
-}
 /**
  * @brief 일정초마다 총알 이동 및 충돌 체크
  */
