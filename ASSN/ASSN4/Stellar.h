@@ -1,7 +1,3 @@
-//
-// Created by 민재 on 2021/04/02.
-//
-
 #ifndef CSED451_STELLAR_H
 #define CSED451_STELLAR_H
 
@@ -12,6 +8,7 @@
 using namespace std;
 
 vector<GLclampf*> circleGradient(array<GLclampf, 3>& start, array<GLclampf, 3>& end);
+
 void initStellar();
 
 class Orb {
@@ -38,6 +35,8 @@ private:
     array<Orb*, 3> orbs = {nullptr, };
 
 public:
+    static vector<Stellar*> stellarVec;
+
     Stellar (float x, float y, float z, array<float, 3>& length, array<float, 2>& distance, vector<GLclampf *> colorfv);
 
     void tick();

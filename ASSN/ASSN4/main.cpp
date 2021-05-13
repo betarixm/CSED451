@@ -18,8 +18,6 @@ list<Bullet*> enemy_bullets;
 list<Bullet*> player_bullets;
 list<Item*> item_list;
 
-vector<Stellar*> stellar_vec;
-
 Game* game;
 Grid* grid;
 Grid* boundary;

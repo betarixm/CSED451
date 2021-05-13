@@ -16,8 +16,6 @@ extern list<Bullet*> enemy_bullets;
 extern list<Bullet*> player_bullets;
 extern list<Item*> item_list;
 
-extern vector<Stellar*> stellar_vec;
-
 extern Grid* grid;
 extern Grid* boundary;
 

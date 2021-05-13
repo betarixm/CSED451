@@ -1,10 +1,6 @@
-//
-// Created by 민재 on 2021/04/02.
-//
-
 #include "Stellar.h"
 
-extern vector<Stellar*> stellar_vec;
+vector<Stellar*> Stellar::stellarVec = {};
 
 Orb::Orb(float x, float y, float z, float length, GLclampf colorfv[]) {
     this->_planet = new Sphere(20, 20, length, x, y, z, 0, colorfv);
@@ -112,6 +108,6 @@ void initStellar() {
 
 
     for(i = 0; i < 2; i++){
-        stellar_vec.push_back(new Stellar(-0.61f + (float)i, -0.5f + (float)i, 0.25f * (float)i, length[i], distance[i], color[i]));
+        Stellar::stellarVec.push_back(new Stellar(-0.61f + (float)i, -0.5f + (float)i, 0.25f * (float)i, length[i], distance[i], color[i]));
     }
 }

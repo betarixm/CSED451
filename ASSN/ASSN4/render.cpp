@@ -30,7 +30,7 @@ void microRenderScene(bool isBlack) {
 
         boundary->display(isBlack);
 
-        for(auto & i : stellar_vec) {
+        for(auto & i : Stellar::stellarVec) {
             i->display(isBlack);
         }
 

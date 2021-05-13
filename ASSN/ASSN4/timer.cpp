@@ -115,7 +115,7 @@ void timerRedisplay(int value) {
 }
 
 void timerStellar(int value) {
-    for (auto &i : stellar_vec) {
+    for (auto &i : Stellar::stellarVec) {
         i->tick();
     }
     glutTimerFunc(1, timerStellar, -1);
