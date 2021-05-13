@@ -220,19 +220,37 @@ Grid::Grid(float width, float height, int row, int col, float x, float y, float 
     float xAdj = - width * (float)col / 2.0f;
     float yAdj = - height * (float)row / 2.0f;
 
-    vector<vector<float>> vertices;
+    vector<float> vertexBuffer{};
 
     for(int i = 0; i <= row; i++) {
-        vertices.emplace_back(initializer_list<float>{          0 + xAdj, height * (float)i + yAdj, z});
-        vertices.emplace_back(initializer_list<float>{width * (float)col + xAdj, height * (float)i + yAdj, z});
+        vertexBuffer.insert(vertexBuffer.end(), {
+            0 + xAdj, height * (float)i + yAdj, z,
+            0, 0, 1,
+            0, (float)i / (float)row, 0
+        });
+
+        vertexBuffer.insert(vertexBuffer.end(), {
+            width * (float)col + xAdj, height * (float)i + yAdj, z,
+            0, 0, 1,
+            1, (float)i / (float)row, 0
+        });
     }
 
     for(int i = 0; i <= col; i++) {
-        vertices.emplace_back(initializer_list<float>{width * (float)i + xAdj,            0 + yAdj, z});
-        vertices.emplace_back(initializer_list<float>{width * (float)i + xAdj, height * (float)row + yAdj, z});
+        vertexBuffer.insert(vertexBuffer.end(), {
+            width * (float)i + xAdj, 0 + yAdj, z,
+            0, 0, 1,
+            (float) i / (float) col, 0, 0
+        });
+        vertexBuffer.insert(vertexBuffer.end(), {
+            width * (float)i + xAdj, height * (float)row + yAdj, z,
+            0, 0, 1,
+            (float) i / (float) col, 1, 0
+        });
     }
-    setNumVertex(vertices.size());
-    this->setVertexArray(vertices, <#initializer#>, <#initializer#>);
+
+    setNumVertex(vertexBuffer.size() / 9);
+    this->setVertexArray(vertexBuffer);
 }
 
 
