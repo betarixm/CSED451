@@ -199,7 +199,7 @@ void Shape::setNumVertex(unsigned long num)
 Object::Object(char *path, float x, float y, float z, float deg, GLclampf r, GLclampf g, GLclampf b)
         : Shape(x, y, z, deg, 1, 1, 1, GL_TRIANGLES, r, g, b), _model(path) {
     vector<float> objVertexBuffer = _model.compat();
-    setNumVertex(objVertexBuffer.size()/3);
+    setNumVertex(objVertexBuffer.size()/9);
     this->setVertexArray(objVertexBuffer);
 }
 
@@ -249,34 +249,59 @@ Sphere::Sphere(int lat, int lon, float radius, float x, float y, float z, float 
 }
 
 void Sphere::init(int lat, int lon, float radius){
-    vector<vector<vector<float>>> vertex{};
-    vector<vector<float>> vertices;
+    vector<float> vertexBuffer{};
+
+    vector<vector<vector<float>>> vertexImm{};
+    vector<vector<vector<float>>> normalImm{};
+    vector<vector<vector<float>>> uvImm{};
 
     for (int a = 0; a < lat + 1; a++) {
-        vector<vector<float>> latVec{};
-        float theta = (float)a / (float)lat * (float)PI;
-        float _z = radius * cos(theta);
+        vector<vector<float>> vertexLatVec{};
+        vector<vector<float>> normalLatVec{};
+        vector<vector<float>> uvLatVec{};
+
+        float phi = (float)a / (float)lat * (float)PI;
+        float _z = radius * cos(phi);
         for (int o = 0; o < lon; o++) {
-            float phi = (float)o / (float)lon * (float)PI * 2;
-            float _r = radius * sin(theta);
-            latVec.emplace_back(initializer_list<float>{_r* cos(phi), _r* sin(phi), _z});
+            float theta = (float)o / (float)lon * (float)PI * 2;
+            float _r = radius * sin(phi);
+            vertexLatVec.emplace_back(initializer_list<float>{_r * cos(theta), _r * sin(theta), _z});
+            normalLatVec.emplace_back(initializer_list<float>{sin(phi) * cos(theta), sin(phi) * sin(theta), cos(phi)});
+            uvLatVec.emplace_back(initializer_list<float>{sin(theta) * cos(phi), sin(theta) * sin(phi), 0});
         }
-        vertex.push_back(latVec);
+        vertexImm.push_back(vertexLatVec);
+        normalImm.push_back(normalLatVec);
+        uvImm.push_back(uvLatVec);
     }
 
     for (int a = 0; a < lat; a++) {
         for (int o = 0; o < lon; o++) {
-            vertices.push_back(vertex[a][o]);
-            vertices.push_back(vertex[a + 1][o]);
+            vertexBuffer.insert(vertexBuffer.end(), {
+                vertexImm[a][o][0], vertexImm[a][o][1], vertexImm[a][o][2],
+                normalImm[a][o][0], normalImm[a][o][1], normalImm[a][o][2],
+                uvImm[a][o][0], uvImm[a][o][1], uvImm[a][o][2],
+
+                vertexImm[a+1][o][0], vertexImm[a+1][o][1], vertexImm[a+1][o][2],
+                normalImm[a+1][o][0], normalImm[a+1][o][1], normalImm[a+1][o][2],
+                uvImm[a+1][o][0], uvImm[a+1][o][1], uvImm[a+1][o][2]
+            });
         }
-        vertices.push_back(vertex[a][0]);
+
+        vertexBuffer.insert(vertexBuffer.end(), {
+                vertexImm[a][0][0], vertexImm[a][0][1], vertexImm[a][0][2],
+                normalImm[a][0][0], normalImm[a][0][1], normalImm[a][0][2],
+                uvImm[a][0][0], uvImm[a][0][1], uvImm[a][0][2],
+        });
     }
 
-    vertices.push_back(vertex[lat][0]);
+    vertexBuffer.insert(vertexBuffer.end(), {
+            vertexImm[lat][0][0], vertexImm[lat][0][1], vertexImm[lat][0][2],
+            normalImm[lat][0][0], normalImm[lat][0][1], normalImm[lat][0][2],
+            uvImm[lat][0][0], uvImm[lat][0][1], uvImm[lat][0][2],
+    });
 
-    setNumVertex(vertices.size());
-    vector<float> compat = vectorCompat(vertices);
-    setVertexArray(vertices, <#initializer#>, <#initializer#>);
+    setNumVertex(vertexBuffer.size() / 9);
+    setVertexArray(vertexBuffer);
 }
 
 
