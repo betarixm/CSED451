@@ -53,7 +53,7 @@ Model::Model(char *path) {
     }
 }
 
-vector<vector<float>> Model::compat() {
+vector<float> Model::compat() {
     if(_compat.empty()) {
         for(int i = 0; i < _vertex.size(); i += 1) {
             _compat.insert(_compat.end(), {

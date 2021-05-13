@@ -23,7 +23,7 @@ private:
     vector<glm::vec3> _vertexBuf;
     vector<glm::vec2> _uvBuf;
     vector<glm::vec3> _normalBuf;
-    vector<vector<float>> _compat;
+    vector<float> _compat;
 
     GLenum _mode = GL_TRIANGLES;
 
