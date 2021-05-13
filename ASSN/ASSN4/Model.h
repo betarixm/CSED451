@@ -32,7 +32,7 @@ private:
 public:
     explicit Model(char* path);
 
-    vector<vector<float>> compat();
+    vector<float> compat();
 
     glm::vec3 max() const;
 
