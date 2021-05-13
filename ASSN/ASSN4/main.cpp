@@ -5,7 +5,7 @@
 #include <glm/gtc/type_ptr.hpp>
 #include <glm/ext/matrix_clip_space.hpp>
 
-
+#include "Shader.h"
 #include "Stellar.h"
 #include "Ship.h"
 
@@ -26,10 +26,10 @@ Grid* boundary;
 Sphere *sphere;
 Sphere *cube;
 
-GLuint myProgObj;
-
 deque<glm::mat4> ModelView;
 deque<glm::mat4> Projection;
+
+Shader* shader;
 
 void lookAt(float x, float y, int _frontCamera) {
     
@@ -80,6 +80,7 @@ void microRenderScene(bool isBlack) {
  * @brief 우주선/총알 display by Double buffer
  */
 void renderScene() {
+    shader->use();
 
     glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT);
 
@@ -327,89 +328,8 @@ void timerStellar(int value) {
     glutTimerFunc(1, timerStellar, -1);
 }
 
-
-void initShader(){
-    // Load & Compile Shader program
-    // create program object, read, compiler link -> vertex attribute, uniform varibales.
-    GLchar vShaderFileName[] = "Shader.vert";
-    GLchar fShaderFileName[] = "Shader.frag";
-    std::ifstream vShaderFile, fShaderFile;
-    std::stringstream vShaderStream, fShaderStream;
-    std::string vShaderString, fShaderString;
-
-    int myVertexShader, myFragShader;
-
-    vShaderFile.exceptions (std::ifstream::failbit | std::ifstream::badbit);
-    fShaderFile.exceptions (std::ifstream::failbit | std::ifstream::badbit);
-
-try {
-    vShaderFile.open(vShaderFileName);
-    fShaderFile.open(fShaderFileName);
-
-    vShaderStream << vShaderFile.rdbuf();
-    fShaderStream << fShaderFile.rdbuf();
-    vShaderFile.close();
-    fShaderFile.close();
-
-    vShaderString = vShaderStream.str();
-    fShaderString = fShaderStream.str();
-}
-    catch(std::ifstream::failure e) {
-        std::cout << "ERROR::SHADER::FILE_NOT_SUCCESFULLY_READ" << std::endl;
-    }
-    const char * vShaderCode = vShaderString.c_str();
-    const char * fShaderCode = fShaderString.c_str();
-
-    int success;
-    char infoLog[512];
-
-    myVertexShader = glCreateShader(GL_VERTEX_SHADER);
-    glShaderSource(myVertexShader, 1, &vShaderCode, NULL);
-    glCompileShader(myVertexShader);
-    glGetShaderiv(myVertexShader, GL_COMPILE_STATUS, &success);
-    if(!success)
-    {
-        glGetShaderInfoLog(myVertexShader, 512, NULL, infoLog);
-        std::cout << "ERROR::SHADER::VERTEX::COMPILATION_FAILED\n" << infoLog << std::endl;
-    };
-
-
-
-    myFragShader = glCreateShader(GL_FRAGMENT_SHADER);
-    glShaderSource(myFragShader, 1, &fShaderCode, NULL);
-    glCompileShader(myFragShader);
-    glGetShaderiv(myFragShader, GL_COMPILE_STATUS, &success);
-    if(!success)
-    {
-        glGetShaderInfoLog(myFragShader, 512, NULL, infoLog);
-        std::cout << "ERROR::SHADER::VERTEX::COMPILATION_FAILED\n" << infoLog << std::endl;
-    };
-
-
-
-
-    myProgObj = glCreateProgram();
-    glAttachShader(myProgObj, myVertexShader);
-    glAttachShader(myProgObj, myFragShader);
-
-    glUseProgram(myProgObj);
-    glLinkProgram(myProgObj);
-    glGetProgramiv(myProgObj, GL_LINK_STATUS, &success);
-    if(!success)
-    {
-        glGetProgramInfoLog(myProgObj, 512, NULL, infoLog);
-        std::cout << "ERROR::SHADER::PROGRAM::LINKING_FAILED\n" << infoLog << std::endl;
-    }
-    //glUseProgram(myProgObj);
-
-    // delete after linking
-    glDeleteShader(myVertexShader);
-    glDeleteShader(myFragShader);
-}
-
 void initGraphic()
 {
-    initShader();
     vector<vector<float>> vertices = {
             {0.1, 0.1, 0.0},
             {0.2, 0.2, 0.0},
@@ -429,6 +349,8 @@ void initGraphic()
 
 
 int main(int argc, char **argv) {
+    shader = new Shader((char *)"Shader.vert", (char *)"Shader.frag");
+
     glutInitContextVersion(3, 3);
     glutInitContextFlags(GLUT_FORWARD_COMPATIBLE);
     glutInitContextProfile(GLUT_CORE_PROFILE);
@@ -462,5 +384,4 @@ int main(int argc, char **argv) {
 
     initGraphic();
     glutMainLoop();
-
 }
