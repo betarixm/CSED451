@@ -29,6 +29,8 @@ public:
     void uniform3v(const string &key, float x, float y, float z) const;
 
     void uniform3v(const string &key, const glm::vec3 &value) const;
+
+    void uniform1f(const string &key, float x) const;
 };
 
 
