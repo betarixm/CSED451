@@ -198,10 +198,9 @@ void Shape::setNumVertex(unsigned long num)
 
 Object::Object(char *path, float x, float y, float z, float deg, GLclampf r, GLclampf g, GLclampf b)
         : Shape(x, y, z, deg, 1, 1, 1, GL_TRIANGLES, r, g, b), _model(path) {
-
-    vector<vector<float>> vertices = _model.compat();
-    setNumVertex(vertices.size());
-    this->setVertexArray(vertices, <#initializer#>, <#initializer#>);
+    vector<float> objVertexBuffer = _model.compat();
+    setNumVertex(objVertexBuffer.size()/3);
+    this->setVertexArray(objVertexBuffer);
 }
 
 
