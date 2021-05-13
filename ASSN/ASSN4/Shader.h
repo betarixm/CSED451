@@ -18,13 +18,17 @@ class Shader {
 private:
     GLuint _sid;
 public:
-    Shader(char* vShaderPath, char* fShaderPath);
+    Shader(char *vShaderPath, char *fShaderPath);
 
     void use() const;
 
     void uniform4v(const string &key, float x, float y, float z, float w) const;
 
     void uniform4m(const string &key, const glm::mat4 &value) const;
+
+    void uniform3v(const string &key, float x, float y, float z) const;
+
+    void uniform3v(const string &key, const glm::vec3 &value) const;
 };
 
 

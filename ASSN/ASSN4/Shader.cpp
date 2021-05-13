@@ -79,3 +79,11 @@ void Shader::uniform4v(const string &key, float x, float y, float z, float w) co
 void Shader::uniform4m(const string &key, const glm::mat4 &value) const {
     glUniformMatrix4fv(GET_UNIFORM(_sid, key.c_str()), 1, GL_FALSE, glm::value_ptr(value));
 }
+
+void Shader::uniform3v(const string &key, float x, float y, float z) const {
+    glUniform3f(GET_UNIFORM(_sid, key.c_str()), x, y, z);
+}
+
+void Shader::uniform3v(const string &key, const glm::vec3 &value) const {
+    glUniform3fv(GET_UNIFORM(_sid, key.c_str()), 1, glm::value_ptr(value));
+}
