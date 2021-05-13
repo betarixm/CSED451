@@ -55,12 +55,13 @@ Model::Model(char *path) {
 
 vector<vector<float>> Model::compat() {
     if(_compat.empty()) {
-        vector<vector<float>> result;
         for(int i = 0; i < _vertex.size(); i += 1) {
-            vector<float> v = {_vertex[i].x, _vertex[i].y, _vertex[i].z};
-            result.push_back(v);
+            _compat.insert(_compat.end(), {
+                _vertex[i][0], _vertex[i][1], _vertex[i][2],
+                _normal[i][0], _normal[i][1], _normal[i][2],
+                _uv[i][0], _uv[i][1], 0 // uv has no third entry
+            });
         }
-        _compat = result;
     }
 
     return _compat;
