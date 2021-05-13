@@ -7,9 +7,6 @@ using namespace std;
 // static variable vertices initialization
 // scale = length, model frame unit = 1
 
-
-
-
 Shape::Shape(float x, float y, float z, float deg, float sx, float sy, float sz, GLenum mode, GLclampf r, GLclampf g, GLclampf b)
 {
 
@@ -192,7 +189,7 @@ std::vector<float> Shape::direction()
     return this->_direction;
 }
 
-void Shape::setNumVertex(int num)
+void Shape::setNumVertex(unsigned long num)
 {
     this->_vertex->setNumVertex(num);
 }
@@ -204,15 +201,7 @@ Object::Object(char *path, float x, float y, float z, float deg, GLclampf r, GLc
 
     vector<vector<float>> vertices = _model.compat();
     setNumVertex(vertices.size());
-    this->setVertexArray(vertices);
-}
-
-Object::Object(char *path, float x, float y, float z, float deg, GLclampf *colorfv)
-        : Shape(x, y, z, deg, 1, 1, 1, GL_TRIANGLES, colorfv), _model(path) {
- 
-    vector<vector<float>> vertices = _model.compat();
-    setNumVertex(vertices.size());
-    this->setVertexArray(vertices);
+    this->setVertexArray(vertices, <#initializer#>, <#initializer#>);
 }
 
 
@@ -244,7 +233,7 @@ Grid::Grid(float width, float height, int row, int col, float x, float y, float 
         vertices.emplace_back(initializer_list<float>{width * (float)i + xAdj, height * (float)row + yAdj, z});
     }
     setNumVertex(vertices.size());
-    this->setVertexArray(vertices);
+    this->setVertexArray(vertices, <#initializer#>, <#initializer#>);
 }
 
 
@@ -288,13 +277,14 @@ void Sphere::init(int lat, int lon, float radius){
 
     setNumVertex(vertices.size());
     vector<float> compat = vectorCompat(vertices);
-    setVertexArray(vertices);
+    setVertexArray(vertices, <#initializer#>, <#initializer#>);
 }
 
 
-void Shape::setVertexArray(std::vector<std::vector<float>> &vertices)
+void Shape::setVertexArray(std::vector<std::vector<float>> &vertex, std::vector<std::vector<float>> &normal,
+                           std::vector<std::vector<float>> &uv)
 {
-    vector<float> compat = vectorCompat(vertices);
+    vector<float> vertexBuffer = vectorCompat(vertex, normal, uv);
 
     //Bind VAO
     glGenVertexArrays(1, &VAO);
@@ -303,10 +293,16 @@ void Shape::setVertexArray(std::vector<std::vector<float>> &vertices)
     // setting VBO
     glGenBuffers(1, &buffer);
     glBindBuffer(GL_ARRAY_BUFFER, buffer);
-    glBufferData(GL_ARRAY_BUFFER, 3 * sizeof(float) * vertices.size(), &compat[0], GL_STATIC_DRAW);
+    glBufferData(GL_ARRAY_BUFFER, 3 * (GLsizeiptr)sizeof(float) * (GLsizeiptr)vertexBuffer.size(), &vertexBuffer[0], GL_STATIC_DRAW);
 
-    glVertexAttribPointer(0, 3, GL_FLOAT, GL_FALSE, 3 * sizeof(float), (void*)0);
+    glVertexAttribPointer(0, 3, GL_FLOAT, GL_FALSE, 9 * sizeof(float), (void*)(0 * sizeof(float)));
     glEnableVertexAttribArray(0);
+
+    glVertexAttribPointer(1, 3, GL_FLOAT, GL_FALSE, 9 * sizeof(float), (void*)(3 * sizeof(float)));
+    glEnableVertexAttribArray(1);
+
+    glVertexAttribPointer(2, 3, GL_FLOAT, GL_FALSE, 9 * sizeof(float), (void*)(6 * sizeof(float)));
+    glEnableVertexAttribArray(2);
 
     this->_vertex->setVAO(VAO);
 

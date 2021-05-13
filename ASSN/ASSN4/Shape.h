@@ -18,8 +18,8 @@
 class Shape {
 private:
     std::vector<float> _direction = {0, 0, 0};
-    GLuint buffer;
-    GLuint VAO;
+    GLuint buffer = 0;
+    GLuint VAO = 0;
 
 protected:
     TranslateNode * _translation{};
@@ -72,15 +72,12 @@ public:
 
     std::vector<float> direction();
 
-    void setVertexArray(std::vector<std::vector<float>> &vertices);
+    void setVertexArray(std::vector<std::vector<float>> &vertex, std::vector<std::vector<float>> &normal,
+                        std::vector<std::vector<float>> &uv);
 
-    void setNumVertex(int num);
+    void setNumVertex(unsigned long num);
 
 };
-
-
-
-
 
 class Object : public Shape {
 private:
@@ -89,8 +86,6 @@ private:
 
 public:
     Object(char* path, float x, float y, float z, float deg, GLclampf r, GLclampf g, GLclampf b);
-
-    Object(char* path, float x, float y, float z, float deg, GLclampf colorfv[]);
 
     glm::vec3 max();
     glm::vec3 min();
@@ -117,9 +112,5 @@ public:
 
     void init(int lat, int lon, float radius);
 };
-
-
-
-
 
 #endif // CSED451_ASSN1_SHAPE_H
