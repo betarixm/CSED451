@@ -14,6 +14,7 @@
 #include <glm/gtc/type_ptr.hpp>
 #include <glm/ext/matrix_clip_space.hpp>
 
+#include "Shader.h"
 
 #define NUM_COLOR 3
 
@@ -23,10 +24,9 @@
 
 using namespace std;
 
-extern GLuint myProgObj;
 extern deque<glm::mat4> ModelView;
 extern deque<glm::mat4> Projection;
-
+extern Shader* shader;
 
 class Node {
 private:

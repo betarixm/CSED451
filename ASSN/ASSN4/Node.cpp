@@ -140,7 +140,6 @@ std::vector<float> TranslateNode::delta() {
 }
 
 void VertexNode::_display(bool isBlack) {
-   
     glm::mat4 modelView = glm::mat4(1.0f);
     glm::mat4 projection = glm::mat4(1.0f);
 
@@ -152,20 +151,15 @@ void VertexNode::_display(bool isBlack) {
         projection = projection * i;
     }
 
-   
-    //glUseProgram(myProgObj);
     GLint uniformModelView, uniformProjection, uniformColor;
-    uniformModelView = glGetUniformLocation(myProgObj, "ModelView");
-    glUniformMatrix4fv(uniformModelView, 1, GL_FALSE, glm::value_ptr(modelView));
 
-    uniformProjection = glGetUniformLocation(myProgObj, "Projection");
-    glUniformMatrix4fv(uniformProjection, 1, GL_FALSE, glm::value_ptr(projection));
+    shader->uniform4m("ModelView", modelView);
+    shader->uniform4m("Projection", projection);
 
-    uniformColor = glGetUniformLocation(myProgObj, "color");
     if(isBlack) {
-        glUniform4f(uniformColor, 0.0f, 0.0f, 0.0f, 1.0f);
+        shader->uniform4v("color", 0.0f, 0.0f, 0.0f, 1.0f);
     } else {
-        glUniform4f(uniformColor, _colorfv[0], _colorfv[1], _colorfv[2], 1.0f);
+        shader->uniform4v("color", _colorfv[0], _colorfv[1], _colorfv[2], 1.0f);
     }
     
     glBindBuffer(GL_ARRAY_BUFFER, 0);
