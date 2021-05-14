@@ -35,6 +35,7 @@ int main(int argc, char **argv) {
     glutTimerFunc(100, timerBulletEnemyShot, -1);
     glutTimerFunc(1, timerRedisplay, -1);
     glutTimerFunc(1, timerStellar, -1);
+    glutTimerFunc(1, timerDirLight, 0);
     glutKeyboardFunc(onKeyDown);
     glutKeyboardUpFunc(onKeyUp);
 

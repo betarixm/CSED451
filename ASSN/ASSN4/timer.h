@@ -15,4 +15,6 @@ void timerRedisplay(int value);
 
 void timerStellar(int value);
 
+void timerDirLight(int value);
+
 #endif //CSED451_TIMER_H
