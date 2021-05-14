@@ -32,12 +32,6 @@ Shader* shader;
 
 void initGraphic()
 {
-    vector<vector<float>> vertices = {
-            {0.1, 0.1, 0.0},
-            {0.2, 0.2, 0.0},
-            {0.0, 0.0, 0.0}
-    };
-
     shader = new Shader((char *)"Shader.vert", (char *)"Shader.frag");
     game = new Game();
     boundary = new Grid(0.1f, 0.1f, 20, 24, 0, 0, -0.295f, 0, 0.0f, 0.5f, 1.0f);
