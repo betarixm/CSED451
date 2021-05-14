@@ -28,11 +28,9 @@ Sphere *cube;
 deque<glm::mat4> ModelView;
 deque<glm::mat4> Projection;
 
-Shader* shader;
-
 void initGraphic()
 {
-    shader = new Shader((char *)"Shader.vert", (char *)"Shader.frag");
+    initShader();
     game = new Game();
     boundary = new Grid(0.1f, 0.1f, 20, 24, 0, 0, -0.295f, 0, 0.0f, 0.5f, 1.0f);
     grid = new Grid(0.1f, 0.1f, 30, 40, 0, 0, -0.3f, 0, 1.0f, 1.0f, 1.0f);

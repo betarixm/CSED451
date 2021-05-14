@@ -33,5 +33,6 @@ public:
     void uniform1f(const string &key, float x) const;
 };
 
+void initShader();
 
 #endif //CSED451_SHADER_H

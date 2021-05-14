@@ -2,6 +2,12 @@
 
 #include <glm/gtc/type_ptr.hpp>
 
+Shader *shader;
+
+void initShader() {
+    shader = new Shader((char *)"Shader.vert", (char *)"Shader.frag");
+}
+
 Shader::Shader(char *vShaderPath, char *fShaderPath) {
     ifstream vShaderFile, fShaderFile;
     stringstream vShaderStream, fShaderStream;
