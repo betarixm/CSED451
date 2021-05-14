@@ -129,7 +129,7 @@ void timerStellar(int value) {
     for (auto &i : Stellar::stellarVec) {
         i->tick();
     }
-    glutTimerFunc(1, timerStellar, -1);
+    glutTimerFunc(50, timerStellar, -1);
 }
 
 void timerDirLight(int value) {

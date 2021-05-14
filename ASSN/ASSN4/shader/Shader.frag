@@ -1,7 +1,7 @@
 #version 330 core
 
 #define NUM_DIR_LIGHT 1
-#define NUM_PNT_LIGHT 1
+#define NUM_PNT_LIGHT 2
 
 struct Material {
     vec3 ambient;
@@ -50,7 +50,7 @@ void main() {
     vec3 result = vec3(0, 0, 0);
 
     for(int i = 0; i < NUM_DIR_LIGHT; i++) {
-        result += renderDirectionalLight(directionalLight[i], norm, viewDir);
+        // result += renderDirectionalLight(directionalLight[i], norm, viewDir);
     }
 
     for(int i = 0; i < NUM_PNT_LIGHT; i++) {
@@ -82,17 +82,17 @@ vec3 renderDirectionalLight(DirLight light, vec3 normal, vec3 viewDir)
 }
 
 vec3 renderPointLight(PntLight light, vec3 normal, vec3 fragPos, vec3 viewDir) {
-    vec3 lightDir = normalize(light.position - fragPos);
+    vec3 dirLight = normalize(light.position - fragPos);
 
-    float wDiffuse = max(dot(normal, lightDir), 0.0);
+    float wDiffuse = max(dot(normal, dirLight), 0.0);
 
-    vec3 dirReflect = reflect(-lightDir, normal);
+    vec3 dirReflect = reflect(-dirLight, normal);
     float wSpecular = pow(max(dot(viewDir, dirReflect), 0.0), material.shininess);
 
     float distance = length(light.position - fragPos);
     float attenuation = 1.0 / dot(vec3(light.constant, light.linear, light.quadratic), vec3(1, distance, distance * distance));
 
-    vec3 lAmbient = light.ambient * material.diffuse;
+    vec3 lAmbient = light.ambient * material.ambient;
     vec3 lDiffuse = light.diffuse * material.diffuse;
     vec3 lSpecular = light.specular * material.specular;
 

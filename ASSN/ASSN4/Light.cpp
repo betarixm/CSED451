@@ -5,7 +5,6 @@ vector<PointLight *> PointLight::list = {};
 
 void initLight() {
     auto dirLight = new DirectionalLight(glm::vec3(RADIUS_DIR_LIGHT, 0.0f, 0.0f), glm::vec3(0.2f, 0.2f, 0.2f), glm::vec3(0.4f, 0.4f, 0.4f), glm::vec3(0.5f, 0.5f, 0.5f));
-    auto pntLight = new PointLight(glm::vec3(-1, 0, 1), 1.0f, 0.09f, 0.2f, glm::vec3(0.01f, 0.01f, 0.01f), glm::vec3(0.7f, 0.7f, 0.7f), glm::vec3(0.8f, 0.8f, 0.8f));
 }
 
 Light::Light(string name, glm::vec3 ambient, glm::vec3 diffuse, glm::vec3 specular)

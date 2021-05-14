@@ -28,8 +28,8 @@ Sphere *Orb::planet() const {
     return this->_planet;
 }
 
-Stellar::Stellar(float x, float y, float z, array<float, 3> &length, array<float, 2> &distance,
-                 vector<GLclampf *> colorfv) {
+Stellar::Stellar(float x, float y, float z, array<float, 3> &length, array<float, 2> &distance, vector<GLclampf *> colorfv)
+    : _x(x), _y(y), _z(z), _distance(distance), _light(glm::vec3(x + distance[0] + distance[1], y, z + 0.3f), 1.0f, 0.09f, 0.2f, glm::vec3(0.01f, 0.01f, 0.01f), glm::vec3(0.7f, 0.7f, 0.7f), glm::vec3(0.8f, 0.8f, 0.8f)) {
     this->_baseScene = new GroupNode;
     this->_baseTranslate = new TranslateNode;
 
@@ -51,6 +51,13 @@ void Stellar::tick() {
     for(int i = 0; i < 3; i++){
         this->orbs[i]->planet()->rotate(0.5f);
     }
+
+    deg += 0.5f;
+    if(deg > 360) { deg -= 360; }
+
+    float rad = glm::radians(deg);
+
+    _light.setPosition(glm::vec3(_x + cos(rad) * _distance[0] + cos(2*rad) * _distance[1], _y + sin(rad) * _distance[0] + sin(2*rad) * _distance[1], _z));
 }
 
 void Stellar::display(bool isBlack) {
@@ -107,7 +114,7 @@ void initStellar() {
     };
 
 
-    for(i = 0; i < 2; i++){
+    for(i = 0; i < 1; i++){
         Stellar::stellarVec.push_back(new Stellar(-0.61f + (float)i, -0.5f + (float)i, 0.25f * (float)i, length[i], distance[i], color[i]));
     }
 }

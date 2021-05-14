@@ -4,6 +4,7 @@
 #include <array>
 
 #include "Shape.h"
+#include "Light.h"
 
 using namespace std;
 
@@ -33,6 +34,9 @@ private:
     GroupNode *_baseScene;
     TranslateNode *_baseTranslate;
     array<Orb*, 3> orbs = {nullptr, };
+    array<float, 2> _distance;
+    float _x, _y, _z, deg = 0;
+    PointLight _light;
 
 public:
     static vector<Stellar*> stellarVec;
