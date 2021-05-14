@@ -50,7 +50,7 @@ void main() {
     vec3 result = vec3(0, 0, 0);
 
     for(int i = 0; i < NUM_DIR_LIGHT; i++) {
-        // result += renderDirectionalLight(directionalLight[i], norm, viewDir);
+        result += renderDirectionalLight(directionalLight[i], norm, viewDir);
     }
 
     for(int i = 0; i < NUM_PNT_LIGHT; i++) {
