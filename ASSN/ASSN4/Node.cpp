@@ -165,6 +165,7 @@ void VertexNode::_display(bool isBlack) {
     shader->uniform1f("material.shininess", 32.0f);
 
     DirectionalLight::list[0]->use(shader);
+    PointLight::list[0]->use(shader);
 
     if(isBlack) {
         shader->uniform4v("color", 0.0f, 0.0f, 0.0f, 1.0f);
