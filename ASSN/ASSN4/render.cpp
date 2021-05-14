@@ -4,6 +4,19 @@
 
 #include "Ship.h"
 
+extern Game* game;
+extern list<Bullet*> enemy_bullets;
+extern list<Bullet*> player_bullets;
+extern list<Item*> item_list;
+extern Grid* grid;
+extern Grid* boundary;
+extern deque<glm::mat4> ModelView;
+extern deque<glm::mat4> Projection;
+extern Shader* shader;
+
+bool isHiddenLineRemoval = false;
+int frontCamera = -1;
+
 void lookAt(float x, float y, int _frontCamera) {
     glm::mat4 P = glm::perspective(90.0f, 1.0f, 0.001f, 100.0f);
     glm::mat4 cur_p = Projection.back();

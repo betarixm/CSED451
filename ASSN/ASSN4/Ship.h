@@ -18,8 +18,6 @@
 
 using namespace std;
 
-extern int frontCamera;
-
 typedef Sphere Bullet;
 typedef Sphere Item;
 

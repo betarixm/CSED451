@@ -1,7 +1,3 @@
-//
-// Created by 최은수 on 2021/03/04.
-//
-
 #include "Ship.h"
 
 /**
@@ -15,9 +11,14 @@ extern char mode;
 
 extern Game *game;
 extern list<Bullet *> player_bullets;
+extern int frontCamera;
+
+list<Bullet *> enemy_bullets;
+list<Bullet *> player_bullets;
+list<Item *> item_list;
 
 Ship::Ship(int _numLife, float x, float y, float size_torso, GLclampf r, GLclampf g, GLclampf b, float degree,
-           int numBullet): _obj(_path, x, y, 0, degree, r, g, b) {
+           int numBullet) : _obj(_path, x, y, 0, degree, r, g, b) {
     this->_numLife = _numLife;
     this->_size_torso = size_torso;
     this->_numBullet = numBullet;
@@ -27,7 +28,7 @@ Ship::Ship(int _numLife, float x, float y, float size_torso, GLclampf r, GLclamp
 }
 
 void Ship::display(bool isBlack) {
-     this->_baseScene->display(isBlack);
+    this->_baseScene->display(isBlack);
 }
 
 
@@ -55,7 +56,6 @@ bool Ship::hit(Bullet *bullet) {
 
     float x_b = bullet->x();
     float y_b = bullet->y();
-
 
 
     if (detection_box[0][0] > x_b || detection_box[0][1] < y_b)
@@ -93,15 +93,15 @@ list<Bullet *> Ship::shot() {
     if (numBullet == 0)
         return result;
 
-    degree = (90.0f / ((float)numBullet / 2.0f + 1.0f)) * (float)PIE / 180.0f;
+    degree = (90.0f / ((float) numBullet / 2.0f + 1.0f)) * (float) PIE / 180.0f;
 
     for (int i = 1; i <= numBullet / 2; i++) {
         auto *b = new Sphere(50, 50, 0.01, x, y, 0, 0, 1, 0, 0);
-        b->setDirection(0.1f*cos(degree*(float)i), 0.1f*sin(degree*(float)i), 0);
+        b->setDirection(0.1f * cos(degree * (float) i), 0.1f * sin(degree * (float) i), 0);
         result.push_back(b);
 
         b = new Sphere(50, 50, 0.01, x, y, 0, 0, 1, 0, 0);
-        b->setDirection(-0.1f*cos(degree*(float)i), 0.1f*sin(degree*(float)i), 0);
+        b->setDirection(-0.1f * cos(degree * (float) i), 0.1f * sin(degree * (float) i), 0);
         result.push_back(b);
     }
 
@@ -137,7 +137,7 @@ void Player::HitBullet(list<Bullet *> *bullet_list) {
                 isHit = hit(*itr);
                 if (isHit) {
                     _numLife -= damage;
-                    mutateColor(0, 0, -0.1f * (float)damage);
+                    mutateColor(0, 0, -0.1f * (float) damage);
                     bullet = *itr;
                     bullet_list->erase(itr++);
                     delete (bullet);
@@ -238,7 +238,7 @@ list<Bullet *> Player::keyHandler() {
         }
     }
 
-    if(this->inputKey['U'] || this->inputKey['D'] ||this->inputKey['L'] || this->inputKey['R'] ) {
+    if (this->inputKey['U'] || this->inputKey['D'] || this->inputKey['L'] || this->inputKey['R']) {
         if (this->inputKey['U']) {
             dy = dist;
         }

@@ -3,7 +3,10 @@
 #define PIE 3.141592
 using namespace std;
 
-extern GLuint myProgObj;
+extern Shader* shader;
+
+deque<glm::mat4> ModelView;
+deque<glm::mat4> Projection;
 
 Node::Node() : _child(nullptr), _sibling(nullptr){}
 Node::Node(Node *_child, Node *_sibling) : _child(_child), _sibling(_sibling) {}

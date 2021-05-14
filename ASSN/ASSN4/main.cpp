@@ -10,31 +10,14 @@
 #include "timer.h"
 #include "render.h"
 
-char mode = 'n'; /* n : normal,  f: fail, c: king-god */
-bool isHiddenLineRemoval = false;
-int frontCamera = -1;
-
-list<Bullet*> enemy_bullets;
-list<Bullet*> player_bullets;
-list<Item*> item_list;
-
-Sphere *sphere;
-Sphere *cube;
-
-deque<glm::mat4> ModelView;
-deque<glm::mat4> Projection;
-
-void initGraphic()
-{
+void initGraphic(){
     initShader();
     initGame();
     initGrid();
     initStellar();
 }
 
-
 int main(int argc, char **argv) {
-
     glutInitContextVersion(3, 3);
     glutInitContextFlags(GLUT_FORWARD_COMPATIBLE);
     glutInitContextProfile(GLUT_CORE_PROFILE);

@@ -5,14 +5,6 @@
 #include "Ship.h"
 #include "Stellar.h"
 
-extern Game *game;
-
-extern list<Bullet *> enemy_bullets;
-extern list<Bullet *> player_bullets;
-extern list<Item *> item_list;
-
-extern char mode;
-
 void timerBulletMoveHit(int value);
 
 void timerBulletEnemyShot(int value);

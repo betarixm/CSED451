@@ -1,5 +1,13 @@
 #include "timer.h"
 
+extern Game *game;
+
+extern list<Bullet *> enemy_bullets;
+extern list<Bullet *> player_bullets;
+extern list<Item *> item_list;
+
+extern char mode;
+
 /**
  * @brief 일정초마다 총알 이동 및 충돌 체크
  */

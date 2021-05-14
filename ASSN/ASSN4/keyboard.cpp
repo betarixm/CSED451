@@ -1,6 +1,11 @@
 #include "keyboard.h"
 #include "Ship.h"
 
+extern Game *game;
+extern char mode;
+extern bool isHiddenLineRemoval;
+extern int frontCamera;
+
 void onSpecialKeyDown(int key, int x, int y) {
     if (!game->player()) {
         return;

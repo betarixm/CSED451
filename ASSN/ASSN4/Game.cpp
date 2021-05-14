@@ -2,7 +2,7 @@
 #include "Game.h"
 #include "Ship.h"
 
-extern char mode;
+char mode = 'n'; /* n : normal,  f: fail, c: king-god */
 
 Game* game;
 

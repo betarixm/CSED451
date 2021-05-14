@@ -24,10 +24,6 @@
 
 using namespace std;
 
-extern deque<glm::mat4> ModelView;
-extern deque<glm::mat4> Projection;
-extern Shader* shader;
-
 class Node {
 private:
 protected:
