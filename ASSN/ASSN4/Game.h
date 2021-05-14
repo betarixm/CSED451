@@ -58,5 +58,7 @@ public:
     void newItemLog(char type);
 };
 
+void initGame();
+
 
 #endif //CSED451_GAME_H

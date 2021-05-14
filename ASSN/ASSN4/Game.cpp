@@ -4,6 +4,12 @@
 
 extern char mode;
 
+Game* game;
+
+void initGame()  {
+    game = new Game();
+}
+
 Game::Game() {
 
     this->spawnPlayer();

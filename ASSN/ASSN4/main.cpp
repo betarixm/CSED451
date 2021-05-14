@@ -18,7 +18,6 @@ list<Bullet*> enemy_bullets;
 list<Bullet*> player_bullets;
 list<Item*> item_list;
 
-Game* game;
 Grid* grid;
 Grid* boundary;
 
@@ -31,7 +30,7 @@ deque<glm::mat4> Projection;
 void initGraphic()
 {
     initShader();
-    game = new Game();
+    initGame();
     boundary = new Grid(0.1f, 0.1f, 20, 24, 0, 0, -0.295f, 0, 0.0f, 0.5f, 1.0f);
     grid = new Grid(0.1f, 0.1f, 30, 40, 0, 0, -0.3f, 0, 1.0f, 1.0f, 1.0f);
     initStellar();
