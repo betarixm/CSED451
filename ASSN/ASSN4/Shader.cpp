@@ -56,7 +56,6 @@ Shader::Shader(char *vShaderPath, char *fShaderPath) {
     glAttachShader(_sid, vShader);
     glAttachShader(_sid, fShader);
 
-    glUseProgram(_sid);
     glLinkProgram(_sid);
     glGetProgramiv(_sid, GL_LINK_STATUS, &success);
     if(!success){
