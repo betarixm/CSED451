@@ -1,4 +1,5 @@
 #include "Node.h"
+#include "Light.h"
 
 #define PIE 3.141592
 using namespace std;
@@ -158,6 +159,12 @@ void VertexNode::_display(bool isBlack) {
 
     shader->uniform4m("ModelView", modelView);
     shader->uniform4m("Projection", projection);
+    shader->uniform3v("material.ambient",  1.0f, 0.5f, 0.31f);
+    shader->uniform3v("material.diffuse",  1.0f, 0.5f, 0.31f);
+    shader->uniform3v("material.specular", 0.5f, 0.5f, 0.5f);
+    shader->uniform1f("material.shininess", 32.0f);
+
+    DirectionalLight::list[0]->use(shader);
 
     if(isBlack) {
         shader->uniform4v("color", 0.0f, 0.0f, 0.0f, 1.0f);

@@ -18,13 +18,16 @@ bool isHiddenLineRemoval = false;
 int frontCamera = -1;
 
 void lookAt(float x, float y, int _frontCamera) {
+    glm::vec3 viewPos = glm::vec3(x, y + _frontCamera*0.22, 0.15);
     glm::mat4 P = glm::perspective(90.0f, 1.0f, 0.001f, 100.0f);
     glm::mat4 cur_p = Projection.back();
     Projection.pop_back();
     Projection.push_back(P*cur_p);
 
-    glm::mat4 C = glm::lookAt(glm::vec3(x, y + _frontCamera*0.22, 0.15), glm::vec3(x, y+0.7, 0.1), glm::vec3(0, 0, 1));
+    glm::mat4 C = glm::lookAt(viewPos, glm::vec3(x, y+0.7, 0.1), glm::vec3(0, 0, 1));
     glm::mat4 cur_C = ModelView.back();
+
+    shader->uniform3v("viewPos", viewPos);
     ModelView.pop_back();
     ModelView.push_back(C*cur_C);
 }

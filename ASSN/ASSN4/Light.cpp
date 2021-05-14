@@ -3,17 +3,21 @@
 vector<DirectionalLight *> DirectionalLight::list = {};
 vector<PointLight *> PointLight::list = {};
 
+void initLight() {
+    auto dirLight = new DirectionalLight(glm::vec3(RADIUS_DIR_LIGHT, 0.0f, 0.0f), glm::vec3(0.2f, 0.2f, 0.2f), glm::vec3(0.4f, 0.4f, 0.4f), glm::vec3(0.5f, 0.5f, 0.5f));
+}
+
 Light::Light(string name, glm::vec3 ambient, glm::vec3 diffuse, glm::vec3 specular)
         : _name(std::move(name)), _ambient(ambient), _diffuse(diffuse), _specular(specular) {}
 
-void Light::_display(Shader &shader) {
-    shader.uniform3v(_name + ".ambient", _ambient);
-    shader.uniform3v(_name + ".diffuse", _diffuse);
-    shader.uniform3v(_name + ".specular", _specular);
+void Light::_use(Shader *shader) {
+    shader->uniform3v(_name + ".ambient", _ambient);
+    shader->uniform3v(_name + ".diffuse", _diffuse);
+    shader->uniform3v(_name + ".specular", _specular);
 }
 
-void Light::use(Shader &shader) {
-    _display(shader);
+void Light::use(Shader *shader) {
+    _use(shader);
 }
 
 void Light::setAmbient(glm::vec3 ambient) {
@@ -45,14 +49,14 @@ glm::vec3 Light::specular() {
 }
 
 DirectionalLight::DirectionalLight(glm::vec3 direction, glm::vec3 ambient, glm::vec3 diffuse, glm::vec3 specular)
-        : Light(string("DirectionalLight[") + to_string(list.size()) + string("]"),
+        : Light(string("directionalLight[") + to_string(list.size()) + string("]"),
                 ambient, diffuse, specular), _direction(direction) {
     list.push_back(this);
 }
 
-void DirectionalLight::use(Shader &shader) {
-    _display(shader);
-    shader.uniform3v(_name + ".direction", _direction);
+void DirectionalLight::use(Shader *shader) {
+    _use(shader);
+    shader->uniform3v(_name + ".direction", _direction);
 }
 
 void DirectionalLight::setDirection(glm::vec3 direction) {
@@ -65,18 +69,18 @@ glm::vec3 DirectionalLight::direction() {
 
 PointLight::PointLight(glm::vec3 position, float constant, float linear, float quadratic, glm::vec3 ambient,
                        glm::vec3 diffuse, glm::vec3 specular)
-        : Light(string("PointLight[") + to_string(list.size()) + string("]"),
+        : Light(string("pointLight[") + to_string(list.size()) + string("]"),
                 ambient, diffuse, specular), _position(position), _constant(constant), _linear(linear),
           _quadratic(quadratic) {
     list.push_back(this);
 }
 
-void PointLight::use(Shader &shader) {
-    _display(shader);
-    shader.uniform3v(_name + ".position", _position);
-    shader.uniform1f(_name + ".constant", _constant);
-    shader.uniform1f(_name + ".linear", _linear);
-    shader.uniform1f(_name + ".quadratic", _quadratic);
+void PointLight::use(Shader *shader) {
+    _use(shader);
+    shader->uniform3v(_name + ".position", _position);
+    shader->uniform1f(_name + ".constant", _constant);
+    shader->uniform1f(_name + ".linear", _linear);
+    shader->uniform1f(_name + ".quadratic", _quadratic);
 }
 
 glm::vec3 PointLight::position() {

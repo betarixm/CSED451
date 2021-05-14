@@ -97,10 +97,10 @@
     <None Include="model\ship.obj">
       <Filter>Resource Files</Filter>
     </None>
-    <None Include="Shader.frag">
+    <None Include="shader\Shader.frag">
       <Filter>Resource Files</Filter>
     </None>
-    <None Include="Shader.vert">
+    <None Include="shader\Shader.vert">
       <Filter>Resource Files</Filter>
     </None>
   </ItemGroup>

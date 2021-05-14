@@ -31,6 +31,8 @@ public:
     void uniform3v(const string &key, const glm::vec3 &value) const;
 
     void uniform1f(const string &key, float x) const;
+
+    void uniform1i(const string &key, int x) const;
 };
 
 void initShader();

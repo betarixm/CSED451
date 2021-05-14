@@ -4,7 +4,7 @@
 
 #include "Shader.h"
 #include "Stellar.h"
-#include "Ship.h"
+#include "Light.h"
 
 #include "keyboard.h"
 #include "timer.h"
@@ -15,6 +15,7 @@ void initGraphic(){
     initGame();
     initGrid();
     initStellar();
+    initLight();
 }
 
 int main(int argc, char **argv) {

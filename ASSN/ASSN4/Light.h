@@ -9,6 +9,8 @@
 
 #include "Shader.h"
 
+#define RADIUS_DIR_LIGHT 1.5f
+
 class Light {
 private:
     glm::vec3 _ambient{};
@@ -18,12 +20,12 @@ private:
 protected:
     string _name;
 
-    void _display(Shader &shader);
+    void _use(Shader *shader);
 
 public:
     Light(string name, glm::vec3 ambient, glm::vec3 diffuse, glm::vec3 specular);
 
-    virtual void use(Shader &shader);
+    virtual void use(Shader *shader);
 
     void setAmbient(glm::vec3 ambient);
 
@@ -48,7 +50,7 @@ public:
 
     DirectionalLight(glm::vec3 direction, glm::vec3 ambient, glm::vec3 diffuse, glm::vec3 specular);
 
-    void use(Shader& shader) override;
+    void use(Shader *shader) override;
 
     void setDirection(glm::vec3 direction);
 
@@ -68,7 +70,7 @@ public:
 
     PointLight(glm::vec3 position, float constant, float linear, float quadratic, glm::vec3 ambient, glm::vec3 diffuse, glm::vec3 specular);
 
-    void use(Shader& shader) override;
+    void use(Shader *shader) override;
 
     glm::vec3 position();
 
@@ -87,5 +89,6 @@ public:
     void setQuadratic(float quadratic);
 };
 
+void initLight();
 
 #endif //CSED451_LIGHT_H

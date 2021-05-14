@@ -5,7 +5,7 @@
 Shader *shader;
 
 void initShader() {
-    shader = new Shader((char *)"Shader.vert", (char *)"Shader.frag");
+    shader = new Shader((char *)"shader/Shader.vert", (char *)"shader/Shader.frag");
 }
 
 Shader::Shader(char *vShaderPath, char *fShaderPath) {
@@ -95,4 +95,8 @@ void Shader::uniform3v(const string &key, const glm::vec3 &value) const {
 
 void Shader::uniform1f(const string &key, float x) const {
     glUniform1f(GET_UNIFORM(_sid, key.c_str()), x);
+}
+
+void Shader::uniform1i(const string &key, int x) const {
+    glUniform1i(glGetUniformLocation(_sid, key.c_str()), x);
 }
