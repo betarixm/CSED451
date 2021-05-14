@@ -159,8 +159,8 @@ void VertexNode::_display(bool isBlack) {
 
     shader->uniform4m("ModelView", modelView);
     shader->uniform4m("Projection", projection);
-    shader->uniform3v("material.ambient",  1.0f, 0.5f, 0.31f);
-    shader->uniform3v("material.diffuse",  1.0f, 0.5f, 0.31f);
+    shader->uniform3v("material.ambient",  _colorfv[0], _colorfv[1], _colorfv[2]);
+    shader->uniform3v("material.diffuse",  _colorfv[0], _colorfv[1], _colorfv[2]);
     shader->uniform3v("material.specular", 0.5f, 0.5f, 0.5f);
     shader->uniform1f("material.shininess", 32.0f);
 
