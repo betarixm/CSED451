@@ -117,4 +117,6 @@ public:
     void init(int lat, int lon, float radius);
 };
 
+void initGrid();
+
 #endif // CSED451_ASSN1_SHAPE_H

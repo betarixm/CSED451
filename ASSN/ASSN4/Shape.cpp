@@ -1,8 +1,16 @@
 #include "Shape.h"
 #include "helper.h"
 #define PI 3.141592
+
 using namespace std;
 
+Grid* grid;
+Grid* boundary;
+
+void initGrid() {
+    boundary = new Grid(0.1f, 0.1f, 20, 24, 0, 0, -0.295f, 0, 0.0f, 0.5f, 1.0f);
+    grid = new Grid(0.1f, 0.1f, 30, 40, 0, 0, -0.3f, 0, 1.0f, 1.0f, 1.0f);
+}
 /// @class Shape
 // static variable vertices initialization
 // scale = length, model frame unit = 1
