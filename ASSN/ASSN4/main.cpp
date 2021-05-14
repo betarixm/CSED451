@@ -38,6 +38,7 @@ void initGraphic()
             {0.0, 0.0, 0.0}
     };
 
+    shader = new Shader((char *)"Shader.vert", (char *)"Shader.frag");
     game = new Game();
     boundary = new Grid(0.1f, 0.1f, 20, 24, 0, 0, -0.295f, 0, 0.0f, 0.5f, 1.0f);
     grid = new Grid(0.1f, 0.1f, 30, 40, 0, 0, -0.3f, 0, 1.0f, 1.0f, 1.0f);
@@ -46,7 +47,6 @@ void initGraphic()
 
 
 int main(int argc, char **argv) {
-    shader = new Shader((char *)"Shader.vert", (char *)"Shader.frag");
 
     glutInitContextVersion(3, 3);
     glutInitContextFlags(GLUT_FORWARD_COMPATIBLE);
