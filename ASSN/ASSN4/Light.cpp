@@ -1,5 +1,4 @@
 #include "Light.h"
-
 vector<DirectionalLight *> DirectionalLight::list = {};
 vector<PointLight *> PointLight::list = {};
 

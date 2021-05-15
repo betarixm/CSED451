@@ -129,11 +129,11 @@ void timerStellar(int value) {
     for (auto &i : Stellar::stellarVec) {
         i->tick();
     }
-    glutTimerFunc(50, timerStellar, -1);
+    glutTimerFunc(20, timerStellar, -1);
 }
 
 void timerDirLight(int value) {
     float theta = ((float)abs((value % 360) - 180) - 180.0f) * (float)PI / 180.0f;
-    DirectionalLight::list[0]->setDirection(glm::vec3(RADIUS_DIR_LIGHT * cos(theta), RADIUS_DIR_LIGHT * sin(theta), 0));
-    glutTimerFunc(5, timerDirLight, value + 1);
+    DirectionalLight::list[0]->setDirection(glm::vec3(RADIUS_DIR_LIGHT * cos(theta), 0, RADIUS_DIR_LIGHT * sin(theta)));
+    glutTimerFunc(25, timerDirLight, value + 1);
 }

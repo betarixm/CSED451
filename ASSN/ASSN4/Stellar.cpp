@@ -114,7 +114,7 @@ void initStellar() {
     };
 
 
-    for(i = 0; i < 1; i++){
+    for(i = 0; i < 2; i++){
         Stellar::stellarVec.push_back(new Stellar(-0.61f + (float)i, -0.5f + (float)i, 0.25f * (float)i, length[i], distance[i], color[i]));
     }
 }

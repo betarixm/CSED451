@@ -30,12 +30,13 @@ struct PntLight {
 };
 
 in vec4 vertexColor;
-in vec3 FragPos;
+in vec4 FragPos;
 in vec3 Normal;
 in vec2 TexCoords;
 
 out vec4 FragColor;
 
+uniform mat4 View;
 uniform vec3 viewPos;
 uniform DirLight directionalLight[NUM_DIR_LIGHT];
 uniform PntLight pointLight[NUM_PNT_LIGHT];
@@ -46,7 +47,8 @@ vec3 renderPointLight(PntLight light, vec3 normal, vec3 fragPos, vec3 viewDir);
 
 void main() {
     vec3 norm = normalize(Normal);
-    vec3 viewDir = normalize(viewPos - FragPos);
+    vec3 FragPos3v = vec3(FragPos) / FragPos[3];
+    vec3 viewDir = normalize(viewPos - FragPos3v);
     vec3 result = vec3(0, 0, 0);
 
     for(int i = 0; i < NUM_DIR_LIGHT; i++) {
@@ -54,7 +56,7 @@ void main() {
     }
 
     for(int i = 0; i < NUM_PNT_LIGHT; i++) {
-        result += renderPointLight(pointLight[i], norm, FragPos, viewDir);
+        result += renderPointLight(pointLight[i], norm, FragPos3v, viewDir);
     }
 
     FragColor = vec4(result, 1.0f);

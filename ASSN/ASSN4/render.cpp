@@ -26,10 +26,10 @@ void lookAt(float x, float y, int _frontCamera) {
 
     glm::mat4 C = glm::lookAt(viewPos, glm::vec3(x, y+0.7, 0.1), glm::vec3(0, 0, 1));
     glm::mat4 cur_C = ModelView.back();
-
+    shader->uniform4m("View", C);
     shader->uniform3v("viewPos", viewPos);
-    ModelView.pop_back();
-    ModelView.push_back(C*cur_C);
+    // ModelView.pop_back();
+    // ModelView.push_back(C*cur_C);
 }
 
 void microRenderScene(bool isBlack) {
