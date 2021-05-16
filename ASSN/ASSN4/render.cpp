@@ -44,7 +44,7 @@ void microRenderScene(bool isBlack) {
 
         grid->display(isBlack);
 
-        boundary->display(isBlack);
+        //boundary->display(isBlack);
 
         for(auto & i : Stellar::stellarVec) {
             i->display(isBlack);
@@ -67,8 +67,6 @@ void renderScene() {
 
     glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT);
 
-    glPolygonMode(GL_FRONT_AND_BACK, GL_LINE);
-    microRenderScene(false);
 
     if(isHiddenLineRemoval) {
         glPolygonMode(GL_FRONT_AND_BACK, GL_FILL);
@@ -76,6 +74,11 @@ void renderScene() {
         glPolygonOffset(1.0, 5.0);
         microRenderScene(true);
         glDisable(GL_POLYGON_OFFSET_FILL);
+    }
+    else
+    {
+        glPolygonMode(GL_FRONT_AND_BACK, GL_LINE);
+        microRenderScene(false);
     }
 
     glutSwapBuffers();
