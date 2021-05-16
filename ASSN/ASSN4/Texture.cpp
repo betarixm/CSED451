@@ -3,6 +3,7 @@
 //
 
 #include "Texture.h"
+bool isNormalMapping = 0;
 
 Texture::Texture(const char * path)
 {
@@ -26,7 +27,7 @@ Texture::Texture(const char * path)
     }
     else
     {
-        std::cout << "Failed to load texture" << std::endl;
+        std::cout << path << " : Failed to load texture" << std::endl;
     }
     stbi_image_free(data);
 

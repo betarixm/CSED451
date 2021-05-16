@@ -5,6 +5,7 @@ extern Game *game;
 extern char mode;
 extern bool isHiddenLineRemoval;
 extern int frontCamera;
+extern bool isNormalMapping;
 
 void onSpecialKeyDown(int key, int x, int y) {
     if (!game->player()) {
@@ -84,6 +85,9 @@ void onKeyDown(unsigned char key, int x, int y) {
             glMatrixMode(GL_MODELVIEW);
             glLoadIdentity();
 
+
+        case 'n' :
+            isNormalMapping = !isNormalMapping;
         default:
             break;
     }

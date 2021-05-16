@@ -50,7 +50,7 @@ Item * Game::tick() {
     if(_enemy && _enemy->numLife() == 0){
         this->isEnemyDead = true;
         if(this->numEnemy){
-            item = new Sphere("texture/item.jpeg", 50, 50, 0.1, _enemy->x(), _enemy->y(), 0, 0, 1, 0, 0);
+            item = new Sphere("texture/item.jpeg", "NormalMap.png", 50, 50, 0.1, _enemy->x(), _enemy->y(), 0, 0, 1, 0, 0);
             this->spawnEnemy();
         } else {
             this->_isGameWin = true;

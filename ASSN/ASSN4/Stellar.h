@@ -18,9 +18,9 @@ private:
     Orb* _satellite = nullptr;
 protected:
 public:
-    Orb(const char *map_path, float x, float y, float z, float length, GLclampf colorfv[]);
+    Orb(const char *map_path, const char *normal_path, float x, float y, float z, float length, GLclampf colorfv[]);
 
-    Orb(const char *map_path, float x, float y, float z, float length, GLclampf colorfv[], Orb* satellite, float distance);
+    Orb(const char *map_path, const char *normal_path, float x, float y, float z, float length, GLclampf colorfv[], Orb* satellite, float distance);
 
     void addSatellite(Orb* satellite, float distance);
 
@@ -41,7 +41,7 @@ private:
 public:
     static vector<Stellar*> stellarVec;
 
-    Stellar (const char *map_path[], float x, float y, float z, array<float, 3>& length, array<float, 2>& distance, vector<GLclampf *> colorfv);
+    Stellar (const char *map_path[],  float x, float y, float z, array<float, 3>& length, array<float, 2>& distance, vector<GLclampf *> colorfv);
 
     void tick();
 

@@ -40,14 +40,29 @@ uniform DirLight directionalLight[NUM_DIR_LIGHT];
 uniform PntLight pointLight[NUM_PNT_LIGHT];
 uniform Material material;
 
+// for normal mapping
+uniform sampler2D normalTexture;
+uniform bool isNormap;
+
 vec3 renderDirectionalLight(DirLight light, vec3 normal, vec3 viewDir);
 vec3 renderPointLight(PntLight light, vec3 normal, vec3 fragPos, vec3 viewDir);
 
 void main() {
-    vec3 norm = normalize(Normal);
+
+    vec3 norm;
     vec3 FragPos3v = vec3(FragPos) / FragPos[3];
     vec3 viewDir = normalize(viewPos - FragPos3v);
     vec3 result = vec3(0, 0, 0);
+
+    if (isNormap)
+    {
+        norm = texture(normalTexture, TexCoords).rgb; // transform normal vector to range [-1,1]
+        norm = normalize(norm * 2.0 - 1.0);
+    }
+    else
+    {
+        norm = normalize(Normal);
+    }
 
     for(int i = 0; i < NUM_DIR_LIGHT; i++) {
         result += renderDirectionalLight(directionalLight[i], norm, viewDir);

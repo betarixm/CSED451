@@ -5,6 +5,7 @@
 using namespace std;
 
 extern Shader* shader;
+extern bool isNormalMapping;
 
 deque<glm::mat4> ModelView;
 deque<glm::mat4> Projection;
@@ -179,10 +180,16 @@ void VertexNode::_display(bool isBlack) {
     }
 
     // texture diffuse mapping
+    shader->uniform1f("isNormap", (int)isNormalMapping);
     shader->uniform1i("material.diffuse", 0);
+    shader->uniform1i("normalTexture", 1);
+
 
     glActiveTexture(GL_TEXTURE0);
     glBindTexture(GL_TEXTURE_2D, _tid);
+    glActiveTexture(GL_TEXTURE1);
+    glBindTexture(GL_TEXTURE_2D, _normTid);
+
     
     glBindBuffer(GL_ARRAY_BUFFER, 0);
     glBindBuffer(GL_ELEMENT_ARRAY_BUFFER, 0);

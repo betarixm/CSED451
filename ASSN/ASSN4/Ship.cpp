@@ -18,7 +18,7 @@ list<Bullet *> player_bullets;
 list<Item *> item_list;
 
 Ship::Ship(int _numLife, float x, float y, float size_torso, GLclampf r, GLclampf g, GLclampf b, float degree,
-           int numBullet) : _obj(_path, _map_path, x, y, 0, degree, r, g, b) {
+           int numBullet) : _obj(_path, _map_path, _normal_path, x, y, 0, degree, r, g, b) {
     this->_numLife = _numLife;
     this->_size_torso = size_torso;
     this->_numBullet = numBullet;
@@ -85,7 +85,7 @@ list<Bullet *> Ship::shot() {
     list<Bullet *> result;
 
     if (numBullet % 2 != 0) {
-        auto *b = new Sphere(_bullet_path, 50, 50, 0.01f, x, y, 0, 0, 1, 0, 0);
+        auto *b = new Sphere(_bullet_path, _bullet_normal_path,50, 50, 0.01f, x, y, 0, 0, 1, 0, 0);
         b->setDirection(0, 0.1, 0);
         numBullet -= 1;
         result.push_back(b);
@@ -96,11 +96,11 @@ list<Bullet *> Ship::shot() {
     degree = (90.0f / ((float) numBullet / 2.0f + 1.0f)) * (float) PIE / 180.0f;
 
     for (int i = 1; i <= numBullet / 2; i++) {
-        auto *b = new Sphere(_bullet_path, 50, 50, 0.01, x, y, 0, 0, 1, 0, 0);
+        auto *b = new Sphere(_bullet_path,  _bullet_normal_path,50, 50, 0.01, x, y, 0, 0, 1, 0, 0);
         b->setDirection(0.1f * cos(degree * (float) i), 0.1f * sin(degree * (float) i), 0);
         result.push_back(b);
 
-        b = new Sphere(_bullet_path, 50, 50, 0.01, x, y, 0, 0, 1, 0, 0);
+        b = new Sphere(_bullet_path, _bullet_normal_path, 50, 50, 0.01, x, y, 0, 0, 1, 0, 0);
         b->setDirection(-0.1f * cos(degree * (float) i), 0.1f * sin(degree * (float) i), 0);
         result.push_back(b);
     }

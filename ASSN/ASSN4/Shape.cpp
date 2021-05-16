@@ -9,17 +9,18 @@ Grid* boundary;
 
 
 void initGrid() {
-    boundary = new Grid("texture/background.jpeg", 0.1f, 0.1f, 20, 24, 0, 0, -0.295f, 0, 0.0f, 0.5f, 1.0f);
-    grid = new Grid("texture/background.jpeg", 0.1f, 0.1f, 30, 40, 0, 0, -0.3f, 0, 1.0f, 1.0f, 1.0f);
+    boundary = new Grid("texture/background.jpeg", "texture/background.jpeg", 0.1f, 0.1f, 20, 24, 0, 0, -0.295f, 0, 0.0f, 0.5f, 1.0f);
+    grid = new Grid("texture/background.jpeg","texture/background.jpeg", 0.1f, 0.1f, 30, 40, 0, 0, -0.3f, 0, 1.0f, 1.0f, 1.0f);
 
 }
 /// @class Shape
 // static variable vertices initialization
 // scale = length, model frame unit = 1
 
-Shape::Shape(const char *path, float x, float y, float z, float deg, float sx, float sy, float sz, GLenum mode, GLclampf r, GLclampf g, GLclampf b)
-            : texture(path)
+Shape::Shape(const char *path, const char *normal_path, float x, float y, float z, float deg, float sx, float sy, float sz, GLenum mode, GLclampf r, GLclampf g, GLclampf b)
+            : texture(path), normalMap(normal_path)
 {
+    cout << "hi" << endl;
 
     GLclampf colorfv[3];
     colorfv[RED] = r;
@@ -39,12 +40,12 @@ Shape::Shape(const char *path, float x, float y, float z, float deg, float sx, f
     this->_rotation->addSibling(this->_vertex);
     //this->_scale->addSibling(this->_vertex);
 
-    this->_vertex->setTid(texture.getTid());
+    this->_vertex->setTid(texture.getTid(), normalMap.getTid());
 
 }
 
-Shape::Shape(const char *path, float x, float y, float z, float deg, float sx, float sy, float sz, GLenum mode, GLclampf colorfv[])
-            : texture(path)
+Shape::Shape(const char *path, const char *normal_path,float x, float y, float z, float deg, float sx, float sy, float sz, GLenum mode, GLclampf colorfv[])
+            : texture(path), normalMap(normal_path)
 {
     this->_translation = new TranslateNode(x, y, 0);
     this->_rotation = new RotationNode(deg);
@@ -58,7 +59,7 @@ Shape::Shape(const char *path, float x, float y, float z, float deg, float sx, f
     this->_rotation->addSibling(this->_vertex);
     //this->_scale->addSibling(this->_vertex);
 
-    this->_vertex->setTid(texture.getTid());
+    this->_vertex->setTid(texture.getTid(), normalMap.getTid());
 }
 
 /**
@@ -212,8 +213,8 @@ void Shape::setNumVertex(unsigned long num)
 
 
 
-Object::Object(char *path, const char *map_path, float x, float y, float z, float deg, GLclampf r, GLclampf g, GLclampf b)
-        : Shape(map_path, x, y, z, deg, 1, 1, 1, GL_TRIANGLES, r, g, b), _model(path) {
+Object::Object(char *path, const char *map_path, const char *normal_path, float x, float y, float z, float deg, GLclampf r, GLclampf g, GLclampf b)
+        : Shape(map_path, normal_path, x, y, z, deg, 1, 1, 1, GL_TRIANGLES, r, g, b), _model(path) {
     vector<float> objVertexBuffer = _model.compat();
     setNumVertex(objVertexBuffer.size()/9);
     this->setVertexArray(objVertexBuffer);
@@ -231,8 +232,8 @@ glm::vec3 Object::min()
 
 
 
-Grid::Grid(const char *map_path, float width, float height, int row, int col, float x, float y, float z, float deg, GLclampf r, GLclampf g,
-           GLclampf b) : Shape(map_path, x, y, z, deg, 1, 1, 1, GL_LINES, r, g, b){
+Grid::Grid(const char *map_path, const char *normal_path, float width, float height, int row, int col, float x, float y, float z, float deg, GLclampf r, GLclampf g,
+           GLclampf b) : Shape(map_path, normal_path,  x, y, z, deg, 1, 1, 1, GL_LINES, r, g, b){
     float xAdj = - width * (float)col / 2.0f;
     float yAdj = - height * (float)row / 2.0f;
 
@@ -271,14 +272,14 @@ Grid::Grid(const char *map_path, float width, float height, int row, int col, fl
 
 
 
-Sphere::Sphere(const char *map_path, int lat, int lon, float radius, float x, float y, float z, float deg, GLclampf *colorfv)
-        : Shape(map_path, x, y, z, deg, radius, radius, radius, GL_TRIANGLE_STRIP, colorfv) {
+Sphere::Sphere(const char *map_path, const char *normal_path, int lat, int lon, float radius, float x, float y, float z, float deg, GLclampf *colorfv)
+        : Shape(map_path, normal_path, x, y, z, deg, radius, radius, radius, GL_TRIANGLE_STRIP, colorfv) {
 
     this->init(lat, lon, radius);
 }
 
-Sphere::Sphere(const char *map_path, int lat, int lon, float radius, float x, float y, float z, float deg, GLclampf r, GLclampf g, GLclampf b)
-        : Shape(map_path, x, y, z, deg, radius, radius, radius, GL_TRIANGLE_STRIP, r, g, b) {
+Sphere::Sphere(const char *map_path, const char *normal_path, int lat, int lon, float radius, float x, float y, float z, float deg, GLclampf r, GLclampf g, GLclampf b)
+        : Shape(map_path, normal_path, x, y, z, deg, radius, radius, radius, GL_TRIANGLE_STRIP, r, g, b) {
     this->init(lat, lon, radius);
 }
 

@@ -100,3 +100,5 @@ void Shader::uniform1f(const string &key, float x) const {
 void Shader::uniform1i(const string &key, int x) const {
     glUniform1i(glGetUniformLocation(_sid, key.c_str()), x);
 }
+
+

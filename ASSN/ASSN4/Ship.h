@@ -26,7 +26,10 @@ private:
     char _path[20] = "model/ship.obj";
     //const char *_map_path = "texture/ship.png";
     const char *_map_path = "texture/sun.jpeg";
+    const char *_normal_path = "texture/NormalMap.png";
     const char *_bullet_path = "texture/bullet.jpeg";
+    const char *_bullet_normal_path = "texture/NormalMap.png";
+
 protected:
     int _numLife;
     int _numBullet;

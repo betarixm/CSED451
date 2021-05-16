@@ -67,11 +67,15 @@
     </None>
   </ItemGroup>
   <ItemGroup>
+    <Image Include="texture\2k_earth_normal_map.jpeg" />
     <Image Include="texture\background.jpeg" />
     <Image Include="texture\bullet.jpeg" />
+    <Image Include="texture\bullet_normal.jpeg" />
     <Image Include="texture\earth.jpeg" />
     <Image Include="texture\earth_normal.png" />
+    <Image Include="texture\earth_normal2.jpeg" />
     <Image Include="texture\item.jpeg" />
+    <Image Include="texture\item_normal.jpeg" />
     <Image Include="texture\jupiter.jpeg" />
     <Image Include="texture\jupiter_normal.png" />
     <Image Include="texture\mars.jpeg" />
@@ -80,6 +84,7 @@
     <Image Include="texture\moon_normal.png" />
     <Image Include="texture\neptune.jpeg" />
     <Image Include="texture\neptune_normal.png" />
+    <Image Include="texture\NormalMap.png" />
     <Image Include="texture\ship.jpeg" />
     <Image Include="texture\sun.jpeg" />
     <Image Include="texture\sun_normal.png" />

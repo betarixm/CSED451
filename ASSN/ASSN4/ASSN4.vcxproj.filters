@@ -165,5 +165,20 @@
     <Image Include="texture\sun_normal.png">
       <Filter>Resource Files</Filter>
     </Image>
+    <Image Include="texture\bullet_normal.jpeg">
+      <Filter>Resource Files</Filter>
+    </Image>
+    <Image Include="texture\item_normal.jpeg">
+      <Filter>Resource Files</Filter>
+    </Image>
+    <Image Include="texture\2k_earth_normal_map.jpeg">
+      <Filter>Resource Files</Filter>
+    </Image>
+    <Image Include="texture\earth_normal2.jpeg">
+      <Filter>Resource Files</Filter>
+    </Image>
+    <Image Include="texture\NormalMap.png">
+      <Filter>Resource Files</Filter>
+    </Image>
   </ItemGroup>
 </Project>

@@ -113,6 +113,7 @@ protected:
     GLuint _VAO = 0;
     int _numVertex = 0;
     GLuint _tid = 0;
+    GLuint _normTid = 0;
 
 public:
     VertexNode() = default;
@@ -139,9 +140,10 @@ public:
         this->_VAO = _vao;
     };
 
-    void setTid(GLuint _tid)
+    void setTid(GLuint _tid, GLuint _tid2)
     {
         this->_tid = _tid;
+        this->_normTid = _tid2;
     }
 
     void setNumVertex(int num)
