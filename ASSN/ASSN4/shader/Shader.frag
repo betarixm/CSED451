@@ -4,9 +4,7 @@
 #define NUM_PNT_LIGHT 2
 
 struct Material {
-    vec3 ambient;
-    // sampler2D ambient;
-    vec3 diffuse;
+    sampler2D diffuse;
     // sampler2D diffuse;
     vec3 specular;
     float shininess;
@@ -70,11 +68,11 @@ vec3 renderDirectionalLight(DirLight light, vec3 normal, vec3 viewDir)
     float wDiffuse = max(dot(normal, dirLight), 0.0);
     float wSpecular = pow(max(dot(viewDir, dirReflect), 0.0), material.shininess);
 
-    // vec3 ambient = light.ambient * vec3(texture(material.diffuse, TexCoords));
-    vec3 lAmbient = light.ambient * material.ambient;
-    // vec3 diffuse = light.diffuse * vec3(texture(material.diffuse, TexCoords));
-    vec3 lDiffuse = light.diffuse * material.diffuse;
-    // vec3 specular = light.specular * vec3(texture(material.specular, TexCoords));
+     vec3 lAmbient = light.ambient * vec3(texture(material.diffuse, TexCoords));
+    //vec3 lAmbient = light.ambient * material.ambient;
+     vec3 lDiffuse = light.diffuse * vec3(texture(material.diffuse, TexCoords));
+    //vec3 lDiffuse = light.diffuse * material.diffuse;
+     //vec3 lSpecular = light.specular * vec3(texture(material.specular, TexCoords));
     vec3 lSpecular = light.specular * material.specular;
 
     mat3 l = mat3(lAmbient, lDiffuse, lSpecular);
@@ -94,8 +92,8 @@ vec3 renderPointLight(PntLight light, vec3 normal, vec3 fragPos, vec3 viewDir) {
     float distance = length(light.position - fragPos);
     float attenuation = 1.0 / dot(vec3(light.constant, light.linear, light.quadratic), vec3(1, distance, distance * distance));
 
-    vec3 lAmbient = light.ambient * material.ambient;
-    vec3 lDiffuse = light.diffuse * material.diffuse;
+    vec3 lAmbient = light.ambient * vec3(texture(material.diffuse, TexCoords));
+    vec3 lDiffuse = light.diffuse * vec3(texture(material.diffuse, TexCoords));
     vec3 lSpecular = light.specular * material.specular;
 
     mat3 l = mat3(lAmbient, lDiffuse, lSpecular);

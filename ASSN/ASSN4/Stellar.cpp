@@ -2,12 +2,12 @@
 
 vector<Stellar*> Stellar::stellarVec = {};
 
-Orb::Orb(float x, float y, float z, float length, GLclampf colorfv[]) {
-    this->_planet = new Sphere(20, 20, length, x, y, z, 0, colorfv);
+Orb::Orb(const char *map_path, float x, float y, float z, float length, GLclampf colorfv[]) {
+    this->_planet = new Sphere(map_path, 20, 20, length, x, y, z, 0, colorfv);
 }
 
-Orb::Orb(float x, float y, float z, float length, GLclampf colorfv[], Orb *satellite, float distance) {
-    this->_planet = new Sphere(20, 20, length, x, y, z, 0, colorfv);
+Orb::Orb(const char *map_path, float x, float y, float z, float length, GLclampf colorfv[], Orb *satellite, float distance) {
+    this->_planet = new Sphere(map_path, 20, 20, length, x, y, z, 0, colorfv);
     this->addSatellite(satellite, distance);
 }
 
@@ -28,13 +28,13 @@ Sphere *Orb::planet() const {
     return this->_planet;
 }
 
-Stellar::Stellar(float x, float y, float z, array<float, 3> &length, array<float, 2> &distance, vector<GLclampf *> colorfv)
+Stellar::Stellar(const char *map_path[], float x, float y, float z, array<float, 3> &length, array<float, 2> &distance, vector<GLclampf *> colorfv)
     : _x(x), _y(y), _z(z), _distance(distance), _light(glm::vec3(x + distance[0] + distance[1], y, z + 0.3f), 1.0f, 0.09f, 0.2f, glm::vec3(0.01f, 0.01f, 0.01f), glm::vec3(0.7f, 0.7f, 0.7f), glm::vec3(0.8f, 0.8f, 0.8f)) {
     this->_baseScene = new GroupNode;
     this->_baseTranslate = new TranslateNode;
 
     for(int i = 0; i < 3; i++){
-        this->orbs[i] = new Orb(0, 0, 0, length[i], colorfv[i]);
+        this->orbs[i] = new Orb(map_path[i], 0, 0, 0, length[i], colorfv[i]);
     }
 
     for(int i = 1; i < 3; i++) {
@@ -113,8 +113,9 @@ void initStellar() {
             {&yellow[0], &orange[0], &purple[0]}
     };
 
+    const char * map_path[2][3] = {{"texture/sun.jpeg", "texture/earth.jpeg", "texture/moon.jpeg"}, {"texture/jupiter.jpeg", "texture/mars.jpeg", "texture/neptune.jpeg"}};
 
     for(i = 0; i < 2; i++){
-        Stellar::stellarVec.push_back(new Stellar(-0.61f + (float)i, -0.5f + (float)i, 0.25f * (float)i, length[i], distance[i], color[i]));
+        Stellar::stellarVec.push_back(new Stellar(map_path[i], -0.61f + (float)i, -0.5f + (float)i, 0.25f * (float)i, length[i], distance[i], color[i]));
     }
 }
