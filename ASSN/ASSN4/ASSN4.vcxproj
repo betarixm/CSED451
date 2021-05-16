@@ -29,7 +29,9 @@
     <ClInclude Include="Shader.h" />
     <ClInclude Include="Shape.h" />
     <ClInclude Include="Ship.h" />
+    <ClInclude Include="stb_image.h" />
     <ClInclude Include="Stellar.h" />
+    <ClInclude Include="Texture.h" />
     <ClInclude Include="timer.h" />
   </ItemGroup>
   <ItemGroup>
@@ -44,7 +46,9 @@
     <ClCompile Include="Shader.cpp" />
     <ClCompile Include="Shape.cpp" />
     <ClCompile Include="Ship.cpp" />
+    <ClCompile Include="stb_image.cpp" />
     <ClCompile Include="Stellar.cpp" />
+    <ClCompile Include="Texture.cpp" />
     <ClCompile Include="timer.cpp" />
   </ItemGroup>
   <ItemGroup>
@@ -61,6 +65,24 @@
       <ExcludedFromBuild Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">true</ExcludedFromBuild>
       <ExcludedFromBuild Condition="'$(Configuration)|$(Platform)'=='Release|x64'">true</ExcludedFromBuild>
     </None>
+  </ItemGroup>
+  <ItemGroup>
+    <Image Include="texture\background.jpeg" />
+    <Image Include="texture\bullet.jpeg" />
+    <Image Include="texture\earth.jpeg" />
+    <Image Include="texture\earth_normal.png" />
+    <Image Include="texture\item.jpeg" />
+    <Image Include="texture\jupiter.jpeg" />
+    <Image Include="texture\jupiter_normal.png" />
+    <Image Include="texture\mars.jpeg" />
+    <Image Include="texture\mars_normal.png" />
+    <Image Include="texture\moon.jpeg" />
+    <Image Include="texture\moon_normal.png" />
+    <Image Include="texture\neptune.jpeg" />
+    <Image Include="texture\neptune_normal.png" />
+    <Image Include="texture\ship.jpeg" />
+    <Image Include="texture\sun.jpeg" />
+    <Image Include="texture\sun_normal.png" />
   </ItemGroup>
   <PropertyGroup Label="Globals">
     <VCProjectVersion>16.0</VCProjectVersion>

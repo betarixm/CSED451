@@ -159,8 +159,8 @@ void VertexNode::_display(bool isBlack) {
 
     shader->uniform4m("ModelView", modelView);
     shader->uniform4m("Projection", projection);
-    shader->uniform3v("material.ambient",  _colorfv[0], _colorfv[1], _colorfv[2]);
-    shader->uniform3v("material.diffuse",  _colorfv[0], _colorfv[1], _colorfv[2]);
+    //shader->uniform3v("material.ambient",  _colorfv[0], _colorfv[1], _colorfv[2]);
+    //shader->uniform3v("material.diffuse",  _colorfv[0], _colorfv[1], _colorfv[2]);
     shader->uniform3v("material.specular", 0.5f, 0.5f, 0.5f);
     shader->uniform1f("material.shininess", 32.0f);
 
@@ -177,6 +177,12 @@ void VertexNode::_display(bool isBlack) {
     } else {
         shader->uniform4v("color", _colorfv[0], _colorfv[1], _colorfv[2], 1.0f);
     }
+
+    // texture diffuse mapping
+    shader->uniform1i("material.diffuse", 0);
+
+    glActiveTexture(GL_TEXTURE0);
+    glBindTexture(GL_TEXTURE_2D, _tid);
     
     glBindBuffer(GL_ARRAY_BUFFER, 0);
     glBindBuffer(GL_ELEMENT_ARRAY_BUFFER, 0);

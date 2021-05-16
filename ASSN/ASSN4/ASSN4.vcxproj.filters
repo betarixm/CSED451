@@ -51,6 +51,12 @@
     <ClInclude Include="timer.h">
       <Filter>Header Files</Filter>
     </ClInclude>
+    <ClInclude Include="Texture.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="stb_image.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="Game.cpp">
@@ -92,6 +98,12 @@
     <ClCompile Include="timer.cpp">
       <Filter>Source Files</Filter>
     </ClCompile>
+    <ClCompile Include="Texture.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="stb_image.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
   </ItemGroup>
   <ItemGroup>
     <None Include="model\ship.obj">
@@ -103,5 +115,55 @@
     <None Include="shader\Shader.vert">
       <Filter>Resource Files</Filter>
     </None>
+  </ItemGroup>
+  <ItemGroup>
+    <Image Include="texture\background.jpeg">
+      <Filter>Resource Files</Filter>
+    </Image>
+    <Image Include="texture\bullet.jpeg">
+      <Filter>Resource Files</Filter>
+    </Image>
+    <Image Include="texture\earth.jpeg">
+      <Filter>Resource Files</Filter>
+    </Image>
+    <Image Include="texture\earth_normal.png">
+      <Filter>Resource Files</Filter>
+    </Image>
+    <Image Include="texture\item.jpeg">
+      <Filter>Resource Files</Filter>
+    </Image>
+    <Image Include="texture\jupiter.jpeg">
+      <Filter>Resource Files</Filter>
+    </Image>
+    <Image Include="texture\jupiter_normal.png">
+      <Filter>Resource Files</Filter>
+    </Image>
+    <Image Include="texture\mars.jpeg">
+      <Filter>Resource Files</Filter>
+    </Image>
+    <Image Include="texture\mars_normal.png">
+      <Filter>Resource Files</Filter>
+    </Image>
+    <Image Include="texture\moon.jpeg">
+      <Filter>Resource Files</Filter>
+    </Image>
+    <Image Include="texture\moon_normal.png">
+      <Filter>Resource Files</Filter>
+    </Image>
+    <Image Include="texture\neptune.jpeg">
+      <Filter>Resource Files</Filter>
+    </Image>
+    <Image Include="texture\neptune_normal.png">
+      <Filter>Resource Files</Filter>
+    </Image>
+    <Image Include="texture\ship.jpeg">
+      <Filter>Resource Files</Filter>
+    </Image>
+    <Image Include="texture\sun.jpeg">
+      <Filter>Resource Files</Filter>
+    </Image>
+    <Image Include="texture\sun_normal.png">
+      <Filter>Resource Files</Filter>
+    </Image>
   </ItemGroup>
 </Project>

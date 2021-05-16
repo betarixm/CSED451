@@ -24,6 +24,8 @@ typedef Sphere Item;
 class Ship {
 private:
     char _path[20] = "model/ship.obj";
+    const char *_map_path = "texture/ship.jpeg";
+    const char *_bullet_path = "texture/bullet.jpeg";
 protected:
     int _numLife;
     int _numBullet;

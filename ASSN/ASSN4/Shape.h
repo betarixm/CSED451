@@ -20,6 +20,7 @@ private:
     std::vector<float> _direction = {0, 0, 0};
     GLuint buffer = 0;
     GLuint VAO = 0;
+    Texture texture;
 
     void setVBO(vector<float>& VBO);
 
@@ -35,9 +36,9 @@ protected:
 public:
     Shape() = default;
 
-    Shape(float x, float y, float z, float deg, float sx, float sy, float sz,  GLenum mode, GLclampf r, GLclampf g, GLclampf b);
+    Shape(const char *path, float x, float y, float z, float deg, float sx, float sy, float sz,  GLenum mode, GLclampf r, GLclampf g, GLclampf b);
 
-    Shape(float x, float y, float z, float deg, float sx, float sy, float sz, GLenum mode, GLclampf colorfv[]);
+    Shape(const char *path, float x, float y, float z, float deg, float sx, float sy, float sz, GLenum mode, GLclampf colorfv[]);
 
 
     void move(float dx, float dy);
@@ -89,7 +90,7 @@ private:
     Model _model;
 
 public:
-    Object(char* path, float x, float y, float z, float deg, GLclampf r, GLclampf g, GLclampf b);
+    Object(char* path, const char *map_path, float x, float y, float z, float deg, GLclampf r, GLclampf g, GLclampf b);
 
     glm::vec3 max();
     glm::vec3 min();
@@ -101,7 +102,7 @@ private:
     //std::vector<std::vector<float>> vertices;
 
 public:
-    Grid(float width, float height, int row, int col, float x, float y, float z, float deg, GLclampf r, GLclampf g, GLclampf b);
+    Grid(const char *map_path, float width, float height, int row, int col, float x, float y, float z, float deg, GLclampf r, GLclampf g, GLclampf b);
 };
 
 
@@ -110,9 +111,9 @@ private:
     //std::vector<std::vector<float>> vertices;
 
 public:
-    Sphere(int lat, int lon, float radius, float x, float y, float z, float deg, GLclampf colorfv[]);
+    Sphere(const char *map_path, int lat, int lon, float radius, float x, float y, float z, float deg, GLclampf colorfv[]);
 
-    Sphere(int lat, int lon, float radius, float x, float y, float z, float deg, GLclampf r, GLclampf g, GLclampf b);
+    Sphere(const char *map_path, int lat, int lon, float radius, float x, float y, float z, float deg, GLclampf r, GLclampf g, GLclampf b);
 
     void init(int lat, int lon, float radius);
 };

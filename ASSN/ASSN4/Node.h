@@ -15,6 +15,7 @@
 #include <glm/ext/matrix_clip_space.hpp>
 
 #include "Shader.h"
+#include "Texture.h"
 
 #define NUM_COLOR 3
 
@@ -111,6 +112,7 @@ protected:
     float modelview[16]{}; /* 4x4 model view matrix */
     GLuint _VAO = 0;
     int _numVertex = 0;
+    GLuint _tid = 0;
 
 public:
     VertexNode() = default;
@@ -136,6 +138,11 @@ public:
     {
         this->_VAO = _vao;
     };
+
+    void setTid(GLuint _tid)
+    {
+        this->_tid = _tid;
+    }
 
     void setNumVertex(int num)
     {
