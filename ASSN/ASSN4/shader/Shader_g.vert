@@ -5,7 +5,7 @@
 
 struct Material {
     sampler2D diffuse;
-    // sampler2D diffuse;
+// sampler2D diffuse;
     vec3 specular;
     float shininess;
 };
@@ -27,14 +27,21 @@ struct PntLight {
     vec3 specular;
 };
 
-in vec4 vertexColor;
-in vec4 FragPos;
-in vec3 Normal;
-in vec2 TexCoords;
+layout (location = 0) in vec3 vPosition;
+layout (location = 1) in vec3 vNormal;
+layout (location = 2) in vec3 vTex;
 
-out vec4 FragColor;
+//out vec4 vertexColor;
+//out vec4 FragPos;
+//out vec3 Normal;
+//out vec2 TexCoords;
+out vec4 Color; // linked to Fragment Shader
 
+uniform mat4 ModelView;
+uniform mat4 Projection;
+uniform vec4 color;
 uniform mat4 View;
+
 uniform vec3 viewPos;
 uniform DirLight directionalLight[NUM_DIR_LIGHT];
 uniform PntLight pointLight[NUM_PNT_LIGHT];
@@ -44,39 +51,38 @@ uniform Material material;
 uniform sampler2D normalTexture;
 uniform bool isNormap;
 
-vec3 renderDirectionalLight(DirLight light, vec3 normal, vec3 viewDir);
-vec3 renderPointLight(PntLight light, vec3 normal, vec3 fragPos, vec3 viewDir);
 
-void main() {
-    vec3 norm;
+vec3 renderDirectionalLight(DirLight light, vec3 normal, vec3 viewDir, vec2 TexCoords);
+vec3 renderPointLight(PntLight light, vec3 normal, vec3 fragPos, vec3 viewDir, vec2 TexCoords);
+
+void main(){
+
+    vec3 norm = normalize(mat3(transpose(inverse(ModelView))) * vNormal);
+    vec4 FragPos = ModelView * vec4(vPosition, 1.0);
     vec3 FragPos3v = vec3(FragPos) / FragPos[3];
+    vec2 TexCoords = vec2(vTex[0], vTex[1]);
+
+    gl_Position = Projection * View * FragPos;
+
+
     vec3 viewDir = normalize(viewPos - FragPos3v);
     vec3 result = vec3(0, 0, 0);
 
 
-    if (isNormap)
-    {
-        norm = texture(normalTexture, TexCoords).rgb; // transform normal vector to range [-1,1]
-        norm = normalize(norm * 2.0 - 1.0);
-    }
-    else
-    {
-        norm = normalize(Normal);
-    }
-
-
     for(int i = 0; i < NUM_DIR_LIGHT; i++) {
-        result += renderDirectionalLight(directionalLight[i], norm, viewDir);
+        result += renderDirectionalLight(directionalLight[i], norm, viewDir, TexCoords);
     }
 
     for(int i = 0; i < NUM_PNT_LIGHT; i++) {
-        result += renderPointLight(pointLight[i], norm, FragPos3v, viewDir);
+        result += renderPointLight(pointLight[i], norm, FragPos3v, viewDir, TexCoords);
     }
 
-    FragColor = vec4(result, 1.0f);
+    Color = vec4(result, 1.0f);
 }
 
-vec3 renderDirectionalLight(DirLight light, vec3 normal, vec3 viewDir)
+
+
+vec3 renderDirectionalLight(DirLight light, vec3 normal, vec3 viewDir, vec2 TexCoords)
 {
     vec3 dirLight = normalize(-light.direction);
     vec3 dirReflect = reflect(-dirLight, normal);
@@ -84,11 +90,11 @@ vec3 renderDirectionalLight(DirLight light, vec3 normal, vec3 viewDir)
     float wDiffuse = max(dot(normal, dirLight), 0.0);
     float wSpecular = pow(max(dot(viewDir, dirReflect), 0.0), material.shininess);
 
-     vec3 lAmbient = light.ambient * vec3(texture(material.diffuse, TexCoords));
+    vec3 lAmbient = light.ambient * vec3(texture(material.diffuse, TexCoords));
     //vec3 lAmbient = light.ambient * material.ambient;
-     vec3 lDiffuse = light.diffuse * vec3(texture(material.diffuse, TexCoords));
+    vec3 lDiffuse = light.diffuse * vec3(texture(material.diffuse, TexCoords));
     //vec3 lDiffuse = light.diffuse * material.diffuse;
-     //vec3 lSpecular = light.specular * vec3(texture(material.specular, TexCoords));
+    //vec3 lSpecular = light.specular * vec3(texture(material.specular, TexCoords));
     vec3 lSpecular = light.specular * material.specular;
 
     mat3 l = mat3(lAmbient, lDiffuse, lSpecular);
@@ -97,7 +103,7 @@ vec3 renderDirectionalLight(DirLight light, vec3 normal, vec3 viewDir)
     return l * weights;
 }
 
-vec3 renderPointLight(PntLight light, vec3 normal, vec3 fragPos, vec3 viewDir) {
+vec3 renderPointLight(PntLight light, vec3 normal, vec3 fragPos, vec3 viewDir, vec2 TexCoords) {
     vec3 dirLight = normalize(light.position - fragPos);
 
     float wDiffuse = max(dot(normal, dirLight), 0.0);

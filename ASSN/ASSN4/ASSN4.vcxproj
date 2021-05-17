@@ -65,6 +65,8 @@
       <ExcludedFromBuild Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">true</ExcludedFromBuild>
       <ExcludedFromBuild Condition="'$(Configuration)|$(Platform)'=='Release|x64'">true</ExcludedFromBuild>
     </None>
+    <None Include="shader\Shader_g.frag" />
+    <None Include="shader\Shader_g.vert" />
   </ItemGroup>
   <ItemGroup>
     <Image Include="texture\2k_earth_normal_map.jpeg" />
@@ -86,6 +88,7 @@
     <Image Include="texture\neptune_normal.png" />
     <Image Include="texture\NormalMap.png" />
     <Image Include="texture\ship.jpeg" />
+    <Image Include="texture\ship_normal.png" />
     <Image Include="texture\sun.jpeg" />
     <Image Include="texture\sun_normal.png" />
   </ItemGroup>

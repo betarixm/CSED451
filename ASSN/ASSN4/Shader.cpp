@@ -1,11 +1,18 @@
 #include "Shader.h"
 
 #include <glm/gtc/type_ptr.hpp>
+#define NUM_SHADER 2
 
 Shader *shader;
+Shader *shaders[NUM_SHADER];
+bool shader_index = 0;
 
 void initShader() {
-    shader = new Shader((char *)"shader/Shader.vert", (char *)"shader/Shader.frag");
+    shaders[0] = new Shader((char *)"shader/Shader.vert", (char *)"shader/Shader.frag");
+    shaders[1] = new Shader((char *)"shader/Shader_g.vert", (char *)"shader/Shader_g.frag");
+
+    shader = shaders[0];
+    //default = Phong shading
 }
 
 Shader::Shader(char *vShaderPath, char *fShaderPath) {

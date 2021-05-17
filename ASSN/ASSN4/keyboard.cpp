@@ -1,11 +1,16 @@
 #include "keyboard.h"
 #include "Ship.h"
 
+#define NUM_SHADER 2
+
 extern Game *game;
 extern char mode;
 extern bool isHiddenLineRemoval;
 extern int frontCamera;
 extern bool isNormalMapping;
+extern Shader *shader;
+extern Shader *shaders[2];
+extern bool shader_index;
 
 void onSpecialKeyDown(int key, int x, int y) {
     if (!game->player()) {
@@ -84,7 +89,12 @@ void onKeyDown(unsigned char key, int x, int y) {
             frontCamera = -1 * frontCamera;
             glMatrixMode(GL_MODELVIEW);
             glLoadIdentity();
+            break;
 
+        case 's':
+            shader_index = (shader_index + 1)%NUM_SHADER;
+            shader = shaders[shader_index];
+            break;
 
         case 'n' :
             isNormalMapping = !isNormalMapping;

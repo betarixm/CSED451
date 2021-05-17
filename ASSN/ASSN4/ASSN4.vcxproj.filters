@@ -115,6 +115,12 @@
     <None Include="shader\Shader.vert">
       <Filter>Resource Files</Filter>
     </None>
+    <None Include="shader\Shader_g.frag">
+      <Filter>Resource Files</Filter>
+    </None>
+    <None Include="shader\Shader_g.vert">
+      <Filter>Resource Files</Filter>
+    </None>
   </ItemGroup>
   <ItemGroup>
     <Image Include="texture\background.jpeg">
@@ -178,6 +184,9 @@
       <Filter>Resource Files</Filter>
     </Image>
     <Image Include="texture\NormalMap.png">
+      <Filter>Resource Files</Filter>
+    </Image>
+    <Image Include="texture\ship_normal.png">
       <Filter>Resource Files</Filter>
     </Image>
   </ItemGroup>
