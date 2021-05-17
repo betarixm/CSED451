@@ -110,6 +110,16 @@ float RotationNode::set(float degree) {
     return prevDegree;
 }
 
+float RotationNode::set(float degree, float _x, float _y, float _z)
+{
+    float prevDegree = this->_degree;
+    this->_degree = degree;
+    this->_x = _x;
+    this->_y = _y;
+    this->_z = _z;
+    return prevDegree;
+}
+
 float RotationNode::rotate(float delta) {
     float prevDegree = this->_degree;
     this->_degree += delta;

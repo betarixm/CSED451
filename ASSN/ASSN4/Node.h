@@ -82,7 +82,10 @@ public:
 
     float set(float degree);
 
+    float set(float degree, float _x, float _y, float _z);
+
     float rotate(float delta);
+
 };
 
 class TranslateNode: public Node {

@@ -6,12 +6,14 @@ using namespace std;
 
 Grid* grid;
 Grid* boundary;
+Grid* background;
 
 
 void initGrid() {
     boundary = new Grid("texture/background.jpeg", "texture/background.jpeg", 0.1f, 0.1f, 20, 24, 0, 0, -0.295f, 0, 0.0f, 0.5f, 1.0f);
     grid = new Grid("texture/background.jpeg","texture/background.jpeg", 0.1f, 0.1f, 30, 40, 0, 0, -0.3f, 0, 1.0f, 1.0f, 1.0f);
-
+    background = new Grid("texture/background.jpeg", "texture/background.jpeg", 0.1f, 0.1f, 30, 40, 0, 3.0f, 1.5f, 0, 0.0f, 1.0f, 0.0f);
+    background->setDegree(90, 1, 0, 0);
 }
 /// @class Shape
 // static variable vertices initialization
@@ -95,6 +97,10 @@ void Shape::rotate(float ddeg) {
  */
 void Shape::setDegree(float deg) {
     this->_rotation->set(deg);
+}
+
+void Shape::setDegree(float deg, float x, float y, float z){
+    this->_rotation->set(deg, x, y, z);
 }
 
 /**
@@ -233,7 +239,7 @@ glm::vec3 Object::min()
 
 
 Grid::Grid(const char *map_path, const char *normal_path, float width, float height, int row, int col, float x, float y, float z, float deg, GLclampf r, GLclampf g,
-           GLclampf b) : Shape(map_path, normal_path,  x, y, z, deg, 1, 1, 1, GL_LINES, r, g, b){
+           GLclampf b) : Shape(map_path, normal_path,  x, y, z, deg, 1, 1, 1, GL_TRIANGLE_STRIP, r, g, b){
     float xAdj = - width * (float)col / 2.0f;
     float yAdj = - height * (float)row / 2.0f;
 

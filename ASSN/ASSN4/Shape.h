@@ -48,6 +48,8 @@ public:
 
     void setDegree(float deg);
 
+    void setDegree(float deg, float x, float y, float z);
+
     void mutateColor(GLclampf dr, GLclampf dg, GLclampf db) {
         this->_vertex->mutateColor(dr, dg, db);
     }

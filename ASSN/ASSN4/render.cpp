@@ -10,6 +10,7 @@ extern list<Bullet*> player_bullets;
 extern list<Item*> item_list;
 extern Grid* grid;
 extern Grid* boundary;
+extern Grid* background;
 extern deque<glm::mat4> ModelView;
 extern deque<glm::mat4> Projection;
 extern Shader* shader;
@@ -43,7 +44,7 @@ void microRenderScene(bool isBlack) {
         game->display(isBlack);
 
         grid->display(isBlack);
-
+        background->display(isBlack);
         //boundary->display(isBlack);
 
         for(auto & i : Stellar::stellarVec) {
