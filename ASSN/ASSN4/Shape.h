@@ -19,11 +19,13 @@ class Shape {
 private:
     std::vector<float> _direction = {0, 0, 0};
     GLuint buffer = 0;
+    GLuint tangent_buffer = 0;
+    GLuint Buffer[2];
     GLuint VAO = 0;
     Texture texture;
     Texture normalMap;
 
-    void setVBO(vector<float>& VBO);
+    void setVBO(vector<float>& VBO, vector<float>& VBO2);
 
 protected:
     TranslateNode * _translation{};
@@ -79,11 +81,15 @@ public:
     std::vector<float> direction();
 
     void setVertexArray(std::vector<std::vector<float>> &vertex, std::vector<std::vector<float>> &normal,
-                        std::vector<std::vector<float>> &uv);
+                        std::vector<std::vector<float>> &uv, vector<float>& tangent);
 
-    void setVertexArray(vector<float>& VBO);
+    void setVertexArray(vector<float>& VBO, vector<float>& VBO2);
 
     void setNumVertex(unsigned long num);
+
+    std::vector<float> calcTangent(vector<vector<float>>& UV, vector<vector<float>>& vertex);
+
+
 
 };
 

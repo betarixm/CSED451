@@ -74,3 +74,27 @@ glm::vec3 Model::max() const {
 glm::vec3 Model::min() const {
     return _min;
 }
+
+vector<vector<float>> Model::getVertex()
+{
+    vector<vector<float>> result;
+
+    for(int i = 0; i < _vertex.size(); i++)
+    {
+        result.push_back({_vertex[i].x, _vertex[i].y, _vertex[i].z});
+    }
+
+    return result;
+}
+
+vector<vector<float>> Model::getUV()
+{
+    vector<vector<float>> result;
+
+    for(int i = 0; i < _uv.size(); i++)
+    {
+        result.push_back({_uv[i].x, _uv[i].y, 0.0});
+    }
+
+    return result;
+}

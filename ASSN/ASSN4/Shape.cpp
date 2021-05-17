@@ -22,7 +22,6 @@ void initGrid() {
 Shape::Shape(const char *path, const char *normal_path, float x, float y, float z, float deg, float sx, float sy, float sz, GLenum mode, GLclampf r, GLclampf g, GLclampf b)
             : texture(path), normalMap(normal_path)
 {
-    cout << "hi" << endl;
 
     GLclampf colorfv[3];
     colorfv[RED] = r;
@@ -222,8 +221,13 @@ void Shape::setNumVertex(unsigned long num)
 Object::Object(char *path, const char *map_path, const char *normal_path, float x, float y, float z, float deg, GLclampf r, GLclampf g, GLclampf b)
         : Shape(map_path, normal_path, x, y, z, deg, 1, 1, 1, GL_TRIANGLES, r, g, b), _model(path) {
     vector<float> objVertexBuffer = _model.compat();
-    setNumVertex(objVertexBuffer.size()/9);
-    this->setVertexArray(objVertexBuffer);
+    //setNumVertex(objVertexBuffer.size()/9);
+
+    vector<vector<float>>UV = _model.getUV();
+    vector<vector<float>>vertex = _model.getVertex();
+    vector<float> tangent = this->calcTangent(UV, vertex);
+
+    this->setVertexArray(objVertexBuffer, tangent);
 }
 
 
@@ -244,6 +248,8 @@ Grid::Grid(const char *map_path, const char *normal_path, float width, float hei
     float yAdj = - height * (float)row / 2.0f;
 
     vector<float> vertexBuffer{};
+    vector<vector<float>> vertex;
+    vector<vector<float>> uv;
 
     for(int i = 0; i <= row; i++) {
         vertexBuffer.insert(vertexBuffer.end(), {
@@ -251,12 +257,17 @@ Grid::Grid(const char *map_path, const char *normal_path, float width, float hei
             0, 0, 1,
             0, (float)i / (float)row, 0
         });
+        vertex.push_back({0 + xAdj, height * (float)i + yAdj, z});
+        uv.push_back({0, (float)i / (float)row, 0});
 
         vertexBuffer.insert(vertexBuffer.end(), {
             width * (float)col + xAdj, height * (float)i + yAdj, z,
             0, 0, 1,
             1, (float)i / (float)row, 0
         });
+        vertex.push_back({width * (float)col + xAdj, height * (float)i + yAdj, z});
+        uv.push_back({1, (float)i / (float)row, 0});
+
     }
 
     for(int i = 0; i <= col; i++) {
@@ -265,15 +276,21 @@ Grid::Grid(const char *map_path, const char *normal_path, float width, float hei
             0, 0, 1,
             (float) i / (float) col, 0, 0
         });
+        vertex.push_back({width * (float)i + xAdj, 0 + yAdj, z});
+        uv.push_back({(float) i / (float) col, 0, 0});
+
         vertexBuffer.insert(vertexBuffer.end(), {
             width * (float)i + xAdj, height * (float)row + yAdj, z,
             0, 0, 1,
             (float) i / (float) col, 1, 0
         });
+        vertex.push_back({{width * (float)i + xAdj, height * (float)row + yAdj, z}});
+        uv.push_back({(float) i / (float) col, 1, 0});
     }
 
-    setNumVertex(vertexBuffer.size() / 9);
-    this->setVertexArray(vertexBuffer);
+    //setNumVertex(vertexBuffer.size() / 9);
+    vector<float> tangent = this->calcTangent(uv, vertex);
+    this->setVertexArray(vertexBuffer, tangent);
 }
 
 
@@ -295,6 +312,9 @@ void Sphere::init(int lat, int lon, float radius){
     vector<vector<vector<float>>> vertexImm{};
     vector<vector<vector<float>>> normalImm{};
     vector<vector<vector<float>>> uvImm{};
+
+    vector<vector<float>>vertex{};
+    vector<vector<float>>uv{};
 
     for (int a = 0; a < lat + 1; a++) {
         vector<vector<float>> vertexLatVec{};
@@ -320,6 +340,9 @@ void Sphere::init(int lat, int lon, float radius){
         vertexImm.push_back(vertexLatVec);
         normalImm.push_back(normalLatVec);
         uvImm.push_back(uvLatVec);
+
+        //vertex.insert(vertex.end(), vertexLatVec.begin(), vertexLatVec.end());
+        //uv.insert(uv.end(), uvLatVec.begin(), uvLatVec.end());
     }
 
     for (int a = 0; a < lat; a++) {
@@ -333,6 +356,11 @@ void Sphere::init(int lat, int lon, float radius){
                 normalImm[a+1][o][0], normalImm[a+1][o][1], normalImm[a+1][o][2],
                 uvImm[a+1][o][0], uvImm[a+1][o][1], uvImm[a+1][o][2]
             });
+
+            vertex.push_back({vertexImm[a][o][0], vertexImm[a][o][1], vertexImm[a][o][2]});
+            vertex.push_back({vertexImm[a+1][o][0], vertexImm[a+1][o][1], vertexImm[a+1][o][2]});
+            uv.push_back({uvImm[a][o][0], uvImm[a][o][1], uvImm[a][o][2]});
+            uv.push_back({uvImm[a+1][o][0], uvImm[a+1][o][1], uvImm[a+1][o][2]});
         }
 
         vertexBuffer.insert(vertexBuffer.end(), {
@@ -340,6 +368,9 @@ void Sphere::init(int lat, int lon, float radius){
                 normalImm[a][0][0], normalImm[a][0][1], normalImm[a][0][2],
                 uvImm[a][0][0], uvImm[a][0][1], uvImm[a][0][2],
         });
+
+        vertex.push_back({vertexImm[a][0][0], vertexImm[a][0][1], vertexImm[a][0][2]});
+        uv.push_back({uvImm[a][0][0], uvImm[a][0][1], uvImm[a][0][2]});
     }
 
     vertexBuffer.insert(vertexBuffer.end(), {
@@ -347,28 +378,36 @@ void Sphere::init(int lat, int lon, float radius){
             normalImm[lat][0][0], normalImm[lat][0][1], normalImm[lat][0][2],
             uvImm[lat][0][0], uvImm[lat][0][1], uvImm[lat][0][2],
     });
+    vertex.push_back({vertexImm[lat][0][0], vertexImm[lat][0][1], vertexImm[lat][0][2]});
+    uv.push_back({uvImm[lat][0][0], uvImm[lat][0][1], uvImm[lat][0][2]});
 
-    setNumVertex(vertexBuffer.size() / 9);
-    setVertexArray(vertexBuffer);
+    //setNumVertex(vertexBuffer.size() / 9);
+    vector<float>tangent = this->calcTangent(uv, vertex);
+    setVertexArray(vertexBuffer, tangent);
 }
 
 
 void Shape::setVertexArray(std::vector<std::vector<float>> &vertex, std::vector<std::vector<float>> &normal,
-                           std::vector<std::vector<float>> &uv)
+                           std::vector<std::vector<float>> &uv, vector<float>& tangent)
 {
     vector<float> vertexBuffer = vectorCompat(vertex, normal, uv);
-    setVBO(vertexBuffer);
+    setVBO(vertexBuffer, tangent);
 }
 
-void Shape::setVBO(vector<float> &VBO) {
+void Shape::setVBO(vector<float> &VBO, vector<float> &VBO2) {
     //Bind VAO
     glGenVertexArrays(1, &VAO);
     glBindVertexArray(VAO);
 
-    // setting VBO
-    glGenBuffers(1, &buffer);
-    glBindBuffer(GL_ARRAY_BUFFER, buffer);
+
+    glGenBuffers(2, Buffer);
+    glBindBuffer(GL_ARRAY_BUFFER, Buffer[0]);
     glBufferData(GL_ARRAY_BUFFER, (GLsizeiptr)sizeof(float) * (GLsizeiptr)VBO.size(), &VBO[0], GL_STATIC_DRAW);
+
+    glBindBuffer(GL_ARRAY_BUFFER, Buffer[1]);
+    glBufferData(GL_ARRAY_BUFFER, (GLsizeiptr)sizeof(float) * (GLsizeiptr)VBO2.size(), &VBO2[0], GL_STATIC_DRAW);
+
+    glBindBuffer(GL_ARRAY_BUFFER, Buffer[0]);
 
     glVertexAttribPointer(0, 3, GL_FLOAT, GL_FALSE, 9 * sizeof(float), (void*)(0 * sizeof(float)));
     glEnableVertexAttribArray(0);
@@ -379,10 +418,52 @@ void Shape::setVBO(vector<float> &VBO) {
     glVertexAttribPointer(2, 3, GL_FLOAT, GL_FALSE, 9 * sizeof(float), (void*)(6 * sizeof(float)));
     glEnableVertexAttribArray(2);
 
+
+    // for Tangent vector
+    glBindBuffer(GL_ARRAY_BUFFER, Buffer[1]);
+    glVertexAttribPointer(3, 3, GL_FLOAT, GL_FALSE, 3 * sizeof(float), (void*)0);
+    glEnableVertexAttribArray(3);
+
     this->_vertex->setVAO(VAO);
+    //this->setNumVertex(VBO.size() / 9 + VBO2.size()/3);
+    setNumVertex(VBO.size()/9);
 }
 
-void Shape::setVertexArray(vector<float> &VBO) {
-    setVBO(VBO);
+void Shape::setVertexArray(vector<float> &VBO, vector<float> &VBO2) {
+    setVBO(VBO, VBO2);
 }
 
+std::vector<float> Shape::calcTangent(vector<vector<float>>& UV, vector<vector<float>>& vertex)
+{
+    std::vector<float> result{} ;
+    glm::vec3 tangent = glm::vec3(1.0, 1.0, 1.0);
+
+    for(int i = 0; i + 2 < UV.size(); i ++)
+    {
+        glm::vec3 v0 = glm::vec3(vertex[i][0], vertex[i][1], vertex[i][2]);
+        glm::vec3 v1 = glm::vec3(vertex[i+1][0], vertex[i+1][1], vertex[i+1][2]);
+        glm::vec3 v2 = glm::vec3(vertex[i+2][0], vertex[i+2][1], vertex[i+2][2]);
+
+        glm::vec2 uv0 = glm::vec2(UV[i][0], UV[i][1]);
+        glm::vec2 uv1 = glm::vec2(UV[i+1][0], UV[i+1][1]);
+        glm::vec2 uv2 = glm::vec2(UV[i+2][0], UV[i+2][1]);
+
+        glm::vec3 deltaPos1 = v1-v0;
+        glm::vec3 deltaPos2 = v2-v0;
+
+        glm::vec2 deltaUV1 = uv1-uv0;
+        glm::vec2 deltaUV2 = uv2-uv0;
+
+        float det = 1.0f/(deltaUV1.x * deltaUV2.y - deltaUV1.y * deltaUV2.x);
+        tangent = det * (deltaPos1 * deltaUV2.y - deltaPos2 * deltaUV1.y);
+        // bitangent will be computed in fragment Shadcr
+
+        result.insert(result.end(), {tangent.x, tangent.y, tangent.z});
+
+    }
+
+    result.insert(result.end(), {tangent.x, tangent.y, tangent.z});
+    result.insert(result.end(), {tangent.x, tangent.y, tangent.z});
+
+    return result;
+}

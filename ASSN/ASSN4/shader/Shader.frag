@@ -32,6 +32,8 @@ in vec4 FragPos;
 in vec3 Normal;
 in vec2 TexCoords;
 
+in mat3 TBN;
+
 out vec4 FragColor;
 
 uniform mat4 View;
@@ -58,6 +60,7 @@ void main() {
     {
         norm = texture(normalTexture, TexCoords).rgb; // transform normal vector to range [-1,1]
         norm = normalize(norm * 2.0 - 1.0);
+        norm = normalize(TBN * norm);
     }
     else
     {
@@ -74,6 +77,7 @@ void main() {
     }
 
     FragColor = vec4(result, 1.0f);
+    //FragColor = vec4(0.5f, 0.5f, 0.5f, 1.0f);
 }
 
 vec3 renderDirectionalLight(DirLight light, vec3 normal, vec3 viewDir)

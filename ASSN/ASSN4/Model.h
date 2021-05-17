@@ -38,6 +38,10 @@ public:
 
     glm::vec3 min() const;
 
+    vector<vector<float>> getVertex();
+
+    vector<vector<float>> getUV();
+
 };
 
 
