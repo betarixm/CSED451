@@ -15,7 +15,7 @@ extern deque<glm::mat4> ModelView;
 extern deque<glm::mat4> Projection;
 extern Shader* shader;
 
-bool isHiddenLineRemoval = false;
+bool isHiddenLineRemoval = true;
 int frontCamera = -1;
 
 void lookAt(float x, float y, int _frontCamera) {

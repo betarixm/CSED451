@@ -77,7 +77,7 @@ void onKeyDown(unsigned char key, int x, int y) {
             break;
 
         case 'r':
-            isHiddenLineRemoval = !isHiddenLineRemoval;
+            //isHiddenLineRemoval = !isHiddenLineRemoval;
             break;
 
         case 'v':
