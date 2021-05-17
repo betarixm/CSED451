@@ -300,9 +300,16 @@ void Sphere::init(int lat, int lon, float radius){
         for (int o = 0; o < lon; o++) {
             float theta = (float)o / (float)lon * (float)PI * 2;
             float _r = radius * sin(phi);
+            float dx = sin(phi)*cos(theta), dy = sin(phi)*sin(theta), dz = cos(phi);
+
             vertexLatVec.emplace_back(initializer_list<float>{_r * cos(theta), _r * sin(theta), _z});
-            normalLatVec.emplace_back(initializer_list<float>{sin(phi) * cos(theta), sin(phi) * sin(theta), cos(phi)});
-            uvLatVec.emplace_back(initializer_list<float>{sin(theta) * cos(phi), sin(theta) * sin(phi), 0});
+            normalLatVec.emplace_back(initializer_list<float>{dx, dy, dz});
+
+            float u, v;
+            u = 0.5f + atan2(dx, dz)/(2*PI);
+            v = 0.5f - asin(dy)/(PI);
+            uvLatVec.emplace_back(initializer_list<float>{u, v, 0});
+            //uvLatVec.emplace_back(initializer_list<float>{sin(theta) * cos(phi), sin(theta) * sin(phi), 0});
         }
         vertexImm.push_back(vertexLatVec);
         normalImm.push_back(normalLatVec);
