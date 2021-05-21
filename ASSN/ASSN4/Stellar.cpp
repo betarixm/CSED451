@@ -34,7 +34,7 @@ Stellar::Stellar(const char *map_path[],  float x, float y, float z, array<float
     this->_baseTranslate = new TranslateNode;
 
     for(int i = 0; i < 3; i++){
-        this->orbs[i] = new Orb(map_path[i], "texture/NormalMap.png", 0, 0, 0, length[i], colorfv[i]);
+        this->orbs[i] = new Orb(map_path[i], "texture/normal2.jpeg", 0, 0, 0, length[i], colorfv[i]);
     }
 
     for(int i = 1; i < 3; i++) {
@@ -118,6 +118,6 @@ void initStellar() {
 
 
     for(i = 0; i < 2; i++){
-        Stellar::stellarVec.push_back(new Stellar(map_path[i],  -0.61f + (float)i, -0.5f + (float)i, 0.25f * (float)i, length[i], distance[i], color[i]));
+        Stellar::stellarVec.push_back(new Stellar(map_path[i],  -0.61f + (float)i, -0.5f + (float)i, 0.75f * (float)i, length[i], distance[i], color[i]));
     }
 }

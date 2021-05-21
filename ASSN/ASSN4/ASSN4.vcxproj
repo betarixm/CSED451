@@ -86,8 +86,10 @@
     <Image Include="texture\moon_normal.png" />
     <Image Include="texture\neptune.jpeg" />
     <Image Include="texture\neptune_normal.png" />
+    <Image Include="texture\normal2.jpeg" />
     <Image Include="texture\NormalMap.png" />
     <Image Include="texture\ship.jpeg" />
+    <Image Include="texture\ship2.jpeg" />
     <Image Include="texture\ship_normal.png" />
     <Image Include="texture\sun.jpeg" />
     <Image Include="texture\sun_normal.png" />

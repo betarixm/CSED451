@@ -321,9 +321,10 @@ void Sphere::init(int lat, int lon, float radius){
         vector<vector<float>> normalLatVec{};
         vector<vector<float>> uvLatVec{};
 
+
         float phi = (float)a / (float)lat * (float)PI;
         float _z = radius * cos(phi);
-        for (int o = 0; o < lon; o++) {
+        for (int o = 0; o < lon+1; o++) {
             float theta = (float)o / (float)lon * (float)PI * 2;
             float _r = radius * sin(phi);
             float dx = sin(phi)*cos(theta), dy = sin(phi)*sin(theta), dz = cos(phi);
@@ -332,8 +333,8 @@ void Sphere::init(int lat, int lon, float radius){
             normalLatVec.emplace_back(initializer_list<float>{dx, dy, dz});
 
             float u, v;
-            u = 0.5f + atan2(dx, dz)/(2*PI);
-            v = 0.5f - asin(dy)/(PI);
+            u = 0.5f + atan2(dx, dy)/(2*PI);
+            v = 0.5f - asin(dz)/(PI);
             uvLatVec.emplace_back(initializer_list<float>{u, v, 0});
             //uvLatVec.emplace_back(initializer_list<float>{sin(theta) * cos(phi), sin(theta) * sin(phi), 0});
         }
@@ -346,7 +347,7 @@ void Sphere::init(int lat, int lon, float radius){
     }
 
     for (int a = 0; a < lat; a++) {
-        for (int o = 0; o < lon; o++) {
+        for (int o = 0; o < lon+1; o++) {
             vertexBuffer.insert(vertexBuffer.end(), {
                 vertexImm[a][o][0], vertexImm[a][o][1], vertexImm[a][o][2],
                 normalImm[a][o][0], normalImm[a][o][1], normalImm[a][o][2],
@@ -383,7 +384,18 @@ void Sphere::init(int lat, int lon, float radius){
 
     //setNumVertex(vertexBuffer.size() / 9);
     vector<float>tangent = this->calcTangent(uv, vertex);
+
+    for (int i = 0; i < lon+1; i++)
+    {
+        tangent[6*i] = 1;
+        tangent[6*i+1] = 0;
+        tangent[6*i+2] = 0;
+    }
+
+
     setVertexArray(vertexBuffer, tangent);
+
+
 }
 
 

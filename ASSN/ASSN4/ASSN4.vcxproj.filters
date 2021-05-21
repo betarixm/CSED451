@@ -189,5 +189,11 @@
     <Image Include="texture\ship_normal.png">
       <Filter>Resource Files</Filter>
     </Image>
+    <Image Include="texture\ship2.jpeg">
+      <Filter>Resource Files</Filter>
+    </Image>
+    <Image Include="texture\normal2.jpeg">
+      <Filter>Resource Files</Filter>
+    </Image>
   </ItemGroup>
 </Project>
